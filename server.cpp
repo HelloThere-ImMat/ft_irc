@@ -11,7 +11,6 @@ int setUpServer(Data *obj)
 	obj->address.sin_addr.s_addr = INADDR_ANY;
 	obj->address.sin_port = htons(PORT);
 
-
 	try {
 		if ((obj->servfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 			throw("creating socket");
@@ -41,23 +40,24 @@ int main(int argc, char const* argv[])
 		return (1);
 
 	if (listen(data.servfd, 3) < 0) {
-		perror("listen");
-		exit(EXIT_FAILURE);
+		std::cerr << "Error : while listening" << std::endl;
+		return (1);
 	}
-	if ((data.sockfd
-		= accept(data.servfd, (struct sockaddr*)&data.address,
-				&data.addrlen))
-		< 0) {
-		perror("accept");
-		exit(EXIT_FAILURE);
+	while (1)
+	{
+		if ((data.sockfd
+			= accept(data.servfd, (struct sockaddr*)&data.address,
+					&data.addrlen))
+			< 0) {
+			std::cerr << "Error : while accepting" << std::endl;
+			return (1);
+		}
+		read(data.sockfd, buffer, 1024 - 1);	// subtract 1 for the null
+												// terminator at the end
+		std::cout << "Message received : " << buffer << std::endl;
+		send(data.sockfd, hello, strlen(hello), 0);
+		std::cout << "Hello message sent" << std::endl;
 	}
-
-	read(data.sockfd, buffer, 1024 - 1);	// subtract 1 for the null
-											// terminator at the end
-	printf("%s\n", buffer);
-	send(data.sockfd, hello, strlen(hello), 0);
-	printf("Hello message sent\n");
-
 	close(data.sockfd);
 	close(data.servfd);
 	return 0;
