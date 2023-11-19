@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 20:07:34 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 21:24:00 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,8 @@
 ////////////
 
 Server::Server(
-	const int port,
-	const std::string password): _socket(port), _password(password) {
+	const std::string &port,
+	const std::string &password): _socket(port), _password(password) {
 
 	bzero(this->buffer, BUFFER_SIZE);
 	std::cout << "Port is " << port << std::endl;
@@ -27,42 +27,55 @@ Server::Server(
 
 Server::~Server() {}
 
-int	Server::start() {
-	return (_socket.setup());
+void	Server::start() {
+	_socket.setup();
 }
 
-int	Server::listen() {
+void	Server::listen() {
 
 	const int	servfd = _socket.getServerSocketFd();
 
-	if (::listen(servfd, MAX_CLIENT_COUNT) < 0) {
-		std::cerr << "Error : while listening" << std::endl;
-		return (EXIT_FAILURE);
-	}
-	return (EXIT_SUCCESS);
+	if (::listen(servfd, MAX_CLIENT_COUNT) < 0)
+		throw ListenFailException();
 }
 
-int	Server::acceptConnection() {
+void	Server::acceptConnection() {
 
-	return (_socket.acceptConnection());
+	_socket.acceptConnection();
 }
 
-int	Server::readMessage() {
+void	Server::readMessage() {
 
 	const int	sockfd = _socket.getSocketFd();
 
 	if (read(sockfd, buffer, BUFFER_SIZE - 1) < 0)	// subtract 1 for the null
-		return (EXIT_FAILURE);
-	std::cout << "Message received : " << buffer << std::endl;
-	return (EXIT_SUCCESS);
+		throw ReadFailException();
+	else
+		std::cout << "Message received : " << buffer << std::endl;
 }
 
-int	Server::sendMessage(const std::string &message) {
+void	Server::sendMessage(const std::string &message) {
 
 	const int	sockfd = _socket.getSocketFd();
 
 	if (send(sockfd, WELCOME_MESSAGE, strlen(WELCOME_MESSAGE), 0) < 0)
-		return (EXIT_FAILURE);
-	std::cout << "Message sent: " << message << std::endl;
-	return (EXIT_SUCCESS);
+		throw SendFailException();
+	else
+		std::cout << "Message sent: " << message << std::endl;
+}
+
+/////////////
+// PRIVATE //
+/////////////
+
+const char* Server::ListenFailException::what() const throw() {
+	return (LISTEN_FAIL__ERROR);
+}
+
+const char* Server::ReadFailException::what() const throw() {
+	return (READ_FAIL__ERROR);
+}
+
+const char* Server::SendFailException::what() const throw() {
+	return (SEND_FAIL__ERROR);
 }
