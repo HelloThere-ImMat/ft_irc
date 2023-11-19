@@ -1,8 +1,6 @@
 #include "server.hpp"
 
-#define PORT 8080
-
-int setUpServer(Data *obj)
+int	setUpServer(Data *const obj)
 {
 	int opt = 1;
 
@@ -22,43 +20,42 @@ int setUpServer(Data *obj)
 	catch(std::string &e)
 	{
 		std::cout << "Error : Setup : " << e << std::endl;
-		return (1);
+		return (EXIT_FAILURE);
 	}
-	return (0);
+	return (EXIT_SUCCESS);
 }
 
-int main(int argc, char const* argv[])
+int main(int ac, char const **av)
 {
-	Data			data;
-	char buffer[1024] = { 0 };
-	std::string str = "Hello from server";
-	const char* hello = str.c_str();
-	(void)argc;
-	(void)argv;
+	char	buffer[1024] = { 0 };
+	Data	data;
 
-	if (setUpServer(&data) == 1)
-		return (1);
-
-	if (listen(data.servfd, 3) < 0) {
-		std::cerr << "Error : while listening" << std::endl;
-		return (1);
+	if (ac == EXPECTED_ARG_COUNT)
+	{
+		std::cout << "Port is " << av[1] << std::endl;
+		std::cout << "Password is " << av[2] << std::endl;
 	}
-	while (1)
+	if (setUpServer(&data) == 1)
+		return (EXIT_FAILURE);
+	if (listen(data.servfd, MAX_CLIENT_COUNT) < 0) {
+		std::cerr << "Error : while listening" << std::endl;
+		return (EXIT_FAILURE);
+	}
+	while (true)
 	{
 		if ((data.sockfd
 			= accept(data.servfd, (struct sockaddr*)&data.address,
-					&data.addrlen))
-			< 0) {
+					&data.addrlen)) < 0) {
 			std::cerr << "Error : while accepting" << std::endl;
-			return (1);
+			return (EXIT_FAILURE);
 		}
 		read(data.sockfd, buffer, 1024 - 1);	// subtract 1 for the null
 												// terminator at the end
 		std::cout << "Message received : " << buffer << std::endl;
-		send(data.sockfd, hello, strlen(hello), 0);
+		send(data.sockfd, WELCOME_MESSAGE, strlen(WELCOME_MESSAGE), 0);
 		std::cout << "Hello message sent" << std::endl;
 	}
 	close(data.sockfd);
 	close(data.servfd);
-	return 0;
+	return (EXIT_SUCCESS);
 }
