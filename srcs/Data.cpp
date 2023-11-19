@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:15:21 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 17:20:11 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 18:12:19 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,5 +19,7 @@ Data::Data(const int port) {
 	address.sin_port = htons(port);
 }
 
-Data::~Data() {}
-
+Data::~Data() {
+	close(sockfd);
+	close(servfd);
+}

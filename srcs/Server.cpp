@@ -6,21 +6,23 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 17:59:07 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 18:25:20 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
+////////////
+// PUBLIC //
+////////////
+
 Server::Server(const char *const port): _socket(std::atoi(port)) {
 
-	std::cout << "fd -> " << _socket.servfd << std::endl;
+	bzero(this->buffer, BUFFER_SIZE);
 	this->option = 1;
 }
 
 Server::~Server() {}
-
-#include <errno.h>
 
 int	Server::setup() {
 
@@ -39,6 +41,47 @@ int	Server::setup() {
 	}
 	return (EXIT_SUCCESS);
 }
+
+int	Server::listen() {
+
+	if (::listen(_socket.servfd, MAX_CLIENT_COUNT) < 0) {
+		std::cerr << "Error : while listening" << std::endl;
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}
+
+int	Server::acceptConnection() {
+
+	_socket.sockfd = accept(_socket.servfd,
+						(struct sockaddr*)&_socket.address, &_socket.addrlen);
+	if (_socket.sockfd < 0)
+	{
+		std::cerr << "Error : while accepting" << std::endl;
+		return (EXIT_FAILURE);
+	}
+	return (EXIT_SUCCESS);
+}
+
+int	Server::readMessage() {
+
+	if (read(_socket.sockfd, buffer, 1024 - 1) < 0)	// subtract 1 for the null
+		return (EXIT_FAILURE);
+	std::cout << "Message received : " << buffer << std::endl;
+	return (EXIT_SUCCESS);
+}
+
+int	Server::sendMessage(const std::string &message) {
+
+	if (send(_socket.sockfd, WELCOME_MESSAGE, strlen(WELCOME_MESSAGE), 0) < 0)
+		return (EXIT_FAILURE);
+	std::cout << "Message sent: " << message << std::endl;
+	return (EXIT_SUCCESS);
+}
+
+/////////////
+// PRIVATE //
+/////////////
 
 const char	*Server::SockInitException::what() const throw(){
 	return (SOCKET_INIT__ERROR);
