@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:09:28 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 18:22:09 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 19:04:04 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int main(int ac, char **av)
 	std::cout << "Port is " << av[1] << std::endl;
 	std::cout << "Password is " << av[2] << std::endl;
 
-	if (serv.setup() == EXIT_FAILURE)
+	if (serv.start() == EXIT_FAILURE)
 		return (EXIT_FAILURE);
 	if (serv.listen() == EXIT_FAILURE)
 		return (EXIT_FAILURE);

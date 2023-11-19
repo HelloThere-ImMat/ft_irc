@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 18:25:30 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 19:03:49 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,38 +15,22 @@
 #include "Data.hpp"
 #include "irc.hpp"
 #include <sys/socket.h>
-#include <exception>
 
-#define BUFFER_SIZE			1024
-#define SOCKET_INIT__ERROR	"creating socker"
-#define SOCKET_OPT__ERROR	"setting sock options"
-#define SOCKET_BIND__ERROR	"binding to address"
+#define BUFFER_SIZE	1024
+# define WELCOME_MESSAGE	"Hello from the Server"
 
 class Server {
 
 	public:
 		Server(const char *const port);
 		~Server();
-		int		setup();
-		int		listen();
-		int		acceptConnection();
-		int		readMessage();
-		int		sendMessage(const std::string &message);
-		Data	_socket;
-		int		option;
-		char	buffer[BUFFER_SIZE];
+		int	start();
+		int	listen();
+		int	acceptConnection();
+		int	readMessage();
+		int	sendMessage(const std::string &message);
 	private:
-		// Exceptions
-		class SockInitException: public std::exception {
-			public:
-				virtual const char* what() const throw();
-		};
-		class SockOptException: public std::exception {
-			public:
-				virtual const char* what() const throw();
-		};
-		class SockBindException: public std::exception {
-			public:
-				virtual const char* what() const throw();
-		};
+		// Attributes
+		Data	_socket;
+		char	buffer[BUFFER_SIZE];
 };
