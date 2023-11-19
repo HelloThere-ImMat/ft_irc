@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 19:03:56 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 20:07:34 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,13 @@
 // PUBLIC //
 ////////////
 
-Server::Server(const char *const port): _socket(std::atoi(port)) {
+Server::Server(
+	const int port,
+	const std::string password): _socket(port), _password(password) {
 
 	bzero(this->buffer, BUFFER_SIZE);
+	std::cout << "Port is " << port << std::endl;
+	std::cout << "Password is " << password << std::endl;
 }
 
 Server::~Server() {}

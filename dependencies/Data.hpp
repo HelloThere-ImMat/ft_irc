@@ -6,18 +6,15 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:15:38 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 19:03:32 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 20:10:04 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <netinet/in.h>
-#include <sys/socket.h>
 #include <unistd.h>
 #include <iostream>
-#include <cstring>
-
 #include <stdlib.h>
 #include <exception>
 
