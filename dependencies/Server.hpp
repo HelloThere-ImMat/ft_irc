@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 17:12:18 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 17:16:53 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@
 #include <sys/socket.h>
 #include <exception>
 
-#define SOCKET_CREATE__ERROR	"creating socker"
-#define SOCKET_SETTING__ERROR	"setting sock options"
-#define SOCKET_BINDING__ERROR	"binding to address"
+#define SOCKET_INIT__ERROR	"creating socker"
+#define SOCKET_OPT__ERROR	"setting sock options"
+#define SOCKET_BIND__ERROR	"binding to address"
 
 class Server {
 
