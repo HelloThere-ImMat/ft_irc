@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:03:54 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 12:09:10 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 14:50:28 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@
 #include <unistd.h>
 #include <string>
 #include <iostream>
-#include "server.hpp"
+#include "Server.hpp"
 
 ///////////////////////////////
 ///			DEFINES			///

@@ -10,7 +10,8 @@ NAME		=	irc
 
 SRCS_PATH = srcs/
 
-SRCS += server.cpp
+SRCS += Server.cpp
+SRCS += Data.cpp
 SRCS += main.cpp
 
 vpath %.cpp $(SRCS_PATH)
@@ -28,7 +29,9 @@ OBJS		+= $(patsubst %.cpp, $(PATH_OBJS)/%.o, $(SRCS))
 
 DEPS_PATH = dependencies/
 
-DEPS += server.hpp
+DEPS += Server.hpp
+DEPS += Data.hpp
+DEPS += irc.hpp
 
 vpath %.hpp $(DEPS_PATH)
 
@@ -38,10 +41,14 @@ vpath %.hpp $(DEPS_PATH)
 
 CC			=	c++
 
-FLAGS		+=	-Wall
-FLAGS		+=	-Wextra
-FLAGS		+=	-Werror
-FLAGS		+=	-std=c++98
+CFLAGS		+=	-Wall
+CFLAGS		+=	-Wextra
+CFLAGS		+=	-Werror
+CFLAGS		+=	-std=c++98
+
+ifeq ($(debug), true)
+	CFLAGS	+= -fsanitize=address,undefined -g3
+endif
 
 #############
 ### RULES ###
@@ -50,11 +57,11 @@ FLAGS		+=	-std=c++98
 all		: $(NAME)
 
 $(NAME)	: $(OBJS)
-	$(CC) $(FLAGS) $^ -o $@
+	$(CC) $(CFLAGS) $^ -o $@
 
 $(OBJS)	: $(PATH_OBJS)/%.o : %.cpp Makefile $(DEPS)
 	mkdir -p $(PATH_OBJS)
-	$(CC) $(FLAGS) -c $< -o $@ -I $(DEPS_PATH)
+	$(CC) $(CFLAGS) -c $< -o $@ -I $(DEPS_PATH)
 
 clean	:
 	rm -rf $(PATH_OBJS)
