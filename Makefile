@@ -1,18 +1,40 @@
-#								################
-#								### MAKEFILE ###
-#								################
+################
+### MAKEFILE ###
+################
+
+NAME		=	irc
+
+###############
+### SOURCES ###
+###############
 
 SRCS_PATH = srcs/
 
 SRCS += server.cpp
+SRCS += main.cpp
 
 vpath %.cpp $(SRCS_PATH)
 
-DEPS_PATH = includes/
+############
+### OBJS ###
+############
+
+PATH_OBJS	+= objs
+OBJS		+= $(patsubst %.cpp, $(PATH_OBJS)/%.o, $(SRCS))
+
+####################
+### DEPENDENCIES ###
+####################
+
+DEPS_PATH = dependencies/
 
 DEPS += server.hpp
 
 vpath %.hpp $(DEPS_PATH)
+
+###################
+### COMPILATION ###
+###################
 
 CC			=	c++
 
@@ -21,10 +43,9 @@ FLAGS		+=	-Wextra
 FLAGS		+=	-Werror
 FLAGS		+=	-std=c++98
 
-NAME		=	irc
-
-PATH_OBJS	+= objs
-OBJS		+= $(patsubst %.cpp, $(PATH_OBJS)/%.o, $(SRCS))
+#############
+### RULES ###
+#############
 
 all		: $(NAME)
 
