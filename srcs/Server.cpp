@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 21:24:00 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 21:29:14 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ void	Server::start() {
 	_socket.setup();
 }
 
-void	Server::listen() {
+void	Server::listen() const {
 
 	const int	servfd = _socket.getServerSocketFd();
 
@@ -54,7 +54,7 @@ void	Server::readMessage() {
 		std::cout << "Message received : " << buffer << std::endl;
 }
 
-void	Server::sendMessage(const std::string &message) {
+void	Server::sendMessage(const std::string &message) const {
 
 	const int	sockfd = _socket.getSocketFd();
 

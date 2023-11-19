@@ -6,26 +6,39 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:15:21 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 21:26:15 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 21:39:39 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Data.hpp"
 
+//////////////////////
+// Static functions //
+//////////////////////
+
+static bool	isPortValid(const std::string &port) {
+	for (std::string::const_iterator it = port.begin(); it != port.end(); ++it) {
+		if (!isdigit(*it)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+////////////
+// PUBLIC //
+////////////
+
 Data::Data(const std::string &port) {
 
 	if (isPortValid(port) == false)
 		throw InvalidPortException();
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons(std::atoi(port.c_str()));
+	else
+		initAddress(std::atoi(port.c_str()));
 }
 
 Data::Data(const int port) {
-
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons(port);
+	initAddress(port);
 }
 
 void	Data::setup() {
@@ -69,14 +82,16 @@ Data::~Data() {
 // PRIVATE //
 /////////////
 
-bool	Data::isPortValid(const std::string &port) {
-	for (std::string::const_iterator it = port.begin(); it != port.end(); ++it) {
-		if (!isdigit(*it)) {
-			return false;
-		}
-	}
-	return true;
+void	Data::initAddress(const int port) {
+
+	address.sin_family = AF_INET;
+	address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_port = htons(port);
 }
+
+////////////////
+// Exceptions //
+////////////////
 
 const char	*Data::SockInitException::what() const throw() {
 	return (SOCKET_INIT__ERROR);

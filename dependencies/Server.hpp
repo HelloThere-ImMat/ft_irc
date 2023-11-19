@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 21:24:06 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/19 21:29:37 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,10 +27,10 @@ class Server {
 		Server(const std::string &port, const std::string &password);
 		~Server();
 		void	start();
-		void	listen();
+		void	listen() const;
 		void	acceptConnection();
+		void	sendMessage(const std::string &message) const;
 		void	readMessage();
-		void	sendMessage(const std::string &message);
 	private:
 		// Attributes
 		Data		_socket;
