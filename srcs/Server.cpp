@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/20 17:20:18 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 18:23:36 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	Server::start() {
 
 void	Server::listen() const {
 
-	const int	servfd = _socket.getServerSocketFd();
+	const int	servfd = _socket.getSocketFd();
 
 	if (::listen(servfd, MAX_CLIENT_COUNT) < 0)
 		throw ListenFailException();
@@ -40,13 +40,13 @@ void	Server::listen() const {
 
 void	Server::acceptConnection() {
 
-	_socket.acceptConnection();
+	_client.setSocketFd(_socket.getNewConnectionSocket());
 }
 
 void	Server::readMessage() {
 
 	static char	buffer[BUFFER_SIZE] = {0};
-	const int	sockfd = _socket.getSocketFd();
+	const int	sockfd = _client.getSocketFd();
 	ssize_t		byte_read_count;
 
 	bzero(buffer, BUFFER_SIZE - 1);
@@ -59,7 +59,7 @@ void	Server::readMessage() {
 
 void	Server::sendMessage(const std::string &message) const {
 
-	const int	sockfd = _socket.getSocketFd();
+	const int	sockfd = _client.getSocketFd();
 
 	if (send(sockfd, message.c_str(), message.size(), 0) < 0)
 		throw SendFailException();

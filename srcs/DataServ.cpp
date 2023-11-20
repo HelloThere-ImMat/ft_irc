@@ -45,38 +45,32 @@ void	DataServ::setup() {
 
 	const int	option = DEFAULT_OPTION;
 
-	if ((servfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+	if ((_servfd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
 		throw SockInitException();
-	if (setsockopt(servfd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0)
+	if (setsockopt(_servfd, SOL_SOCKET, SO_REUSEADDR, &option, sizeof(option)) < 0)
 		throw SockOptException();
-	if (bind(servfd, (struct sockaddr*)&address, sizeof(address)) < 0)
+	if (bind(_servfd, (struct sockaddr*)&_address, sizeof(_address)) < 0)
 		throw SockBindException();
 }
 
-void	DataServ::acceptConnection() {
+int	DataServ::getNewConnectionSocket() {
 
-	addrlen = sizeof(address);
-	sockfd = accept(servfd,
-						(struct sockaddr*)&address, &addrlen);
+	int	sockfd;
+
+	_addrlen = sizeof(_address);
+	sockfd = accept(_servfd,
+						(struct sockaddr*)&_address, &_addrlen);
 	if (sockfd < 0)
 		throw CantAcceptException();
-}
-
-int	DataServ::getSocketFd() const {
 	return (sockfd);
 }
 
-int	DataServ::getServerSocketFd() const {
-	return (servfd);
-}
-
-void	DataServ::setSocketFd(const int newFd) {
-	sockfd = newFd;
+int	DataServ::getSocketFd() const {
+	return (_servfd);
 }
 
 DataServ::~DataServ() {
-	close(sockfd);
-	close(servfd);
+	close(_servfd);
 }
 
 /////////////
@@ -85,9 +79,9 @@ DataServ::~DataServ() {
 
 void	DataServ::initAddress(const int port) {
 
-	address.sin_family = AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_port = htons(port);
+	_address.sin_family = AF_INET;
+	_address.sin_addr.s_addr = INADDR_ANY;
+	_address.sin_port = htons(port);
 }
 
 ////////////////

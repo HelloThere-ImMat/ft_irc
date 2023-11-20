@@ -13,7 +13,6 @@
 #pragma once
 
 #include <netinet/in.h>
-#include <sys/epoll.h>
 #include <unistd.h>
 #include <iostream>
 #include <stdlib.h>
@@ -33,17 +32,14 @@ class DataServ
 		DataServ(const int port);
 		~DataServ();
 		void	setup();
-		void	acceptConnection();
-		void	setSocketFd(const int newFd);
+		int		getNewConnectionSocket();
 		int		getSocketFd() const;
-		int		getServerSocketFd() const;
 
 	private:
 		// Attributes
-		int					sockfd;
-		int 				servfd;
-		struct sockaddr_in	address;
-		socklen_t			addrlen;
+		int 				_servfd;
+		struct sockaddr_in	_address;
+		socklen_t			_addrlen;
 		// Private methods
 		void	initAddress(const int port);
 		// Exceptions
