@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:09:28 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/20 17:08:15 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 18:37:17 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,9 @@ static int	startServer(const std::string port, const std::string password)
 
 		serv.start();
 		serv.listen();
-		serv.acceptConnection();
-		serv.sendMessage(WELCOME_MESSAGE);
 		while (true)
 		{
-			serv.readMessage();
+			serv.lookForEvents();
 		}
 	} catch (std::exception &e) {
 		std::cerr << "Error: " << e.what() << std::endl;

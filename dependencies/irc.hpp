@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:03:54 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 21:05:20 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 18:46:01 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,11 @@
 
 #include <string.h>
 #include <exception>
+#include <sys/epoll.h>
 #include "Server.hpp"
 
 ///////////////////////////////
 ///			DEFINES			///
 ///////////////////////////////
 
-# define MAX_CLIENT_COUNT	3
 # define EXPECTED_ARG_COUNT	3

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/20 18:18:12 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 19:10:21 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 #include "irc.hpp"
 
 #define BUFFER_SIZE			1024
+#define TIMEOUT				-1
+#define MAX_CLIENT_COUNT	3
 #define WELCOME_MESSAGE		"Hello from the Server\n"
 #define LISTEN_FAIL__ERROR	"listening failed"
 #define READ_FAIL__ERROR	"reading failed"
@@ -29,14 +31,19 @@ class Server {
 		~Server();
 		void	start();
 		void	listen() const;
-		void	acceptConnection();
+		void	lookForEvents();
 		void	sendMessage(const std::string &message) const;
-		void	readMessage();
+		void	readClientCommand(const int fd);
+		void	addNewClient();
 	private:
 		// Attributes
 		DataServ	_socket;
 		Client		_client;
+		int			_epollFd;
 		std::string	_password;
+		// Private Methods
+		void	addFdToPoll(const int fd);
+		void	delFdToPoll(const int fd);
 		// Exceptions
 		class ListenFailException: public std::exception {
 			public:

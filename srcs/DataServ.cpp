@@ -53,7 +53,7 @@ void	DataServ::setup() {
 		throw SockBindException();
 }
 
-int	DataServ::getNewConnectionSocket() {
+int	DataServ::acceptNewConnectionSocket() {
 
 	int	sockfd;
 

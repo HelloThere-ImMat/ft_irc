@@ -32,7 +32,7 @@ class DataServ
 		DataServ(const int port);
 		~DataServ();
 		void	setup();
-		int		getNewConnectionSocket();
+		int		acceptNewConnectionSocket();
 		int		getSocketFd() const;
 
 	private:
