@@ -11,7 +11,7 @@ NAME		=	ircserv
 SRCS_PATH = srcs/
 
 SRCS += Server.cpp
-SRCS += Data.cpp
+SRCS += DataServ.cpp
 SRCS += main.cpp
 
 vpath %.cpp $(SRCS_PATH)
@@ -30,7 +30,7 @@ OBJS		+= $(patsubst %.cpp, $(PATH_OBJS)/%.o, $(SRCS))
 DEPS_PATH = dependencies/
 
 DEPS += Server.hpp
-DEPS += Data.hpp
+DEPS += DataServ.hpp
 DEPS += irc.hpp
 
 vpath %.hpp $(DEPS_PATH)

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Data.hpp                                           :+:      :+:    :+:   */
+/*   DataServ.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -25,13 +25,13 @@
 #define INVALID_PORT__ERROR	"Invalid port"
 #define CANT_ACCEPT__ERROR	"Cannot accept client"
 
-class Data
+class DataServ
 {
 	public:
 
-		Data(const std::string &port);
-		Data(const int port);
-		~Data();
+		DataServ(const std::string &port);
+		DataServ(const int port);
+		~DataServ();
 		void	setup();
 		void	acceptConnection();
 		void	setSocketFd(const int newFd);

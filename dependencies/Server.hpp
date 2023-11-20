@@ -6,13 +6,13 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/20 17:15:01 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 17:29:49 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include "Data.hpp"
+#include "DataServ.hpp"
 #include "irc.hpp"
 
 #define BUFFER_SIZE			1024
@@ -33,7 +33,7 @@ class Server {
 		void	readMessage();
 	private:
 		// Attributes
-		Data		_socket;
+		DataServ	_socket;
 		std::string	_password;
 		// Exceptions
 		class ListenFailException: public std::exception {

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Data.cpp                                           :+:      :+:    :+:   */
+/*   DataServ.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Data.hpp"
+#include "DataServ.hpp"
 
 //////////////////////
 // Static functions //
@@ -29,7 +29,7 @@ static bool	isPortValid(const std::string &port) {
 // PUBLIC //
 ////////////
 
-Data::Data(const std::string &port) {
+DataServ::DataServ(const std::string &port) {
 
 	if (isPortValid(port) == false)
 		throw InvalidPortException();
@@ -37,11 +37,11 @@ Data::Data(const std::string &port) {
 		initAddress(std::atoi(port.c_str()));
 }
 
-Data::Data(const int port) {
+DataServ::DataServ(const int port) {
 	initAddress(port);
 }
 
-void	Data::setup() {
+void	DataServ::setup() {
 
 	const int	option = DEFAULT_OPTION;
 
@@ -53,7 +53,7 @@ void	Data::setup() {
 		throw SockBindException();
 }
 
-void	Data::acceptConnection() {
+void	DataServ::acceptConnection() {
 
 	addrlen = sizeof(address);
 	sockfd = accept(servfd,
@@ -62,19 +62,19 @@ void	Data::acceptConnection() {
 		throw CantAcceptException();
 }
 
-int	Data::getSocketFd() const {
+int	DataServ::getSocketFd() const {
 	return (sockfd);
 }
 
-int	Data::getServerSocketFd() const {
+int	DataServ::getServerSocketFd() const {
 	return (servfd);
 }
 
-void	Data::setSocketFd(const int newFd) {
+void	DataServ::setSocketFd(const int newFd) {
 	sockfd = newFd;
 }
 
-Data::~Data() {
+DataServ::~DataServ() {
 	close(sockfd);
 	close(servfd);
 }
@@ -83,7 +83,7 @@ Data::~Data() {
 // PRIVATE //
 /////////////
 
-void	Data::initAddress(const int port) {
+void	DataServ::initAddress(const int port) {
 
 	address.sin_family = AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
@@ -94,22 +94,22 @@ void	Data::initAddress(const int port) {
 // Exceptions //
 ////////////////
 
-const char	*Data::SockInitException::what() const throw() {
+const char	*DataServ::SockInitException::what() const throw() {
 	return (SOCKET_INIT__ERROR);
 }
 
-const char	*Data::SockOptException::what() const throw() {
+const char	*DataServ::SockOptException::what() const throw() {
 	return (SOCKET_OPT__ERROR);
 }
 
-const char	*Data::SockBindException::what() const throw() {
+const char	*DataServ::SockBindException::what() const throw() {
 	return (SOCKET_BIND__ERROR);
 }
 
-const char	*Data::InvalidPortException::what() const throw() {
+const char	*DataServ::InvalidPortException::what() const throw() {
 	return (INVALID_PORT__ERROR);
 }
 
-const char	*Data::CantAcceptException::what() const throw() {
+const char	*DataServ::CantAcceptException::what() const throw() {
 	return (CANT_ACCEPT__ERROR);
 }
