@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:15:21 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 21:39:39 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 16:56:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,7 @@ void	Data::setup() {
 
 void	Data::acceptConnection() {
 
+	addrlen = sizeof(address);
 	sockfd = accept(servfd,
 						(struct sockaddr*)&address, &addrlen);
 	if (sockfd < 0)

@@ -6,13 +6,14 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:15:38 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 21:40:51 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 16:37:17 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <netinet/in.h>
+#include <sys/epoll.h>
 #include <unistd.h>
 #include <iostream>
 #include <stdlib.h>

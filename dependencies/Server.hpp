@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/20 15:05:27 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/11/20 17:15:01 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,6 @@ class Server {
 		// Attributes
 		Data		_socket;
 		std::string	_password;
-		char		buffer[BUFFER_SIZE];
 		// Exceptions
 		class ListenFailException: public std::exception {
 			public:

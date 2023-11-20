@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/20 15:11:46 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/11/20 17:20:18 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ Server::Server(
 	const std::string &port,
 	const std::string &password): _socket(port), _password(password) {
 
-	bzero(this->buffer, BUFFER_SIZE);
 	std::cout << "Port is " << port << std::endl;
 	std::cout << "Password is " << password << std::endl;
 }
@@ -46,10 +45,13 @@ void	Server::acceptConnection() {
 
 void	Server::readMessage() {
 
+	static char	buffer[BUFFER_SIZE] = {0};
 	const int	sockfd = _socket.getSocketFd();
+	ssize_t		byte_read_count;
 
 	bzero(buffer, BUFFER_SIZE - 1);
-	if (read(sockfd, buffer, BUFFER_SIZE - 1) < 0)	// subtract 1 for the null
+	byte_read_count = recv(sockfd, buffer, BUFFER_SIZE - 1, MSG_NOSIGNAL);
+	if (byte_read_count < 0)	// subtract 1 for the null
 		throw ReadFailException();
 	else
 		std::cout << "Message received : " << buffer << std::endl;
