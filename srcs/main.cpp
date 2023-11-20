@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:09:28 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 21:26:37 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 15:03:33 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,11 @@ static int	startServer(const std::string port, const std::string password)
 
 		serv.start();
 		serv.listen();
+		serv.acceptConnection();
+		serv.sendMessage(WELCOME_MESSAGE);
 		while (true)
 		{
-			serv.acceptConnection();
 			serv.readMessage();
-			serv.sendMessage(WELCOME_MESSAGE);
 		}
 	} catch (std::exception &e) {
 		std::cerr << "Error: " << e.what() << std::endl;

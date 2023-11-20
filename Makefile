@@ -2,7 +2,7 @@
 ### MAKEFILE ###
 ################
 
-NAME		=	irc
+NAME		=	ircserv
 
 ###############
 ### SOURCES ###

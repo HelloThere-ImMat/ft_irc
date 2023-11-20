@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 21:29:37 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 15:05:27 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "irc.hpp"
 
 #define BUFFER_SIZE			1024
-#define WELCOME_MESSAGE		"Hello from the Server"
+#define WELCOME_MESSAGE		"Hello from the Server\n"
 #define LISTEN_FAIL__ERROR	"listening failed"
 #define READ_FAIL__ERROR	"reading failed"
 #define SEND_FAIL__ERROR	"sending failed"

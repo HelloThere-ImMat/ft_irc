@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 21:29:14 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/20 15:11:46 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@ void	Server::readMessage() {
 
 	const int	sockfd = _socket.getSocketFd();
 
+	bzero(buffer, BUFFER_SIZE - 1);
 	if (read(sockfd, buffer, BUFFER_SIZE - 1) < 0)	// subtract 1 for the null
 		throw ReadFailException();
 	else
@@ -58,7 +59,7 @@ void	Server::sendMessage(const std::string &message) const {
 
 	const int	sockfd = _socket.getSocketFd();
 
-	if (send(sockfd, WELCOME_MESSAGE, strlen(WELCOME_MESSAGE), 0) < 0)
+	if (send(sockfd, message.c_str(), message.size(), 0) < 0)
 		throw SendFailException();
 	else
 		std::cout << "Message sent: " << message << std::endl;
