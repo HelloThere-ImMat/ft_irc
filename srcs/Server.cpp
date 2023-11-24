@@ -159,3 +159,4 @@ const char* Server::ReadFailException::what() const throw() {
 const char* Server::SendFailException::what() const throw() {
 	return (SEND_FAIL__ERROR);
 }
+
