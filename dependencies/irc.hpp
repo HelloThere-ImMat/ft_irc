@@ -17,12 +17,14 @@
 ///////////////////////////////
 
 #include <string.h>
-#include <exception>
 #include <sys/epoll.h>
+
+#include <exception>
+
 #include "Server.hpp"
 
 ///////////////////////////////
 ///			DEFINES			///
 ///////////////////////////////
 
-# define EXPECTED_ARG_COUNT	3
+#define EXPECTED_ARG_COUNT 3

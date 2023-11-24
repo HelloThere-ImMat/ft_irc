@@ -12,24 +12,18 @@
 
 #include "Client.hpp"
 
-Client::Client(): _sockfd(0) {}
+Client::Client() : _sockfd(0) {}
 
-Client::Client(const int sockfd): _sockfd(sockfd) {}
+Client::Client(const int sockfd) : _sockfd(sockfd) {}
 
 Client::~Client() {}
 
-int	Client::getSocketFd() const {
-	return (_sockfd);
-}
+int Client::getSocketFd() const { return (_sockfd); }
 
-const std::string &Client::getBuffer() const {
-	return (_buffer);
-}
+const std::string &Client::getBuffer() const { return (_buffer); }
 
-void	Client::setBuffer(const std::string &incompleteMessage) {
+void Client::setBuffer(const std::string &incompleteMessage) {
 	_buffer = incompleteMessage;
 }
 
-void	Client::setSocketFd(const int socket) {
-	_sockfd = socket;
-}
+void Client::setSocketFd(const int socket) { _sockfd = socket; }

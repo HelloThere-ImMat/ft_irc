@@ -65,6 +65,10 @@ $(OBJS)	: $(PATH_OBJS)/%.o : %.cpp Makefile $(DEPS)
 	mkdir -p $(PATH_OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(DEPS_PATH)
 
+test: all
+	bear -- make clean all
+	pre-commit run --all-files
+
 clean	:
 	rm -rf $(PATH_OBJS)
 
