@@ -15,16 +15,16 @@
 #include <string>
 
 class Client {
-	public:
-		Client();
-		explicit Client(const int sockfd);
-		~Client();
-		int getSocketFd() const;
-		const std::string &getBuffer() const;
-		void setBuffer(const std::string &incompleteMessage);
-		void setSocketFd(const int socket);
+   public:
+	Client();
+	explicit Client(const int sockfd);
+	~Client();
+	int getSocketFd() const;
+	const std::string &getBuffer() const;
+	void setBuffer(const std::string &incompleteMessage);
+	void setSocketFd(const int socket);
 
-	private:
-		int _sockfd;
-		std::string _buffer;
+   private:
+	int _sockfd;
+	std::string _buffer;
 };

@@ -27,40 +27,40 @@
 #define CANT_ACCEPT__ERROR "Cannot accept client"
 
 class DataServ {
-	public:
-		explicit DataServ(const std::string& port);
-		explicit DataServ(const int port);
-		~DataServ();
-		void setup();
-		int acceptNewConnectionSocket();
-		int getSocketFd() const;
+   public:
+	explicit DataServ(const std::string& port);
+	explicit DataServ(const int port);
+	~DataServ();
+	void setup();
+	int acceptNewConnectionSocket();
+	int getSocketFd() const;
 
-	private:
-		// Attributes
-		int _servfd;
-		struct sockaddr_in _address;
-		socklen_t _addrlen;
-		// Private methods
-		void initAddress(const int port);
-		// Exceptions
-		class SockInitException : public std::exception {
-		public:
-			virtual const char* what() const throw();
-		};
-		class SockOptException : public std::exception {
-		public:
-			virtual const char* what() const throw();
-		};
-		class SockBindException : public std::exception {
-		public:
-			virtual const char* what() const throw();
-		};
-		class InvalidPortException : public std::exception {
-		public:
-			virtual const char* what() const throw();
-		};
-		class CantAcceptException : public std::exception {
-		public:
-			virtual const char* what() const throw();
-		};
+   private:
+	// Attributes
+	int _servfd;
+	struct sockaddr_in _address;
+	socklen_t _addrlen;
+	// Private methods
+	void initAddress(const int port);
+	// Exceptions
+	class SockInitException : public std::exception {
+	   public:
+		virtual const char* what() const throw();
+	};
+	class SockOptException : public std::exception {
+	   public:
+		virtual const char* what() const throw();
+	};
+	class SockBindException : public std::exception {
+	   public:
+		virtual const char* what() const throw();
+	};
+	class InvalidPortException : public std::exception {
+	   public:
+		virtual const char* what() const throw();
+	};
+	class CantAcceptException : public std::exception {
+	   public:
+		virtual const char* what() const throw();
+	};
 };

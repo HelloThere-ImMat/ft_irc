@@ -16,7 +16,8 @@
 // PUBLIC //
 ////////////
 
-Server::Server(const std::string &port, const std::string &password): _socket(port), _password(password) {
+Server::Server(const std::string &port, const std::string &password)
+	: _socket(port), _password(password) {
 	std::cout << "Port is " << port << std::endl;
 	std::cout << "Password is " << password << std::endl;
 }
@@ -53,9 +54,9 @@ void Server::lookForEvents() {
 		int eventFd = events[i].data.fd;
 
 		if (eventFd == servfd)
-		addNewClient();
+			addNewClient();
 		else
-		readClientCommand(eventFd);
+			readClientCommand(eventFd);
 	}
 }
 
@@ -70,8 +71,8 @@ void Server::readClientCommand(const int sockfd) {
 		std::string clientBuffer = _client.getBuffer();
 
 		if (!clientBuffer.empty()) {
-		received_data = clientBuffer + received_data;
-		_client.setBuffer("");
+			received_data = clientBuffer + received_data;
+			_client.setBuffer("");
 		}
 		processReceivedData(received_data);
 	} else if (bytes_received < 0) {
@@ -120,7 +121,8 @@ void Server::processReceivedData(const std::string &received_data) {
 			received_data.substr(start_pos, end_pos - start_pos);
 		std::cout << "Received IRC message: " << irc_message << std::endl;
 
-		// Process the IRC message (e.g., parse and handle different IRC commands)
+		// Process the IRC message (e.g., parse and handle different IRC
+		// commands)
 		// ... (Implement IRC message handling logic here)
 
 		start_pos = end_pos + 2;  // Move to the start of the next IRC message

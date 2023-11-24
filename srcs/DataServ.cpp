@@ -18,9 +18,10 @@
 //////////////////////
 
 static bool isPortValid(const std::string &port) {
-	for (std::string::const_iterator it = port.begin(); it != port.end(); ++it) {
+	for (std::string::const_iterator it = port.begin(); it != port.end();
+		 ++it) {
 		if (!isdigit(*it)) {
-		return false;
+			return false;
 		}
 	}
 	return true;

@@ -14,16 +14,16 @@
 
 static int startServer(const std::string &port, const std::string &password) {
 	try {
-	Server serv(port, password);
+		Server serv(port, password);
 
-	serv.start();
-	serv.listen();
-	while (true) {
-		serv.lookForEvents();
-	}
+		serv.start();
+		serv.listen();
+		while (true) {
+			serv.lookForEvents();
+		}
 	} catch (std::exception &e) {
-	std::cerr << "Error: " << e.what() << std::endl;
-	return (EXIT_FAILURE);
+		std::cerr << "Error: " << e.what() << std::endl;
+		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
 }
