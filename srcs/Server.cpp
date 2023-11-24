@@ -81,7 +81,7 @@ void	Server::readClientCommand(const int sockfd) {
 			received_data = clientBuffer + received_data;
 			_client.setBuffer("");
 		}
-		processReceivedData(sockfd, received_data);
+		processReceivedData(received_data);
 	}
 	else if (bytes_received < 0)	// subtract 1 for the null
 		throw ReadFailException();
@@ -124,11 +124,10 @@ void	Server::delFdToPoll(const int fd)
 	epoll_ctl(_epollFd, EPOLL_CTL_DEL, event.data.fd, &event);
 }
 
-void	Server::processReceivedData(const int sockfd, const std::string &received_data) {
+void	Server::processReceivedData(const std::string &received_data) {
 	size_t start_pos = 0;
-	size_t end_pos = received_data.find("\r\n", start_pos);
+	size_t end_pos = received_data.find(END_MESSAGE, start_pos);
 
-	(void)sockfd;
 	while (end_pos != std::string::npos) {
 		std::string irc_message = received_data.substr(start_pos, end_pos - start_pos);
 		std::cout << "Received IRC message: " << irc_message << std::endl;
@@ -137,7 +136,7 @@ void	Server::processReceivedData(const int sockfd, const std::string &received_d
 		// ... (Implement IRC message handling logic here)
 
 		start_pos = end_pos + 2; // Move to the start of the next IRC message
-		end_pos = received_data.find("\r\n", start_pos);
+		end_pos = received_data.find(END_MESSAGE, start_pos);
 	}
 
 	// Check for any remaining incomplete message and buffer it

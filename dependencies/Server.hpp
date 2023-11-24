@@ -16,13 +16,14 @@
 #include "Client.hpp"
 #include "irc.hpp"
 
-#define BUFFER_SIZE			4
+#define BUFFER_SIZE			1024
 #define TIMEOUT				-1
 #define MAX_CLIENT_COUNT	3
 #define WELCOME_MESSAGE		"Hello from the Server\n"
 #define LISTEN_FAIL__ERROR	"listening failed"
 #define READ_FAIL__ERROR	"reading failed"
 #define SEND_FAIL__ERROR	"sending failed"
+#define END_MESSAGE			"\r\n"
 
 class Server {
 
@@ -44,7 +45,7 @@ class Server {
 		// Private Methods
 		void	addFdToPoll(const int fd);
 		void	delFdToPoll(const int fd);
-		void	processReceivedData(const int sockfd, const std::string &received_data);
+		void	processReceivedData(const std::string &received_data);
 		// Exceptions
 		class ListenFailException: public std::exception {
 			public:
