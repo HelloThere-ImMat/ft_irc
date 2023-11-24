@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/20 19:10:21 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/23 16:53:26 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include "Client.hpp"
 #include "irc.hpp"
 
-#define BUFFER_SIZE			1024
+#define BUFFER_SIZE			4
 #define TIMEOUT				-1
 #define MAX_CLIENT_COUNT	3
 #define WELCOME_MESSAGE		"Hello from the Server\n"
@@ -44,6 +44,7 @@ class Server {
 		// Private Methods
 		void	addFdToPoll(const int fd);
 		void	delFdToPoll(const int fd);
+		void	processReceivedData(const int sockfd, const std::string &received_data);
 		// Exceptions
 		class ListenFailException: public std::exception {
 			public:

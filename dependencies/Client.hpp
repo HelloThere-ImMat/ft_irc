@@ -12,14 +12,19 @@
 
 #pragma once
 
+#include <string>
+
 class Client
 {
 	public:
 		Client();
 		Client(const int sockfd);
 		~Client();
-		int		getSocketFd() const;
-		void	setSocketFd(const int socket);
+		int			getSocketFd() const;
+		const std::string &getBuffer() const;
+		void		setBuffer(const std::string &incompleteMessage);
+		void		setSocketFd(const int socket);
 	private:
-		int	_sockfd;
+		int			_sockfd;
+		std::string	_buffer;
 };

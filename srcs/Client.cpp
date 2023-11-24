@@ -22,6 +22,14 @@ int	Client::getSocketFd() const {
 	return (_sockfd);
 }
 
+const std::string &Client::getBuffer() const {
+	return (_buffer);
+}
+
+void	Client::setBuffer(const std::string &incompleteMessage) {
+	_buffer = incompleteMessage;
+}
+
 void	Client::setSocketFd(const int socket) {
 	_sockfd = socket;
 }
