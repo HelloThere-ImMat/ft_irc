@@ -29,7 +29,6 @@ static int startServer(const std::string &port, const std::string &password) {
 }
 
 int main(int ac, char **av) {
-	if (ac != EXPECTED_ARG_COUNT)
-		return (EXIT_SUCCESS);
+	if (ac != EXPECTED_ARG_COUNT) return (EXIT_SUCCESS);
 	return (startServer(av[1], av[2]));
 }
