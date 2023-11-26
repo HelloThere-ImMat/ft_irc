@@ -94,8 +94,8 @@ $(OBJS)	: $(PATH_OBJS)/%.o : %.cpp Makefile $(DEPS)
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(DEPS_PATH)
 
 linter:
-	$(ECHOC) $(BLUE) "\n""LINTER:""\n"$(NC)""
-	bear -- make clean all 1>/dev/null
+	$(ECHOC) $(BLUE) "\n""LINTER:\n\n"$(NC)
+	bear -- make re 1>/dev/null
 	pre-commit run --all-files
 
 clean	:
