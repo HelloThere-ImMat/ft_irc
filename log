@@ -1,0 +1,79 @@
+<< CAP LS
+<< NICK screw
+<< USER screw screw irc.dal.net :screw
+>> :bifrost.ca.us.dal.net NOTICE AUTH :*** Looking up your hostname...
+>> :bifrost.ca.us.dal.net NOTICE AUTH :*** Checking Ident
+>> :bifrost.ca.us.dal.net NOTICE AUTH :*** Found your hostname
+<< CAP LS
+<< NICK screw
+<< USER screw screw irc.dal.net :screw
+>> :bifrost.ca.us.dal.net NOTICE AUTH :*** Looking up your hostname...
+>> :bifrost.ca.us.dal.net NOTICE AUTH :*** Checking Ident
+>> :bifrost.ca.us.dal.net NOTICE AUTH :*** Found your hostname
+>> :bifrost.ca.us.dal.net NOTICE AUTH :*** No Ident response
+>> :bifrost.ca.us.dal.net 001 screw :Welcome to the DALnet IRC Network screw!~screw@91-170-90-62.subs.proxad.net
+<< MODE screw +i
+>> :bifrost.ca.us.dal.net 002 screw :Your host is bifrost.ca.us.dal.net, running version bahamut-2.2.2
+>> :bifrost.ca.us.dal.net 003 screw :This server was created Wed Oct 12 2022 at 17:21:47 EDT
+>> :bifrost.ca.us.dal.net 004 screw bifrost.ca.us.dal.net bahamut-2.2.2 aAbcCdefFghHiIjkKmnoOPrRsSwxXy AbceiIjklLmMnoOpPrRsStv beIjklov
+>> :bifrost.ca.us.dal.net 005 screw NETWORK=DALnet SAFELIST MAXBANS=200 MAXCHANNELS=30 CHANNELLEN=32 KICKLEN=307 NICKLEN=30 TOPICLEN=307 MODES=6 CHANTYPES=# CHANLIMIT=#:30 PREFIX=(ohv)@%+ STATUSMSG=@%+ :are available on this server
+>> :bifrost.ca.us.dal.net 005 screw CASEMAPPING=ascii WATCH=128 SILENCE=10 ELIST=cmntu EXCEPTS INVEX CHANMODES=beI,k,jl,ciPAmMnOprRsSt MAXLIST=b:200,e:100,I:100 TARGMAX=DCCALLOW:,JOIN:,KICK:4,KILL:20,NOTICE:20,PART:,PRIVMSG:20,WHOIS:,WHOWAS: :are available on this server
+>> :bifrost.ca.us.dal.net 251 screw :There are 79 users and 7560 invisible on 37 servers
+>> :bifrost.ca.us.dal.net 252 screw 76 :IRC Operators online
+>> :bifrost.ca.us.dal.net 254 screw 3856 :channels formed
+>> :bifrost.ca.us.dal.net 255 screw :I have 214 clients and 1 servers
+>> :bifrost.ca.us.dal.net 265 screw :Current local users: 214 Max: 601
+>> :bifrost.ca.us.dal.net 266 screw :Current global users: 7639 Max: 12060
+>> :bifrost.ca.us.dal.net NOTICE screw :*** Notice -- motd was last changed at 9/7/2020 9:20
+>> :bifrost.ca.us.dal.net NOTICE screw :*** Notice -- Please read the motd if you haven't read it
+>> :bifrost.ca.us.dal.net 375 screw :- bifrost.ca.us.dal.net Message of the Day - 
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :- Welcome to DALnet!
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :-   _     _  __               _
+>> :bifrost.ca.us.dal.net 372 screw :-  | |__ (_)/ _|_ __ ___  ___| |_
+>> :bifrost.ca.us.dal.net 372 screw :-  | '_ \| | |_| '__/ _ \/ __| __|
+>> :bifrost.ca.us.dal.net 372 screw :-  | |_) | |  _| | | (_) \__ \ |_
+>> :bifrost.ca.us.dal.net 372 screw :-  |_.__/|_|_| |_|  \___/|___/\__|
+>> :bifrost.ca.us.dal.net 372 screw :-  -----bifrost.ca.us.dal.net-----
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :-   Server Staff
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :-  Administrators
+>> :bifrost.ca.us.dal.net 372 screw :-  heimdall (heimdall@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  tau (tau@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :-  Operators
+>> :bifrost.ca.us.dal.net 372 screw :-  Ariel7 (ariel7@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  CaeSpock (caespock@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  chalcedony (chalcedony@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  dros (dros@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  Estella (estella@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  jason (jason@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  jeian (jeian@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  knas (knas@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  Mobscene (mobscene@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  Priyanka (priyanka@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :-  strax (strax@dal.net)
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :-   Server Policies
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :-  - No malicious bots!
+>> :bifrost.ca.us.dal.net 372 screw :-  - No channel fillers of any kind!
+>> :bifrost.ca.us.dal.net 372 screw :-  - User and/or operator impersonations will NOT be tolerated.
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :-   Help channels
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :-  - #operhelp - IRC operator help
+>> :bifrost.ca.us.dal.net 372 screw :-  - #help     - General IRC/services help
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :- By connecting to this network, you agree to abide by
+>> :bifrost.ca.us.dal.net 372 screw :- its acceptable use policy (AUP), available on our website:
+>> :bifrost.ca.us.dal.net 372 screw :- https://www.dal.net/aup
+>> :bifrost.ca.us.dal.net 372 screw :- 
+>> :bifrost.ca.us.dal.net 372 screw :- Thank you for connecting to DALnet!
+>> :bifrost.ca.us.dal.net 376 screw :End of /MOTD command.
+>> :screw MODE screw :+iH
+<< PING bifrost.ca.us.dal.net
+>> :bifrost.ca.us.dal.net PONG bifrost.ca.us.dal.net :screw
+--> lag pong
