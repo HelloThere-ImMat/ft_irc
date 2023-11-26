@@ -1,13 +1,9 @@
 fail_fast: false
 repos:
   - repo: https://github.com/pocc/pre-commit-hooks
-    rev: v1.3.5
+    rev: master
     hooks:
       - id: clang-format
         args: [--style=file]
       - id: clang-tidy
-        args: ["--checks=modernize-use-const"]
-      # - id: oclint
-      # - id: uncrustify
       - id: cppcheck
-      # - id: cpplint
