@@ -10,7 +10,7 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: cpp-linter/cpp-linter-action@v2
-        id: cpp-format
+        id: clang-format
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
