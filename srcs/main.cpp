@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:09:28 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/20 18:37:17 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/26 22:58:37 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,13 +22,19 @@ static int startServer(const std::string &port, const std::string &password) {
 			serv.lookForEvents();
 		}
 	} catch (std::exception &e) {
-		std::cerr << "Error: " << e.what() << std::endl;
+		if (typeid(e) == typeid(Signal::ExitException))
+			std::cerr << e.what() << std::endl;
+		else
+			std::cerr << "Error: " << e.what() << std::endl;
 		return (EXIT_FAILURE);
 	}
 	return (EXIT_SUCCESS);
 }
 
 int main(int ac, char **av) {
-	if (ac != EXPECTED_ARG_COUNT) return (EXIT_SUCCESS);
+	if (ac != EXPECTED_ARG_COUNT)
+		return (EXIT_FAILURE);
+	signal(SIGINT, Signal::handle_sigint);
+	signal(SIGQUIT, Signal::handle_sigquit);
 	return (startServer(av[1], av[2]));
 }

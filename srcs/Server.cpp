@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/20 19:11:41 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/26 23:00:01 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ Server::Server(const std::string &port, const std::string &password)
 	std::cout << "Password is " << password << std::endl;
 }
 
-Server::~Server() {}
+Server::~Server() { delFdToPoll(_socket.getSocketFd()); }
 
 void Server::start() {
 	_socket.setup();
@@ -33,7 +33,8 @@ void Server::start() {
 void Server::listen() const {
 	const int servfd = _socket.getSocketFd();
 
-	if (::listen(servfd, MAX_CLIENT_COUNT) < 0) throw ListenFailException();
+	if (::listen(servfd, MAX_CLIENT_COUNT) < 0)
+		throw ListenFailException();
 }
 
 void Server::addNewClient() {

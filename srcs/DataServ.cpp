@@ -57,7 +57,8 @@ int DataServ::acceptNewConnectionSocket() {
 
 	_addrlen = sizeof(_address);
 	sockfd = accept(_servfd, (struct sockaddr *)&_address, &_addrlen);
-	if (sockfd < 0) throw CantAcceptException();
+	if (sockfd < 0)
+		throw CantAcceptException();
 	return (sockfd);
 }
 

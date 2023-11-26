@@ -1,32 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   irc.hpp                                            :+:      :+:    :+:   */
+/*   Signal.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/19 12:03:54 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/26 23:01:30 by rbroque          ###   ########.fr       */
+/*   Created: 2023/11/26 21:54:14 by rbroque           #+#    #+#             */
+/*   Updated: 2023/11/26 23:00:54 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-///////////////////////////////
-///			INCLUDES		///
-///////////////////////////////
-
-#include <string.h>
-#include <sys/epoll.h>
+#include <signal.h>
 
 #include <exception>
-#include <typeinfo>
 
-#include "Server.hpp"
-#include "Signal.hpp"
+#define EXIT_SIGNAL "Exited by signal"
 
-///////////////////////////////
-///			DEFINES			///
-///////////////////////////////
-
-#define EXPECTED_ARG_COUNT 3
+class Signal {
+   public:
+	static void handle_sigint(int signum);
+	static void handle_sigquit(int signum);
+	class ExitException : public std::exception {
+	   public:
+		virtual const char *what() const throw();
+	};
+};

@@ -19,6 +19,7 @@ SRCS_PATH = srcs/
 SRCS += Server.cpp
 SRCS += DataServ.cpp
 SRCS += Client.cpp
+SRCS += Signal.cpp
 SRCS += main.cpp
 
 vpath %.cpp $(SRCS_PATH)
@@ -39,6 +40,7 @@ DEPS_PATH = dependencies/
 DEPS += Server.hpp
 DEPS += DataServ.hpp
 DEPS += Client.hpp
+DEPS += Signal.hpp
 DEPS += irc.hpp
 
 vpath %.hpp $(DEPS_PATH)
