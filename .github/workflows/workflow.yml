@@ -1,8 +1,8 @@
 name: cpp-linter
 
 on:
-  push
-  pull_request
+  push:
+  pull_request:
 
 jobs:
   cpp-linter:
