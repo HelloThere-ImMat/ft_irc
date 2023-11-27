@@ -6,43 +6,35 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:09:28 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 12:09:47 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/27 16:09:05 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "irc.hpp"
 
-int main(int ac, char const **av)
-{
-	char	buffer[1024] = { 0 };
-	Data	data;
+static int startServer(const std::string &port, const std::string &password) {
+	try {
+		Server serv(port, password);
 
-	if (ac == EXPECTED_ARG_COUNT)
-	{
-		std::cout << "Port is " << av[1] << std::endl;
-		std::cout << "Password is " << av[2] << std::endl;
-	}
-	if (setUpServer(&data) == 1)
-		return (EXIT_FAILURE);
-	if (listen(data.servfd, MAX_CLIENT_COUNT) < 0) {
-		std::cerr << "Error : while listening" << std::endl;
-		return (EXIT_FAILURE);
-	}
-	while (true)
-	{
-		if ((data.sockfd
-			= accept(data.servfd, (struct sockaddr*)&data.address,
-					&data.addrlen)) < 0) {
-			std::cerr << "Error : while accepting" << std::endl;
-			return (EXIT_FAILURE);
+		serv.start();
+		serv.listen();
+		while (true) {
+			serv.lookForEvents();
 		}
-		read(data.sockfd, buffer, 1024 - 1);	// subtract 1 for the null
-												// terminator at the end
-		std::cout << "Message received : " << buffer << std::endl;
-		send(data.sockfd, WELCOME_MESSAGE, strlen(WELCOME_MESSAGE), 0);
-		std::cout << "Hello message sent" << std::endl;
+	} catch (std::exception &e) {
+		if (typeid(e) == typeid(Signal::ExitException))
+			std::cerr << e.what() << std::endl;
+		else
+			std::cerr << "Error: " << e.what() << std::endl;
+		return (EXIT_FAILURE);
 	}
-	close(data.sockfd);
-	close(data.servfd);
 	return (EXIT_SUCCESS);
+}
+
+int main(int ac, char **av) {
+	if (ac != EXPECTED_ARG_COUNT)
+		return (EXIT_FAILURE);
+	signal(SIGINT, Signal::exit_signal);
+	signal(SIGQUIT, Signal::exit_signal);
+	return (startServer(av[1], av[2]));
 }

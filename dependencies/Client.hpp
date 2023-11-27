@@ -1,32 +1,30 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   irc.hpp                                            :+:      :+:    :+:   */
+/*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/19 12:03:54 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/26 23:01:30 by rbroque          ###   ########.fr       */
+/*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
+/*   Updated: 2023/11/27 16:07:00 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-///////////////////////////////
-///			INCLUDES		///
-///////////////////////////////
+#include <string>
 
-#include <string.h>
-#include <sys/epoll.h>
+class Client {
+   public:
+	Client();
+	explicit Client(const int sockfd);
+	~Client();
+	int getSocketFd() const;
+	const std::string &getBuffer() const;
+	void setBuffer(const std::string &incompleteMessage);
+	void setSocketFd(const int socket);
 
-#include <exception>
-#include <typeinfo>
-
-#include "Server.hpp"
-#include "Signal.hpp"
-
-///////////////////////////////
-///			DEFINES			///
-///////////////////////////////
-
-#define EXPECTED_ARG_COUNT 3
+   private:
+	int _sockfd;
+	std::string _buffer;
+};

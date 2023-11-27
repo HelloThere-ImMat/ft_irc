@@ -1,27 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   server.hpp                                         :+:      :+:    :+:   */
+/*   Signal.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/19 12:10:57 by rbroque          ###   ########.fr       */
+/*   Created: 2023/11/26 21:52:11 by rbroque           #+#    #+#             */
+/*   Updated: 2023/11/27 16:09:35 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "Signal.hpp"
 
-#include "irc.hpp"
-#include <sys/socket.h>
+void Signal::exit_signal(int signum) {
+	if (signum == SIGINT || signum == SIGQUIT)
+		throw ExitException();
+}
 
-class Data
-{
-	public :
-		int					sockfd;
-		int 				servfd;
-		struct sockaddr_in	address;
-		socklen_t			addrlen;
-};
-
-int	setUpServer(Data *const obj);
+const char *Signal::ExitException::what() const throw() {
+	return (EXIT_SIGNAL);
+}

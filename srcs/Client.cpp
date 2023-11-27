@@ -1,32 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   irc.hpp                                            :+:      :+:    :+:   */
+/*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/19 12:03:54 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/26 23:01:30 by rbroque          ###   ########.fr       */
+/*   Created: 2023/11/20 17:30:35 by rbroque           #+#    #+#             */
+/*   Updated: 2023/11/27 16:06:29 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#pragma once
+#include "Client.hpp"
 
-///////////////////////////////
-///			INCLUDES		///
-///////////////////////////////
+Client::Client() : _sockfd(0) {}
 
-#include <string.h>
-#include <sys/epoll.h>
+Client::Client(const int sockfd) : _sockfd(sockfd) {}
 
-#include <exception>
-#include <typeinfo>
+Client::~Client() {}
 
-#include "Server.hpp"
-#include "Signal.hpp"
+int Client::getSocketFd() const { return (_sockfd); }
 
-///////////////////////////////
-///			DEFINES			///
-///////////////////////////////
+const std::string &Client::getBuffer() const { return (_buffer); }
 
-#define EXPECTED_ARG_COUNT 3
+void Client::setBuffer(const std::string &incompleteMessage) {
+	_buffer = incompleteMessage;
+}
+
+void Client::setSocketFd(const int socket) { _sockfd = socket; }
