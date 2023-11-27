@@ -6,11 +6,13 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/23 16:53:26 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/27 09:56:33 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#include <map>
 
 #include "Client.hpp"
 #include "DataServ.hpp"
@@ -32,20 +34,21 @@ class Server {
 	void start();
 	void listen() const;
 	void lookForEvents();
-	void sendMessage(const std::string &message) const;
+	void sendMessage(const std::string &message, const int clientFd) const;
 	void readClientCommand(const int fd);
 	void addNewClient();
 
    private:
 	// Attributes
 	DataServ _socket;
-	Client _client;
+	std::map<int, Client *> _clientMap;
 	int _epollFd;
 	std::string _password;
 	// Private Methods
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
-	void processReceivedData(const std::string &received_data);
+	void processReceivedData(const std::string &received_data,
+							 const int clientFd);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
