@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/27 16:17:36 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/27 16:35:34 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ void Server::lookForEvents() {
 }
 
 void Server::readClientCommand(const int sockfd) {
+	const std::string clientBuffer = _clientMap[sockfd]->getBuffer();
 	static char buffer[BUFFER_SIZE] = {0};
 	ssize_t bytes_received;
 
@@ -75,11 +76,10 @@ void Server::readClientCommand(const int sockfd) {
 	if ((bytes_received = recv(sockfd, buffer, BUFFER_SIZE - 1, MSG_NOSIGNAL)) >
 		0) {
 		std::string received_data(buffer, bytes_received);
-		std::string clientBuffer = _clientMap[sockfd]->getBuffer();
 
 		if (!clientBuffer.empty()) {
 			received_data = clientBuffer + received_data;
-			_clientMap[sockfd]->setBuffer("");
+			_clientMap[sockfd]->clearBuffer();
 		}
 		processReceivedData(received_data, sockfd);
 	} else if (bytes_received < 0) {
