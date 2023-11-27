@@ -6,19 +6,14 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 21:52:11 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/26 23:01:52 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/27 16:15:02 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Signal.hpp"
 
-void Signal::handle_sigint(int signum) {
-	if (signum == SIGINT)
-		throw ExitException();
-}
-
-void Signal::handle_sigquit(int signum) {
-	if (signum == SIGQUIT)
+void Signal::exit_signal(int signum) {
+	if (signum == SIGINT || signum == SIGQUIT)
 		throw ExitException();
 }
 

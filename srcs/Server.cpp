@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/27 09:57:28 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/27 16:17:36 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,7 +91,9 @@ void Server::readClientCommand(const int sockfd) {
 }
 
 void Server::sendMessage(const std::string &message, const int clientFd) const {
-	if (send(clientFd, message.c_str(), message.size(), 0) < 0)
+	const std::string formatMessage = message + END_MESSAGE;
+
+	if (send(clientFd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
 		throw SendFailException();
 	else
 		std::cout << "Sent message: " << message << std::endl;

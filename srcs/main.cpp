@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:09:28 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/26 22:58:37 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/27 16:18:38 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static int startServer(const std::string &port, const std::string &password) {
 int main(int ac, char **av) {
 	if (ac != EXPECTED_ARG_COUNT)
 		return (EXIT_FAILURE);
-	signal(SIGINT, Signal::handle_sigint);
-	signal(SIGQUIT, Signal::handle_sigquit);
+	signal(SIGINT, Signal::exit_signal);
+	signal(SIGQUIT, Signal::exit_signal);
 	return (startServer(av[1], av[2]));
 }

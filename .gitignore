@@ -1,2 +1,4 @@
 ircserv
+log
+compile_commands.json
 *.o

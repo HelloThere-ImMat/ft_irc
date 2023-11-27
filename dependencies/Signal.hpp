@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/26 21:54:14 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/26 23:00:54 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/27 16:18:09 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,8 +20,7 @@
 
 class Signal {
    public:
-	static void handle_sigint(int signum);
-	static void handle_sigquit(int signum);
+	static void exit_signal(int signum);
 	class ExitException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
