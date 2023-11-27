@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/26 23:00:01 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/27 15:14:45 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@ void Server::addNewClient() {
 
 	addFdToPoll(newFd);
 	_client.setSocketFd(newFd);
-	sendMessage(WELCOME_MESSAGE);
 }
 
 void Server::lookForEvents() {
@@ -85,9 +84,10 @@ void Server::readClientCommand(const int sockfd) {
 }
 
 void Server::sendMessage(const std::string &message) const {
-	int sockfd = _client.getSocketFd();
+	const int sockfd = _client.getSocketFd();
+	const std::string formatMessage = message + END_MESSAGE;
 
-	if (send(sockfd, message.c_str(), message.size(), 0) < 0)
+	if (send(sockfd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
 		throw SendFailException();
 	else
 		std::cout << "Message sent: " << message << std::endl;
