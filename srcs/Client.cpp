@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:30:35 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/27 16:06:29 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/27 16:35:24 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,4 +26,4 @@ void Client::setBuffer(const std::string &incompleteMessage) {
 	_buffer = incompleteMessage;
 }
 
-void Client::setSocketFd(const int socket) { _sockfd = socket; }
+void Client::clearBuffer() { _buffer.clear(); }
