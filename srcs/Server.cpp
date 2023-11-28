@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 22:11:56 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 22:56:01 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static std::vector<std::string> getCommandTokens(
 ////////////
 
 Server::Server(const std::string &port, const std::string &password)
-	: _socket(port), _password(password) {
+	: _socket(port), _name(SERVER_NAME), _password(password) {
 	std::cout << "Port is " << port << std::endl;
 	std::cout << "Password is " << password << std::endl;
 }
@@ -64,7 +64,6 @@ void Server::addNewClient() {
 
 	addFdToPoll(newFd);
 	_clientMap[newFd] = new Client(newFd);
-	sendMessage(WELCOME_MESSAGE, newFd);
 }
 
 void Server::lookForEvents() {
@@ -106,6 +105,10 @@ void Server::readClientCommand(const int sockfd) {
 	}
 }
 
+/////////////
+// PRIVATE //
+/////////////
+
 void Server::sendMessage(const std::string &message, const int clientFd) const {
 	const std::string formatMessage = message + END_MESSAGE;
 
@@ -115,9 +118,14 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 		std::cout << "Sent message: " << message << std::endl;
 }
 
-/////////////
-// PRIVATE //
-/////////////
+void Server::sendWelcomeMessage(const Client *const client) const {
+	static const std::string welcomeCode = RPL_WELCOME;
+	const std::string formatMessage = ":" + _name + " " + welcomeCode + " " +
+									  client->getUserName() + " :" +
+									  WELCOME_MESSAGE;
+
+	sendMessage(formatMessage, client->getSocketFd());
+}
 
 void Server::sendError(const std::string &message, const int clientFd) const {
 	const std::string formatErrorMessage = ERROR_PREFIX + message;
@@ -150,10 +158,6 @@ void Server::processReceivedData(const std::string &received_data,
 		std::string ircMessage =
 			received_data.substr(start_pos, end_pos - start_pos);
 		std::cout << "Received IRC message: " << ircMessage << std::endl;
-
-		// Process the IRC message (e.g., parse and handle different IRC
-		// commands)
-
 		if (client->isAuthenticated() == false)
 			getUserLogin(ircMessage, client);
 		// else
@@ -232,6 +236,7 @@ void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
 		sendError(e.what(), client->getSocketFd());
 	}
 	if (client->isAuthenticated()) {
+		sendWelcomeMessage(client);
 		std::cout << "Client is authenticated: Nickname["
 				  << client->getNickname() << "]; Username["
 				  << client->getUserName() << "]" << std::endl;
