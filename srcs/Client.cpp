@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:30:35 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 10:26:36 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 12:57:49 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,17 @@ const std::string &Client::getNickname() const { return (_nickname); }
 
 const std::string &Client::getUserName() const { return (_username); }
 
-void Client::setBuffer(const std::string &incompleteMessage) {
-	_buffer = incompleteMessage;
-}
+uint8_t Client::getLogMask() const { return (_loginMask); }
 
 // Setters
 
 void Client::setNickname(const std::string &nickname) { _nickname = nickname; };
 
 void Client::setUsername(const std::string &username) { _username = username; };
+
+void Client::setBuffer(const std::string &incompleteMessage) {
+	_buffer = incompleteMessage;
+}
 
 void Client::addToLoginMask(const uint8_t mask) { _loginMask |= mask; }
 

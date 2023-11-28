@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 10:46:28 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 12:58:05 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@ class Client {
 	~Client();
 	// Getters
 	int				   getSocketFd() const;
+	uint8_t			   getLogMask() const;
 	const std::string &getNickname() const;
 	const std::string &getUserName() const;
 	const std::string &getBuffer() const;

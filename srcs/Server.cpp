@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 10:37:10 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 15:49:48 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,6 +156,8 @@ void Server::processReceivedData(const std::string &received_data,
 
 		if (client->isAuthenticated() == false)
 			getUserLogin(ircMessage, client);
+		// else
+		// 	handleCmd();
 		// ... (Implement IRC message handling logic here)
 
 		start_pos = end_pos + 2;  // Move to the start of the next IRC message
@@ -169,48 +171,76 @@ void Server::processReceivedData(const std::string &received_data,
 	}
 }
 
-void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
-	static const std::string loginCmdTab[] = {"CAP", "PASS", "NICK", "USER"};
-	const std::vector<std::string> tokens = getCommandTokens(ircMessage);
-	size_t						   i;
-
-	for (i = 0; i < 4; i++) {
-		if (tokens[0] == loginCmdTab[i])
-			break;
+void Server::startClientAuth(const std::vector<std::string> &cmd, Client *const client) {
+	static const std::string capCommand = "CAP";
+	
+	if (cmd[0] == capCommand)
+	{
+		client->addToLoginMask(CAP_LOGIN);
+		std::cout << "CAP added to mask" << std::endl;
 	}
-	try {
-		switch (i) {
-			case 0:
-				client->addToLoginMask(CAP_LOGIN);
-				std::cout << "CAP added to mask" << std::endl;
-				break;
-			case 1:
-				if (tokens[1] == _password) {
-					std::cout << "Valid Password!" << std::endl;
-					client->addToLoginMask(PASS_LOGIN);
-				} else {
-					sendError(WRONG_PASS__ERROR, client->getSocketFd());
-				}
-				break;
-			case 2:
-				client->setNickname(tokens[1]);
-				client->addToLoginMask(NICK_LOGIN);
-				std::cout << "NICK added to mask" << std::endl;
-				break;
-			case 3:
-				client->setUsername(tokens[1]);
-				client->addToLoginMask(USER_LOGIN);
-				std::cout << "USER added to mask" << std::endl;
-				break;
-		}
-		if (client->isAuthenticated())
-			std::cout << "Client is authenticated: NickName["
-					  << client->getNickname() << "]; Username["
-					  << client->getUserName() << "]" << std::endl;
+}
 
-	} catch (std::exception &e) {  // change by Client::Exception
-		std::cout << e.what() << std::endl;
-		// change by sendError(e.what(), client->getSocketFd());
+void Server::tryPasswordAuth(const std::vector<std::string> &cmd, Client *const client) {
+	static const std::string passCommand = "PASS";
+
+	if (cmd[0] == passCommand) {
+		if (cmd[1] == _password) {
+			std::cout << "Valid Password!" << std::endl;
+			client->addToLoginMask(PASS_LOGIN);
+		} else {throw InvalidPasswordException();}
+	}
+}
+
+void Server::setClientUsername(const std::vector<std::string> &cmd, Client *const client) {
+	static const std::string userCommand = "USER";
+
+	if (cmd[0] == userCommand)
+	{
+		client->setUsername(cmd[1]);
+		client->addToLoginMask(USER_LOGIN);
+		std::cout << "USER added to mask" << std::endl;
+	}
+}
+
+void Server::setClientNickname(const std::vector<std::string> &cmd, Client *const client) {
+	static const std::string nickCommand = "NICK";
+
+	if (cmd[0] == nickCommand)
+	{
+		client->setNickname(cmd[1]);
+		client->addToLoginMask(NICK_LOGIN);
+		std::cout << "NICK added to mask" << std::endl;
+	}
+}
+
+void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
+	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
+	const uint8_t				   logMask = client->getLogMask();
+
+	// std::cout << logMask << std::endl;
+	try {
+		std::cout << "LogMask -> " << logMask << std::endl;
+		if (logMask == EMPTY_LOGIN) {
+			startClientAuth(cmd, client);
+		} else if (logMask == CAP_LOGIN) {
+			tryPasswordAuth(cmd, client);
+		} else if (logMask == (CAP_LOGIN | PASS_LOGIN)) {
+			setClientNickname(cmd, client);
+		} else if (logMask == (CAP_LOGIN | PASS_LOGIN | NICK_LOGIN)) {
+			setClientUsername(cmd, client);
+		} else if (!(logMask & PASS_LOGIN)) {
+			throw InvalidLoginCommandException();
+		}
+	} catch (InvalidPasswordException &e) {
+		sendError(e.what(), client->getSocketFd());
+	} catch (InvalidLoginCommandException &e) {
+		sendError(e.what(), client->getSocketFd());
+	}
+	if (client->isAuthenticated()) {
+		std::cout << "Client is authenticated: NickName["
+				  << client->getNickname() << "]; Username["
+				  << client->getUserName() << "]" << std::endl;
 	}
 }
 
@@ -226,4 +256,12 @@ const char *Server::ReadFailException::what() const throw() {
 
 const char *Server::SendFailException::what() const throw() {
 	return (SEND_FAIL__ERROR);
+}
+
+const char *Server::InvalidPasswordException::what() const throw() {
+	return (WRONG_PASS__ERROR);
+}
+
+const char *Server::InvalidLoginCommandException::what() const throw() {
+	return (WRONG_CMD__ERROR);
 }
