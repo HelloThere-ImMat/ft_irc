@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 10:21:31 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 10:36:01 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,13 @@
 #define BUFFER_SIZE		   1024
 #define TIMEOUT			   -1
 #define MAX_CLIENT_COUNT   3
+#define ERROR_PREFIX	   "Error: "
 #define WELCOME_MESSAGE	   "Hello from the Server\n"
 #define LISTEN_FAIL__ERROR "listening failed"
 #define READ_FAIL__ERROR   "reading failed"
 #define SEND_FAIL__ERROR   "sending failed"
 #define END_MESSAGE		   "\r\n"
+#define WRONG_PASS__ERROR  "Invalid password!"
 
 class Server {
    public:
@@ -47,6 +49,7 @@ class Server {
 	std::string				_password;
 	std::map<int, Client *> _clientMap;
 	// Private Methods
+	void sendError(const std::string &message, const int clientFd) const;
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
 	void processReceivedData(const std::string &received_data,

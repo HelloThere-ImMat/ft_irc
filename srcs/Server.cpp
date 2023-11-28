@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 10:28:35 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 10:37:10 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -119,6 +119,11 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 // PRIVATE //
 /////////////
 
+void Server::sendError(const std::string &message, const int clientFd) const {
+	const std::string formatErrorMessage = ERROR_PREFIX + message;
+	sendMessage(formatErrorMessage, clientFd);
+}
+
 void Server::addFdToPoll(const int fd) {
 	struct epoll_event event;
 
@@ -183,6 +188,8 @@ void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
 				if (tokens[1] == _password) {
 					std::cout << "Valid Password!" << std::endl;
 					client->addToLoginMask(PASS_LOGIN);
+				} else {
+					sendError(WRONG_PASS__ERROR, client->getSocketFd());
 				}
 				break;
 			case 2:
