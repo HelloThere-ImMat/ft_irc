@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 15:49:48 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 22:11:56 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -171,64 +171,56 @@ void Server::processReceivedData(const std::string &received_data,
 	}
 }
 
-void Server::startClientAuth(const std::vector<std::string> &cmd, Client *const client) {
+void Server::startClientAuth(const std::vector<std::string> &cmd,
+							 Client *const					 client) {
 	static const std::string capCommand = "CAP";
-	
+
 	if (cmd[0] == capCommand)
-	{
 		client->addToLoginMask(CAP_LOGIN);
-		std::cout << "CAP added to mask" << std::endl;
-	}
 }
 
-void Server::tryPasswordAuth(const std::vector<std::string> &cmd, Client *const client) {
+void Server::tryPasswordAuth(const std::vector<std::string> &cmd,
+							 Client *const					 client) {
 	static const std::string passCommand = "PASS";
 
 	if (cmd[0] == passCommand) {
 		if (cmd[1] == _password) {
-			std::cout << "Valid Password!" << std::endl;
 			client->addToLoginMask(PASS_LOGIN);
-		} else {throw InvalidPasswordException();}
+		} else {
+			throw InvalidPasswordException();
+		}
+	} else {
+		throw MissingPasswordException();
 	}
 }
 
-void Server::setClientUsername(const std::vector<std::string> &cmd, Client *const client) {
+void Server::setClientLogAssets(const std::vector<std::string> &cmd,
+								Client *const					client) {
 	static const std::string userCommand = "USER";
-
-	if (cmd[0] == userCommand)
-	{
-		client->setUsername(cmd[1]);
-		client->addToLoginMask(USER_LOGIN);
-		std::cout << "USER added to mask" << std::endl;
-	}
-}
-
-void Server::setClientNickname(const std::vector<std::string> &cmd, Client *const client) {
 	static const std::string nickCommand = "NICK";
 
-	if (cmd[0] == nickCommand)
-	{
+	if (cmd[0] == userCommand) {
+		client->setUsername(cmd[1]);
+		client->addToLoginMask(USER_LOGIN);
+	} else if (cmd[0] == nickCommand) {
 		client->setNickname(cmd[1]);
 		client->addToLoginMask(NICK_LOGIN);
-		std::cout << "NICK added to mask" << std::endl;
+	} else {
+		throw InvalidLoginCommandException();
 	}
 }
 
 void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
 	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
-	const uint8_t				   logMask = client->getLogMask();
+	const unsigned int			   logMask = client->getLogMask();
 
-	// std::cout << logMask << std::endl;
 	try {
-		std::cout << "LogMask -> " << logMask << std::endl;
 		if (logMask == EMPTY_LOGIN) {
 			startClientAuth(cmd, client);
 		} else if (logMask == CAP_LOGIN) {
 			tryPasswordAuth(cmd, client);
-		} else if (logMask == (CAP_LOGIN | PASS_LOGIN)) {
-			setClientNickname(cmd, client);
-		} else if (logMask == (CAP_LOGIN | PASS_LOGIN | NICK_LOGIN)) {
-			setClientUsername(cmd, client);
+		} else if (logMask & (CAP_LOGIN | PASS_LOGIN)) {
+			setClientLogAssets(cmd, client);
 		} else if (!(logMask & PASS_LOGIN)) {
 			throw InvalidLoginCommandException();
 		}
@@ -236,9 +228,11 @@ void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
 		sendError(e.what(), client->getSocketFd());
 	} catch (InvalidLoginCommandException &e) {
 		sendError(e.what(), client->getSocketFd());
+	} catch (MissingPasswordException &e) {
+		sendError(e.what(), client->getSocketFd());
 	}
 	if (client->isAuthenticated()) {
-		std::cout << "Client is authenticated: NickName["
+		std::cout << "Client is authenticated: Nickname["
 				  << client->getNickname() << "]; Username["
 				  << client->getUserName() << "]" << std::endl;
 	}
@@ -260,6 +254,10 @@ const char *Server::SendFailException::what() const throw() {
 
 const char *Server::InvalidPasswordException::what() const throw() {
 	return (WRONG_PASS__ERROR);
+}
+
+const char *Server::MissingPasswordException::what() const throw() {
+	return (MISS_PASS__ERROR);
 }
 
 const char *Server::InvalidLoginCommandException::what() const throw() {

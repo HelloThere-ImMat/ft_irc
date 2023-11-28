@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 15:44:19 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 22:02:19 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 #define SEND_FAIL__ERROR   "sending failed"
 #define END_MESSAGE		   "\r\n"
 #define WRONG_PASS__ERROR  "Invalid password!"
+#define MISS_PASS__ERROR   "Password is missing!"
 #define WRONG_CMD__ERROR   "Invalid Login Command!"
 
 class Server {
@@ -56,10 +57,12 @@ class Server {
 	void processReceivedData(const std::string &received_data,
 							 const int			clientFd);
 	void getUserLogin(const std::string &irc_message, Client *const client);
-	void startClientAuth(const std::vector<std::string> &cmd, Client *const client);
-	void tryPasswordAuth(const std::vector<std::string> &cmd, Client *const client);
-	void setClientUsername(const std::vector<std::string> &cmd, Client *const client);
-	void setClientNickname(const std::vector<std::string> &cmd, Client *const client);
+	void startClientAuth(const std::vector<std::string> &cmd,
+						 Client *const					 client);
+	void tryPasswordAuth(const std::vector<std::string> &cmd,
+						 Client *const					 client);
+	void setClientLogAssets(const std::vector<std::string> &cmd,
+							Client *const					client);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
@@ -74,6 +77,10 @@ class Server {
 		virtual const char *what() const throw();
 	};
 	class InvalidPasswordException : public std::exception {
+	   public:
+		virtual const char *what() const throw();
+	};
+	class MissingPasswordException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};
