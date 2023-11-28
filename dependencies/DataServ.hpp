@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 08:35:31 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/27 08:35:33 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 10:19:14 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@
 
 #include <iostream>
 
-#define DEFAULT_OPTION 1
-#define SOCKET_INIT__ERROR "Cannot create socket"
-#define SOCKET_OPT__ERROR "Invalid socket assets"
-#define SOCKET_BIND__ERROR "Cannot bind socket to address"
+#define DEFAULT_OPTION		1
+#define SOCKET_INIT__ERROR	"Cannot create socket"
+#define SOCKET_OPT__ERROR	"Invalid socket assets"
+#define SOCKET_BIND__ERROR	"Cannot bind socket to address"
 #define INVALID_PORT__ERROR "Invalid port"
-#define CANT_ACCEPT__ERROR "Cannot accept client"
+#define CANT_ACCEPT__ERROR	"Cannot accept client"
 
 class DataServ {
    public:
@@ -31,14 +31,14 @@ class DataServ {
 	explicit DataServ(const int port);
 	~DataServ();
 	void setup();
-	int acceptNewConnectionSocket();
-	int getSocketFd() const;
+	int	 acceptNewConnectionSocket();
+	int	 getSocketFd() const;
 
    private:
 	// Attributes
-	int _servfd;
+	int				   _servfd;
+	socklen_t		   _addrlen;
 	struct sockaddr_in _address;
-	socklen_t _addrlen;
 	// Private methods
 	void initAddress(const int port);
 	// Exceptions

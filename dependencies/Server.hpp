@@ -6,26 +6,28 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/27 16:18:40 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 10:21:31 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <map>
+#include <sstream>
+#include <vector>
 
 #include "Client.hpp"
 #include "DataServ.hpp"
 #include "irc.hpp"
 
-#define BUFFER_SIZE 1024
-#define TIMEOUT -1
-#define MAX_CLIENT_COUNT 3
-#define WELCOME_MESSAGE "Hello from the Server\n"
+#define BUFFER_SIZE		   1024
+#define TIMEOUT			   -1
+#define MAX_CLIENT_COUNT   3
+#define WELCOME_MESSAGE	   "Hello from the Server\n"
 #define LISTEN_FAIL__ERROR "listening failed"
-#define READ_FAIL__ERROR "reading failed"
-#define SEND_FAIL__ERROR "sending failed"
-#define END_MESSAGE "\r\n"
+#define READ_FAIL__ERROR   "reading failed"
+#define SEND_FAIL__ERROR   "sending failed"
+#define END_MESSAGE		   "\r\n"
 
 class Server {
    public:
@@ -40,15 +42,16 @@ class Server {
 
    private:
 	// Attributes
-	DataServ _socket;
+	DataServ				_socket;
+	int						_epollFd;
+	std::string				_password;
 	std::map<int, Client *> _clientMap;
-	int _epollFd;
-	std::string _password;
 	// Private Methods
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
 	void processReceivedData(const std::string &received_data,
-							 const int clientFd);
+							 const int			clientFd);
+	void getUserLogin(const std::string &irc_message, Client *const client);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:

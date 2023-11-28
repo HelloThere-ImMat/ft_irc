@@ -6,11 +6,27 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/27 16:35:34 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 10:28:35 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+////////////
+// STATIC //
+////////////
+
+static std::vector<std::string> getCommandTokens(
+	const std::string &ircMessage) {
+	std::vector<std::string> tokens;
+	std::istringstream		 iss(ircMessage);
+	std::string				 token;
+
+	while (iss >> token) {
+		tokens.push_back(token);
+	}
+	return tokens;
+}
 
 ////////////
 // PUBLIC //
@@ -53,9 +69,9 @@ void Server::addNewClient() {
 
 void Server::lookForEvents() {
 	struct epoll_event events[MAX_CLIENT_COUNT];
-	const int eventCount =
+	const int		   servfd = _socket.getSocketFd();
+	const int		   eventCount =
 		epoll_wait(_epollFd, events, MAX_CLIENT_COUNT, TIMEOUT);
-	const int servfd = _socket.getSocketFd();
 
 	for (int i = 0; i < eventCount; ++i) {
 		int eventFd = events[i].data.fd;
@@ -69,8 +85,8 @@ void Server::lookForEvents() {
 
 void Server::readClientCommand(const int sockfd) {
 	const std::string clientBuffer = _clientMap[sockfd]->getBuffer();
-	static char buffer[BUFFER_SIZE] = {0};
-	ssize_t bytes_received;
+	static char		  buffer[BUFFER_SIZE] = {0};
+	ssize_t			  bytes_received;
 
 	memset(buffer, 0, BUFFER_SIZE - 1);
 	if ((bytes_received = recv(sockfd, buffer, BUFFER_SIZE - 1, MSG_NOSIGNAL)) >
@@ -120,17 +136,21 @@ void Server::delFdToPoll(const int fd) {
 }
 
 void Server::processReceivedData(const std::string &received_data,
-								 const int clientFd) {
-	size_t start_pos = 0;
-	size_t end_pos = received_data.find(END_MESSAGE, start_pos);
+								 const int			clientFd) {
+	Client *const client = _clientMap[clientFd];
+	size_t		  start_pos = 0;
+	size_t		  end_pos = received_data.find(END_MESSAGE, start_pos);
 
 	while (end_pos != std::string::npos) {
-		std::string irc_message =
+		std::string ircMessage =
 			received_data.substr(start_pos, end_pos - start_pos);
-		std::cout << "Received IRC message: " << irc_message << std::endl;
+		std::cout << "Received IRC message: " << ircMessage << std::endl;
 
 		// Process the IRC message (e.g., parse and handle different IRC
 		// commands)
+
+		if (client->isAuthenticated() == false)
+			getUserLogin(ircMessage, client);
 		// ... (Implement IRC message handling logic here)
 
 		start_pos = end_pos + 2;  // Move to the start of the next IRC message
@@ -141,6 +161,49 @@ void Server::processReceivedData(const std::string &received_data,
 	if (start_pos < received_data.length()) {
 		std::string incompleteMessage = received_data.substr(start_pos);
 		_clientMap[clientFd]->setBuffer(incompleteMessage);
+	}
+}
+
+void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
+	static const std::string loginCmdTab[] = {"CAP", "PASS", "NICK", "USER"};
+	const std::vector<std::string> tokens = getCommandTokens(ircMessage);
+	size_t						   i;
+
+	for (i = 0; i < 4; i++) {
+		if (tokens[0] == loginCmdTab[i])
+			break;
+	}
+	try {
+		switch (i) {
+			case 0:
+				client->addToLoginMask(CAP_LOGIN);
+				std::cout << "CAP added to mask" << std::endl;
+				break;
+			case 1:
+				if (tokens[1] == _password) {
+					std::cout << "Valid Password!" << std::endl;
+					client->addToLoginMask(PASS_LOGIN);
+				}
+				break;
+			case 2:
+				client->setNickname(tokens[1]);
+				client->addToLoginMask(NICK_LOGIN);
+				std::cout << "NICK added to mask" << std::endl;
+				break;
+			case 3:
+				client->setUsername(tokens[1]);
+				client->addToLoginMask(USER_LOGIN);
+				std::cout << "USER added to mask" << std::endl;
+				break;
+		}
+		if (client->isAuthenticated())
+			std::cout << "Client is authenticated: NickName["
+					  << client->getNickname() << "]; Username["
+					  << client->getUserName() << "]" << std::endl;
+
+	} catch (std::exception &e) {  // change by Client::Exception
+		std::cout << e.what() << std::endl;
+		// change by sendError(e.what(), client->getSocketFd());
 	}
 }
 
