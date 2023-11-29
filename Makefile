@@ -21,6 +21,7 @@ SRCS += DataServ.cpp
 SRCS += Client.cpp
 SRCS += Signal.cpp
 SRCS += main.cpp
+SRCS += ServerCmds.cpp
 
 vpath %.cpp $(SRCS_PATH)
 

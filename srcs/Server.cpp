@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 15:49:48 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 09:33:25 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,11 @@ static std::vector<std::string> getCommandTokens(
 
 Server::Server(const std::string &port, const std::string &password)
 	: _socket(port), _password(password) {
+		_cmdMap["PASS"] = &Server::pass;
+		_cmdMap["USER"] = &Server::user;
+		_cmdMap["NICK"] = &Server::nick;
+		_cmdMap["CAP"] =  &Server::cap;
+		_cmdMap["PING"] = &Server::ping;
 	std::cout << "Port is " << port << std::endl;
 	std::cout << "Password is " << password << std::endl;
 }
@@ -64,7 +69,7 @@ void Server::addNewClient() {
 
 	addFdToPoll(newFd);
 	_clientMap[newFd] = new Client(newFd);
-	sendMessage(WELCOME_MESSAGE, newFd);
+	sendRPL(_clientMap[newFd]);
 }
 
 void Server::lookForEvents() {
@@ -154,10 +159,10 @@ void Server::processReceivedData(const std::string &received_data,
 		// Process the IRC message (e.g., parse and handle different IRC
 		// commands)
 
-		if (client->isAuthenticated() == false)
-			getUserLogin(ircMessage, client);
+		//if (client->isAuthenticated() == false)
+		//	getUserLogin(ircMessage, client);
 		// else
-		// 	handleCmd();
+		handleCmd(ircMessage, client);
 		// ... (Implement IRC message handling logic here)
 
 		start_pos = end_pos + 2;  // Move to the start of the next IRC message
@@ -171,77 +176,62 @@ void Server::processReceivedData(const std::string &received_data,
 	}
 }
 
-void Server::startClientAuth(const std::vector<std::string> &cmd, Client *const client) {
-	static const std::string capCommand = "CAP";
-	
-	if (cmd[0] == capCommand)
+void Server::handleCmd(const std::string &ircMessage, Client *const client)
+{
+	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
+	const int clientfd = client->getSocketFd();
+	std::cout << "cmd received from " << clientfd << " : "  << cmd[0] << std::endl;
+
+	std::map<std::string, CommandFunction>::iterator it = _cmdMap.find(cmd[0]);
+	CommandFunction fct = it->second;
+	try
 	{
-		client->addToLoginMask(CAP_LOGIN);
-		std::cout << "CAP added to mask" << std::endl;
+		if (it != _cmdMap.end())
+	 		(this->*fct)(cmd, client);
+	}
+	catch (std::string &e)
+	{
+		std::cout << ""
 	}
 }
 
-void Server::tryPasswordAuth(const std::vector<std::string> &cmd, Client *const client) {
-	static const std::string passCommand = "PASS";
+void Server::sendRPL(Client *const client) const
+{
+	const std::string nickname = client->getNickname();
+	const int clientFd = client->getSocketFd();
 
-	if (cmd[0] == passCommand) {
-		if (cmd[1] == _password) {
-			std::cout << "Valid Password!" << std::endl;
-			client->addToLoginMask(PASS_LOGIN);
-		} else {throw InvalidPasswordException();}
-	}
-}
-
-void Server::setClientUsername(const std::vector<std::string> &cmd, Client *const client) {
-	static const std::string userCommand = "USER";
-
-	if (cmd[0] == userCommand)
-	{
-		client->setUsername(cmd[1]);
-		client->addToLoginMask(USER_LOGIN);
-		std::cout << "USER added to mask" << std::endl;
-	}
-}
-
-void Server::setClientNickname(const std::vector<std::string> &cmd, Client *const client) {
-	static const std::string nickCommand = "NICK";
-
-	if (cmd[0] == nickCommand)
-	{
-		client->setNickname(cmd[1]);
-		client->addToLoginMask(NICK_LOGIN);
-		std::cout << "NICK added to mask" << std::endl;
-	}
+	sendMessage(":127.0.0.1 001 " + nickname + " :Welcome to the ircserv network, " + nickname, clientFd);
+	sendMessage(":127.0.0.1 002 " + nickname + " :Your host is serv, running version 1", clientFd);
+	sendMessage(":127.0.0.1 003 " + nickname + " :This server was created on 12/12/23", clientFd);
+	sendMessage(":127.0.0.1 004 " + nickname + " serv 1 umode cmodes chmode", clientFd);
 }
 
 void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
 	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
-	const uint8_t				   logMask = client->getLogMask();
+	(void)client;
+	//const uint8_t				   logMask = client->getLogMask();
 
-	// std::cout << logMask << std::endl;
-	try {
-		std::cout << "LogMask -> " << logMask << std::endl;
-		if (logMask == EMPTY_LOGIN) {
-			startClientAuth(cmd, client);
-		} else if (logMask == CAP_LOGIN) {
-			tryPasswordAuth(cmd, client);
-		} else if (logMask == (CAP_LOGIN | PASS_LOGIN)) {
-			setClientNickname(cmd, client);
-		} else if (logMask == (CAP_LOGIN | PASS_LOGIN | NICK_LOGIN)) {
-			setClientUsername(cmd, client);
-		} else if (!(logMask & PASS_LOGIN)) {
-			throw InvalidLoginCommandException();
-		}
-	} catch (InvalidPasswordException &e) {
-		sendError(e.what(), client->getSocketFd());
-	} catch (InvalidLoginCommandException &e) {
-		sendError(e.what(), client->getSocketFd());
-	}
-	if (client->isAuthenticated()) {
-		std::cout << "Client is authenticated: NickName["
-				  << client->getNickname() << "]; Username["
-				  << client->getUserName() << "]" << std::endl;
-	}
+	//// std::cout << logMask << std::endl;
+	//try {
+	//	std::cout << "LogMask -> " << logMask << std::endl;
+	//	if (logMask == EMPTY_LOGIN) {
+	//		startClientAuth(cmd, client);
+	//	} else if (logMask == CAP_LOGIN) {
+	//		tryPasswordAuth(cmd, client);
+	//	} else if (logMask == (CAP_LOGIN | PASS_LOGIN)) {
+	//		setClientNickname(cmd, client);
+	//	} else if (logMask == (CAP_LOGIN | PASS_LOGIN | NICK_LOGIN)) {
+	//		setClientUsername(cmd, client);
+	//	} else if (!(logMask & PASS_LOGIN)) {
+	//		throw InvalidLoginCommandException();
+	//	}
+	//} catch (InvalidPasswordException &e) {
+	//	sendError(e.what(), client->getSocketFd());
+	//} catch (InvalidLoginCommandException &e) {
+	//	sendError(e.what(), client->getSocketFd());
+	//}
+	//if (client->isAuthenticated())
+	//	sendRPL(client);
 }
 
 // Exceptions
