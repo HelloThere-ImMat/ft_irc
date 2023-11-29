@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:02:04 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 10:29:44 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -154,6 +154,18 @@ void Server::delFdToPoll(const int fd) {
 	epoll_ctl(_epollFd, EPOLL_CTL_DEL, event.data.fd, &event);
 }
 
+void Server::handleClientMessage(const std::string &message,
+								 Client *const		client) {
+	const std::vector<std::string> cmd = getCommandTokens(message);
+
+	if (cmd.empty() || cmd[0].empty())
+		return;
+	if (client->isAuthenticated() == false)
+		getUserLogin(cmd, client);
+	else
+		handleCmd(cmd, client);
+}
+
 void Server::processReceivedData(const std::string &received_data,
 								 const int			clientFd) {
 	Client *const client = _clientMap[clientFd];
@@ -168,10 +180,7 @@ void Server::processReceivedData(const std::string &received_data,
 		// Process the IRC message (e.g., parse and handle different IRC
 		// commands)
 
-		if (client->isAuthenticated() == false)
-			getUserLogin(ircMessage, client);
-		else
-			handleCmd(ircMessage, client);
+		handleClientMessage(ircMessage, client);
 		start_pos = end_pos + 2;  // Move to the start of the next IRC message
 		end_pos = received_data.find(END_MESSAGE, start_pos);
 	}
@@ -183,12 +192,12 @@ void Server::processReceivedData(const std::string &received_data,
 	}
 }
 
-void Server::handleCmd(const std::string &ircMessage, Client *const client) {
-	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
-	const int					   clientFd = client->getSocketFd();
+void Server::handleCmd(const std::vector<std::string> &cmd,
+					   Client *const				   client) {
 	const std::map<std::string, CommandFunction>::iterator it =
 		_cmdMap.find(cmd[0]);
 	const CommandFunction fct = it->second;
+	const int			  clientFd = client->getSocketFd();
 
 	try {
 		if (it != _cmdMap.end())
@@ -226,9 +235,9 @@ void Server::setClientLogAssets(const std::vector<std::string> &cmd,
 	}
 }
 
-void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
-	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
-	const unsigned int			   logMask = client->getLogMask();
+void Server::getUserLogin(const std::vector<std::string> &cmd,
+						  Client *const					  client) {
+	const unsigned int logMask = client->getLogMask();
 
 	try {
 		if (logMask == EMPTY_LOGIN) {

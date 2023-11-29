@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:02:38 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 10:26:03 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,8 @@ class Server {
 	std::string							   _password;
 	std::map<int, Client *>				   _clientMap;
 	// Private Methods
+	void processReceivedData(const std::string &received_data,
+							 const int			clientFd);
 	//    Send Methods
 	void sendMessage(const std::string &message, const int clientFd) const;
 	void sendWelcomeMessage(const Client *const client) const;
@@ -79,13 +81,11 @@ class Server {
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
 	//    Cmd Methods
-	void handleCmd(const std::string &ircsMessage, Client *const client);
+	void handleClientMessage(const std::string &message, Client *const client);
+	void handleCmd(const std::vector<std::string> &cmd, Client *const client);
+	void getUserLogin(const std::vector<std::string> &cmd,
+					  Client *const					  client);
 	//    Log Methods
-	void processReceivedData(const std::string &received_data,
-							 const int			clientFd);
-	void getUserLogin(const std::string &irc_message, Client *const client);
-	void startClientAuth(const std::vector<std::string> &cmd,
-						 Client *const					 client);
 	void tryPasswordAuth(const std::vector<std::string> &cmd,
 						 Client *const					 client);
 	void setClientLogAssets(const std::vector<std::string> &cmd,
