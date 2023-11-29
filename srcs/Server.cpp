@@ -6,18 +6,34 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/27 16:35:34 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/28 22:56:01 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 ////////////
+// STATIC //
+////////////
+
+static std::vector<std::string> getCommandTokens(
+	const std::string &ircMessage) {
+	std::vector<std::string> tokens;
+	std::istringstream		 iss(ircMessage);
+	std::string				 token;
+
+	while (iss >> token) {
+		tokens.push_back(token);
+	}
+	return tokens;
+}
+
+////////////
 // PUBLIC //
 ////////////
 
 Server::Server(const std::string &port, const std::string &password)
-	: _socket(port), _password(password) {
+	: _socket(port), _name(SERVER_NAME), _password(password) {
 	std::cout << "Port is " << port << std::endl;
 	std::cout << "Password is " << password << std::endl;
 }
@@ -48,14 +64,13 @@ void Server::addNewClient() {
 
 	addFdToPoll(newFd);
 	_clientMap[newFd] = new Client(newFd);
-	sendMessage(WELCOME_MESSAGE, newFd);
 }
 
 void Server::lookForEvents() {
 	struct epoll_event events[MAX_CLIENT_COUNT];
-	const int eventCount =
+	const int		   servfd = _socket.getSocketFd();
+	const int		   eventCount =
 		epoll_wait(_epollFd, events, MAX_CLIENT_COUNT, TIMEOUT);
-	const int servfd = _socket.getSocketFd();
 
 	for (int i = 0; i < eventCount; ++i) {
 		int eventFd = events[i].data.fd;
@@ -69,8 +84,8 @@ void Server::lookForEvents() {
 
 void Server::readClientCommand(const int sockfd) {
 	const std::string clientBuffer = _clientMap[sockfd]->getBuffer();
-	static char buffer[BUFFER_SIZE] = {0};
-	ssize_t bytes_received;
+	static char		  buffer[BUFFER_SIZE] = {0};
+	ssize_t			  bytes_received;
 
 	memset(buffer, 0, BUFFER_SIZE - 1);
 	if ((bytes_received = recv(sockfd, buffer, BUFFER_SIZE - 1, MSG_NOSIGNAL)) >
@@ -90,6 +105,10 @@ void Server::readClientCommand(const int sockfd) {
 	}
 }
 
+/////////////
+// PRIVATE //
+/////////////
+
 void Server::sendMessage(const std::string &message, const int clientFd) const {
 	const std::string formatMessage = message + END_MESSAGE;
 
@@ -99,9 +118,19 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 		std::cout << "Sent message: " << message << std::endl;
 }
 
-/////////////
-// PRIVATE //
-/////////////
+void Server::sendWelcomeMessage(const Client *const client) const {
+	static const std::string welcomeCode = RPL_WELCOME;
+	const std::string formatMessage = ":" + _name + " " + welcomeCode + " " +
+									  client->getUserName() + " :" +
+									  WELCOME_MESSAGE;
+
+	sendMessage(formatMessage, client->getSocketFd());
+}
+
+void Server::sendError(const std::string &message, const int clientFd) const {
+	const std::string formatErrorMessage = ERROR_PREFIX + message;
+	sendMessage(formatErrorMessage, clientFd);
+}
 
 void Server::addFdToPoll(const int fd) {
 	struct epoll_event event;
@@ -120,17 +149,19 @@ void Server::delFdToPoll(const int fd) {
 }
 
 void Server::processReceivedData(const std::string &received_data,
-								 const int clientFd) {
-	size_t start_pos = 0;
-	size_t end_pos = received_data.find(END_MESSAGE, start_pos);
+								 const int			clientFd) {
+	Client *const client = _clientMap[clientFd];
+	size_t		  start_pos = 0;
+	size_t		  end_pos = received_data.find(END_MESSAGE, start_pos);
 
 	while (end_pos != std::string::npos) {
-		std::string irc_message =
+		std::string ircMessage =
 			received_data.substr(start_pos, end_pos - start_pos);
-		std::cout << "Received IRC message: " << irc_message << std::endl;
-
-		// Process the IRC message (e.g., parse and handle different IRC
-		// commands)
+		std::cout << "Received IRC message: " << ircMessage << std::endl;
+		if (client->isAuthenticated() == false)
+			getUserLogin(ircMessage, client);
+		// else
+		// 	handleCmd();
 		// ... (Implement IRC message handling logic here)
 
 		start_pos = end_pos + 2;  // Move to the start of the next IRC message
@@ -141,6 +172,74 @@ void Server::processReceivedData(const std::string &received_data,
 	if (start_pos < received_data.length()) {
 		std::string incompleteMessage = received_data.substr(start_pos);
 		_clientMap[clientFd]->setBuffer(incompleteMessage);
+	}
+}
+
+void Server::startClientAuth(const std::vector<std::string> &cmd,
+							 Client *const					 client) {
+	static const std::string capCommand = "CAP";
+
+	if (cmd[0] == capCommand)
+		client->addToLoginMask(CAP_LOGIN);
+}
+
+void Server::tryPasswordAuth(const std::vector<std::string> &cmd,
+							 Client *const					 client) {
+	static const std::string passCommand = "PASS";
+
+	if (cmd[0] == passCommand) {
+		if (cmd[1] == _password) {
+			client->addToLoginMask(PASS_LOGIN);
+		} else {
+			throw InvalidPasswordException();
+		}
+	} else {
+		throw MissingPasswordException();
+	}
+}
+
+void Server::setClientLogAssets(const std::vector<std::string> &cmd,
+								Client *const					client) {
+	static const std::string userCommand = "USER";
+	static const std::string nickCommand = "NICK";
+
+	if (cmd[0] == userCommand) {
+		client->setUsername(cmd[1]);
+		client->addToLoginMask(USER_LOGIN);
+	} else if (cmd[0] == nickCommand) {
+		client->setNickname(cmd[1]);
+		client->addToLoginMask(NICK_LOGIN);
+	} else {
+		throw InvalidLoginCommandException();
+	}
+}
+
+void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
+	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
+	const unsigned int			   logMask = client->getLogMask();
+
+	try {
+		if (logMask == EMPTY_LOGIN) {
+			startClientAuth(cmd, client);
+		} else if (logMask == CAP_LOGIN) {
+			tryPasswordAuth(cmd, client);
+		} else if (logMask & (CAP_LOGIN | PASS_LOGIN)) {
+			setClientLogAssets(cmd, client);
+		} else if (!(logMask & PASS_LOGIN)) {
+			throw InvalidLoginCommandException();
+		}
+	} catch (InvalidPasswordException &e) {
+		sendError(e.what(), client->getSocketFd());
+	} catch (InvalidLoginCommandException &e) {
+		sendError(e.what(), client->getSocketFd());
+	} catch (MissingPasswordException &e) {
+		sendError(e.what(), client->getSocketFd());
+	}
+	if (client->isAuthenticated()) {
+		sendWelcomeMessage(client);
+		std::cout << "Client is authenticated: Nickname["
+				  << client->getNickname() << "]; Username["
+				  << client->getUserName() << "]" << std::endl;
 	}
 }
 
@@ -156,4 +255,16 @@ const char *Server::ReadFailException::what() const throw() {
 
 const char *Server::SendFailException::what() const throw() {
 	return (SEND_FAIL__ERROR);
+}
+
+const char *Server::InvalidPasswordException::what() const throw() {
+	return (WRONG_PASS__ERROR);
+}
+
+const char *Server::MissingPasswordException::what() const throw() {
+	return (MISS_PASS__ERROR);
+}
+
+const char *Server::InvalidLoginCommandException::what() const throw() {
+	return (WRONG_CMD__ERROR);
 }
