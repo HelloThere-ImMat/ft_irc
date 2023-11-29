@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 12:58:05 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 10:35:53 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ class Client {
 	int				   getSocketFd() const;
 	uint8_t			   getLogMask() const;
 	const std::string &getNickname() const;
-	const std::string &getUserName() const;
+	const std::string &getUsername() const;
 	const std::string &getBuffer() const;
 	// Setters
 	void setBuffer(const std::string &incompleteMessage);

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 22:56:01 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 10:29:44 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,12 @@ static std::vector<std::string> getCommandTokens(
 
 Server::Server(const std::string &port, const std::string &password)
 	: _socket(port), _name(SERVER_NAME), _password(password) {
+	_cmdMap["PASS"] = &Server::pass;
+	_cmdMap["USER"] = &Server::user;
+	_cmdMap["NICK"] = &Server::nick;
+	_cmdMap["CAP"] = &Server::cap;
+	_cmdMap["PING"] = &Server::ping;
+
 	std::cout << "Port is " << port << std::endl;
 	std::cout << "Password is " << password << std::endl;
 }
@@ -121,7 +127,7 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 void Server::sendWelcomeMessage(const Client *const client) const {
 	static const std::string welcomeCode = RPL_WELCOME;
 	const std::string formatMessage = ":" + _name + " " + welcomeCode + " " +
-									  client->getUserName() + " :" +
+									  client->getUsername() + " :" +
 									  WELCOME_MESSAGE;
 
 	sendMessage(formatMessage, client->getSocketFd());
@@ -148,6 +154,18 @@ void Server::delFdToPoll(const int fd) {
 	epoll_ctl(_epollFd, EPOLL_CTL_DEL, event.data.fd, &event);
 }
 
+void Server::handleClientMessage(const std::string &message,
+								 Client *const		client) {
+	const std::vector<std::string> cmd = getCommandTokens(message);
+
+	if (cmd.empty() || cmd[0].empty())
+		return;
+	if (client->isAuthenticated() == false)
+		getUserLogin(cmd, client);
+	else
+		handleCmd(cmd, client);
+}
+
 void Server::processReceivedData(const std::string &received_data,
 								 const int			clientFd) {
 	Client *const client = _clientMap[clientFd];
@@ -158,12 +176,11 @@ void Server::processReceivedData(const std::string &received_data,
 		std::string ircMessage =
 			received_data.substr(start_pos, end_pos - start_pos);
 		std::cout << "Received IRC message: " << ircMessage << std::endl;
-		if (client->isAuthenticated() == false)
-			getUserLogin(ircMessage, client);
-		// else
-		// 	handleCmd();
-		// ... (Implement IRC message handling logic here)
 
+		// Process the IRC message (e.g., parse and handle different IRC
+		// commands)
+
+		handleClientMessage(ircMessage, client);
 		start_pos = end_pos + 2;  // Move to the start of the next IRC message
 		end_pos = received_data.find(END_MESSAGE, start_pos);
 	}
@@ -175,12 +192,20 @@ void Server::processReceivedData(const std::string &received_data,
 	}
 }
 
-void Server::startClientAuth(const std::vector<std::string> &cmd,
-							 Client *const					 client) {
-	static const std::string capCommand = "CAP";
+void Server::handleCmd(const std::vector<std::string> &cmd,
+					   Client *const				   client) {
+	const std::map<std::string, CommandFunction>::iterator it =
+		_cmdMap.find(cmd[0]);
+	const CommandFunction fct = it->second;
+	const int			  clientFd = client->getSocketFd();
 
-	if (cmd[0] == capCommand)
-		client->addToLoginMask(CAP_LOGIN);
+	try {
+		if (it != _cmdMap.end())
+			(this->*fct)(cmd, client);
+	} catch (std::string &e) {	// Catch only command exception
+		std::cout << client << ": " << e << std::endl;
+		sendError(e, clientFd);
+	}
 }
 
 void Server::tryPasswordAuth(const std::vector<std::string> &cmd,
@@ -188,11 +213,7 @@ void Server::tryPasswordAuth(const std::vector<std::string> &cmd,
 	static const std::string passCommand = "PASS";
 
 	if (cmd[0] == passCommand) {
-		if (cmd[1] == _password) {
-			client->addToLoginMask(PASS_LOGIN);
-		} else {
-			throw InvalidPasswordException();
-		}
+		pass(cmd, client);
 	} else {
 		throw MissingPasswordException();
 	}
@@ -204,23 +225,23 @@ void Server::setClientLogAssets(const std::vector<std::string> &cmd,
 	static const std::string nickCommand = "NICK";
 
 	if (cmd[0] == userCommand) {
-		client->setUsername(cmd[1]);
+		user(cmd, client);
 		client->addToLoginMask(USER_LOGIN);
 	} else if (cmd[0] == nickCommand) {
-		client->setNickname(cmd[1]);
+		nick(cmd, client);
 		client->addToLoginMask(NICK_LOGIN);
 	} else {
 		throw InvalidLoginCommandException();
 	}
 }
 
-void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
-	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
-	const unsigned int			   logMask = client->getLogMask();
+void Server::getUserLogin(const std::vector<std::string> &cmd,
+						  Client *const					  client) {
+	const unsigned int logMask = client->getLogMask();
 
 	try {
 		if (logMask == EMPTY_LOGIN) {
-			startClientAuth(cmd, client);
+			cap(cmd, client);
 		} else if (logMask == CAP_LOGIN) {
 			tryPasswordAuth(cmd, client);
 		} else if (logMask & (CAP_LOGIN | PASS_LOGIN)) {
@@ -239,7 +260,7 @@ void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
 		sendWelcomeMessage(client);
 		std::cout << "Client is authenticated: Nickname["
 				  << client->getNickname() << "]; Username["
-				  << client->getUserName() << "]" << std::endl;
+				  << client->getUsername() << "]" << std::endl;
 	}
 }
 

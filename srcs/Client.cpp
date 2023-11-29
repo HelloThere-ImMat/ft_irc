@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:30:35 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 12:57:49 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 10:30:27 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ const std::string &Client::getBuffer() const { return (_buffer); }
 
 const std::string &Client::getNickname() const { return (_nickname); }
 
-const std::string &Client::getUserName() const { return (_username); }
+const std::string &Client::getUsername() const { return (_username); }
 
 uint8_t Client::getLogMask() const { return (_loginMask); }
 
