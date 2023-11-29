@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 17:08:48 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 17:29:26 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@
 
 // Message
 
-#define WELCOME_MESSAGE "Hello from the Server\n"
+#define PONG_MESSAGE "PONG <servername> :<nick>"
 
 // Errors
 

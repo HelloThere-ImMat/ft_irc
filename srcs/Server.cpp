@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 17:18:02 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 17:30:32 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -147,7 +147,8 @@ void Server::readClientCommand(const int sockfd) {
 
 void Server::sendMessage(const std::string &message, const int clientFd) const {
 	static const std::string domainName = DOMAIN_NAME;
-	const std::string formatMessage = domainName + ": " + message + END_MESSAGE;
+	const std::string		 formatMessage =
+		":" + domainName + " " + message + END_MESSAGE;
 
 	if (send(clientFd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
 		throw SendFailException();
