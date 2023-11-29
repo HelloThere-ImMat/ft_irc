@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:26:03 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 17:08:48 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,19 @@
 
 #define BUFFER_SIZE		 1024
 #define TIMEOUT			 -1
+#define PATTERN_COUNT	 5
 #define MAX_CLIENT_COUNT 3
 
 // STRINGS
 
-#define SERVER_NAME "IRC"
-#define END_MESSAGE "\r\n"
+#define DOMAIN_NAME	 "ft_irc.local"
+#define NETWORK_NAME "Server IRC"
+#define SERVER_NAME	 "IRC"
+#define END_MESSAGE	 "\r\n"
 
 // RPL
 
-#define RPL_WELCOME "001"
+#define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
 
 // Message
 
@@ -67,7 +70,6 @@ class Server {
 	DataServ							   _socket;
 	int									   _epollFd;
 	std::map<std::string, CommandFunction> _cmdMap;
-	std::string							   _name;
 	std::string							   _password;
 	std::map<int, Client *>				   _clientMap;
 	// Private Methods
@@ -75,7 +77,8 @@ class Server {
 							 const int			clientFd);
 	//    Send Methods
 	void sendMessage(const std::string &message, const int clientFd) const;
-	void sendWelcomeMessage(const Client *const client) const;
+	void sendFormattedMessage(const std::string	&message,
+							  const Client *const client) const;
 	void sendError(const std::string &message, const int clientFd) const;
 	//    Poll Methods
 	void addFdToPoll(const int fd);

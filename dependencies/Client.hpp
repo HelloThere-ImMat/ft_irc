@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:35:53 by mat              ###   ########.fr       */
+/*   Updated: 2023/11/29 16:46:42 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,11 +33,13 @@ class Client {
 	uint8_t			   getLogMask() const;
 	const std::string &getNickname() const;
 	const std::string &getUsername() const;
+	const std::string &getLastCmd() const;
 	const std::string &getBuffer() const;
 	// Setters
 	void setBuffer(const std::string &incompleteMessage);
 	void setNickname(const std::string &nickname);
 	void setUsername(const std::string &username);
+	void setLastCmd(const std::string &lastCmd);
 	void addToLoginMask(const uint8_t mask);
 	// Members
 	bool isAuthenticated() const;
@@ -48,5 +50,6 @@ class Client {
 	uint8_t		_loginMask;
 	std::string _nickname;
 	std::string _username;
+	std::string _lastCmd;
 	std::string _buffer;
 };

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Client.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:30:35 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:30:27 by mat              ###   ########.fr       */
+/*   Updated: 2023/11/29 16:46:59 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,13 @@ Client::~Client() {}
 
 int Client::getSocketFd() const { return (_sockfd); }
 
-const std::string &Client::getBuffer() const { return (_buffer); }
-
 const std::string &Client::getNickname() const { return (_nickname); }
 
 const std::string &Client::getUsername() const { return (_username); }
+
+const std::string &Client::getLastCmd() const { return (_lastCmd); }
+
+const std::string &Client::getBuffer() const { return (_buffer); }
 
 uint8_t Client::getLogMask() const { return (_loginMask); }
 
@@ -39,6 +41,8 @@ uint8_t Client::getLogMask() const { return (_loginMask); }
 void Client::setNickname(const std::string &nickname) { _nickname = nickname; };
 
 void Client::setUsername(const std::string &username) { _username = username; };
+
+void Client::setLastCmd(const std::string &lastCmd) { _lastCmd = lastCmd; };
 
 void Client::setBuffer(const std::string &incompleteMessage) {
 	_buffer = incompleteMessage;

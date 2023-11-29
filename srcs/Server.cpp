@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:29:44 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 17:18:02 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,40 @@ static std::vector<std::string> getCommandTokens(
 	return tokens;
 }
 
+static std::string replacePatterns(std::string		  original,
+								   const std::string &pattern,
+								   const std::string &replacement) {
+	size_t startPos = 0;
+	while ((startPos = original.find(pattern, startPos)) != std::string::npos) {
+		original.replace(startPos, pattern.length(), replacement);
+		startPos += replacement.length();
+	}
+	return original;
+}
+
+static std::string getFormattedMessage(const std::string	 &message,
+									   const Client *const client) {
+	const std::string mapPattern[PATTERN_COUNT][2] = {
+		{"<networkname>", NETWORK_NAME},
+		{"<servername>", SERVER_NAME},
+		{"<client>", client->getUsername()},
+		{"<nick>", client->getNickname()},
+		{"<command>", client->getLastCmd()}};
+	std::string formattedMessage = message;
+
+	for (size_t i = 0; i < PATTERN_COUNT; ++i) {
+		formattedMessage = replacePatterns(formattedMessage, mapPattern[i][0],
+										   mapPattern[i][1]);
+	}
+	return formattedMessage;
+}
+
 ////////////
 // PUBLIC //
 ////////////
 
 Server::Server(const std::string &port, const std::string &password)
-	: _socket(port), _name(SERVER_NAME), _password(password) {
+	: _socket(port), _password(password) {
 	_cmdMap["PASS"] = &Server::pass;
 	_cmdMap["USER"] = &Server::user;
 	_cmdMap["NICK"] = &Server::nick;
@@ -115,8 +143,11 @@ void Server::readClientCommand(const int sockfd) {
 // PRIVATE //
 /////////////
 
+//	Send Methods
+
 void Server::sendMessage(const std::string &message, const int clientFd) const {
-	const std::string formatMessage = message + END_MESSAGE;
+	static const std::string domainName = DOMAIN_NAME;
+	const std::string formatMessage = domainName + ": " + message + END_MESSAGE;
 
 	if (send(clientFd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
 		throw SendFailException();
@@ -124,19 +155,17 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 		std::cout << "Sent message: " << message << std::endl;
 }
 
-void Server::sendWelcomeMessage(const Client *const client) const {
-	static const std::string welcomeCode = RPL_WELCOME;
-	const std::string formatMessage = ":" + _name + " " + welcomeCode + " " +
-									  client->getUsername() + " :" +
-									  WELCOME_MESSAGE;
-
-	sendMessage(formatMessage, client->getSocketFd());
+void Server::sendFormattedMessage(const std::string	&message,
+								  const Client *const client) const {
+	sendMessage(getFormattedMessage(message, client), client->getSocketFd());
 }
 
 void Server::sendError(const std::string &message, const int clientFd) const {
 	const std::string formatErrorMessage = ERROR_PREFIX + message;
 	sendMessage(formatErrorMessage, clientFd);
 }
+
+//	Poll Methods
 
 void Server::addFdToPoll(const int fd) {
 	struct epoll_event event;
@@ -154,12 +183,15 @@ void Server::delFdToPoll(const int fd) {
 	epoll_ctl(_epollFd, EPOLL_CTL_DEL, event.data.fd, &event);
 }
 
+//	Commands methods
+
 void Server::handleClientMessage(const std::string &message,
 								 Client *const		client) {
 	const std::vector<std::string> cmd = getCommandTokens(message);
 
 	if (cmd.empty() || cmd[0].empty())
 		return;
+	client->setLastCmd(cmd[0]);
 	if (client->isAuthenticated() == false)
 		getUserLogin(cmd, client);
 	else
@@ -257,7 +289,7 @@ void Server::getUserLogin(const std::vector<std::string> &cmd,
 		sendError(e.what(), client->getSocketFd());
 	}
 	if (client->isAuthenticated()) {
-		sendWelcomeMessage(client);
+		sendFormattedMessage(RPL_WELCOME, client);
 		std::cout << "Client is authenticated: Nickname["
 				  << client->getNickname() << "]; Username["
 				  << client->getUsername() << "]" << std::endl;
