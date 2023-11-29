@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 09:23:29 by mat              ###   ########.fr       */
+/*   Updated: 2023/11/29 10:35:58 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,33 @@
 #include "DataServ.hpp"
 #include "irc.hpp"
 
-#define BUFFER_SIZE		   1024
-#define TIMEOUT			   -1
-#define MAX_CLIENT_COUNT   3
+// Count
+
+#define BUFFER_SIZE		 1024
+#define TIMEOUT			 -1
+#define MAX_CLIENT_COUNT 3
+
+// STRINGS
+
+#define SERVER_NAME "IRC"
+#define END_MESSAGE "\r\n"
+
+// RPL
+
+#define RPL_WELCOME "001"
+
+// Message
+
+#define WELCOME_MESSAGE "Hello from the Server\n"
+
+// Errors
+
 #define ERROR_PREFIX	   "Error: "
-#define WELCOME_MESSAGE	   "Hello from the Server\n"
 #define LISTEN_FAIL__ERROR "listening failed"
 #define READ_FAIL__ERROR   "reading failed"
 #define SEND_FAIL__ERROR   "sending failed"
-#define END_MESSAGE		   "\r\n"
 #define WRONG_PASS__ERROR  "Invalid password!"
+#define MISS_PASS__ERROR   "Password is missing!"
 #define WRONG_CMD__ERROR   "Invalid Login Command!"
 
 class Server {
@@ -42,7 +59,6 @@ class Server {
 	void start();
 	void listen() const;
 	void lookForEvents();
-	void sendMessage(const std::string &message, const int clientFd) const;
 	void readClientCommand(const int fd);
 	void addNewClient();
 
@@ -50,18 +66,30 @@ class Server {
 	// Attributes
 	DataServ				_socket;
 	int						_epollFd;
+	std::map<std::string, CommandFunction> _cmdMap;
+	std::string				_name;
 	std::string				_password;
 	std::map<int, Client *> _clientMap;
-	std::map<std::string, CommandFunction> _cmdMap;
 	// Private Methods
+	//    Send Methods
+	void sendMessage(const std::string &message, const int clientFd) const;
+	void sendWelcomeMessage(const Client *const client) const;
 	void sendError(const std::string &message, const int clientFd) const;
+	//    Poll Methods
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
-	void sendRPL(Client *const client) const;
+	//    Cmd Methods
+	void handleCmd(const std::string &ircsMessage, Client *const client);
+	//    Log Methods
 	void processReceivedData(const std::string &received_data,
 							 const int			clientFd);
-	void getUserLogin(const std::string &ircMessage, Client *const client);
-	void handleCmd(const std::string &ircsMessage, Client *const client);
+	void getUserLogin(const std::string &irc_message, Client *const client);
+	void startClientAuth(const std::vector<std::string> &cmd,
+						 Client *const					 client);
+	void tryPasswordAuth(const std::vector<std::string> &cmd,
+						 Client *const					 client);
+	void setClientLogAssets(const std::vector<std::string> &cmd,
+							Client *const					client);
 	// CMD
 	void cap(const std::vector<std::string> &cmd, Client *const client);
 	void pass(const std::vector<std::string> &cmd, Client *const client);
@@ -82,6 +110,10 @@ class Server {
 		virtual const char *what() const throw();
 	};
 	class InvalidPasswordException : public std::exception {
+	   public:
+		virtual const char *what() const throw();
+	};
+	class MissingPasswordException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};

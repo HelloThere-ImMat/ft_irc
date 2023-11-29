@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 09:33:25 by mat              ###   ########.fr       */
+/*   Updated: 2023/11/29 10:47:37 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ static std::vector<std::string> getCommandTokens(
 ////////////
 
 Server::Server(const std::string &port, const std::string &password)
-	: _socket(port), _password(password) {
+	: _socket(port), _name(SERVER_NAME), _password(password) {
 		_cmdMap["PASS"] = &Server::pass;
 		_cmdMap["USER"] = &Server::user;
 		_cmdMap["NICK"] = &Server::nick;
@@ -69,7 +69,6 @@ void Server::addNewClient() {
 
 	addFdToPoll(newFd);
 	_clientMap[newFd] = new Client(newFd);
-	sendRPL(_clientMap[newFd]);
 }
 
 void Server::lookForEvents() {
@@ -111,6 +110,10 @@ void Server::readClientCommand(const int sockfd) {
 	}
 }
 
+/////////////
+// PRIVATE //
+/////////////
+
 void Server::sendMessage(const std::string &message, const int clientFd) const {
 	const std::string formatMessage = message + END_MESSAGE;
 
@@ -120,9 +123,14 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 		std::cout << "Sent message: " << message << std::endl;
 }
 
-/////////////
-// PRIVATE //
-/////////////
+void Server::sendWelcomeMessage(const Client *const client) const {
+	static const std::string welcomeCode = RPL_WELCOME;
+	const std::string formatMessage = ":" + _name + " " + welcomeCode + " " +
+									  client->getUsername() + " :" +
+									  WELCOME_MESSAGE;
+
+	sendMessage(formatMessage, client->getSocketFd());
+}
 
 void Server::sendError(const std::string &message, const int clientFd) const {
 	const std::string formatErrorMessage = ERROR_PREFIX + message;
@@ -159,12 +167,10 @@ void Server::processReceivedData(const std::string &received_data,
 		// Process the IRC message (e.g., parse and handle different IRC
 		// commands)
 
-		//if (client->isAuthenticated() == false)
-		//	getUserLogin(ircMessage, client);
-		// else
-		handleCmd(ircMessage, client);
-		// ... (Implement IRC message handling logic here)
-
+		if (client->isAuthenticated() == false)
+			getUserLogin(ircMessage, client);
+		else
+			handleCmd(ircMessage, client);
 		start_pos = end_pos + 2;  // Move to the start of the next IRC message
 		end_pos = received_data.find(END_MESSAGE, start_pos);
 	}
@@ -189,49 +195,67 @@ void Server::handleCmd(const std::string &ircMessage, Client *const client)
 		if (it != _cmdMap.end())
 	 		(this->*fct)(cmd, client);
 	}
-	catch (std::string &e)
+	catch (std::string &e) // catch only commands exceptions
 	{
-		std::cout << ""
+		std::cout << client << ": " << e << std::endl;
+		sendError(e, client->getSocketFd());
 	}
 }
 
-void Server::sendRPL(Client *const client) const
-{
-	const std::string nickname = client->getNickname();
-	const int clientFd = client->getSocketFd();
+void Server::tryPasswordAuth(const std::vector<std::string> &cmd,
+							 Client *const					 client) {
+	static const std::string passCommand = "PASS";
 
-	sendMessage(":127.0.0.1 001 " + nickname + " :Welcome to the ircserv network, " + nickname, clientFd);
-	sendMessage(":127.0.0.1 002 " + nickname + " :Your host is serv, running version 1", clientFd);
-	sendMessage(":127.0.0.1 003 " + nickname + " :This server was created on 12/12/23", clientFd);
-	sendMessage(":127.0.0.1 004 " + nickname + " serv 1 umode cmodes chmode", clientFd);
+	if (cmd[0] == passCommand) {
+		pass(cmd, client);
+	} else {
+		throw MissingPasswordException();
+	}
+}
+
+void Server::setClientLogAssets(const std::vector<std::string> &cmd,
+								Client *const					client) {
+	static const std::string userCommand = "USER";
+	static const std::string nickCommand = "NICK";
+
+	if (cmd[0] == userCommand) {
+		user(cmd, client);
+		client->addToLoginMask(USER_LOGIN);
+	} else if (cmd[0] == nickCommand) {
+		nick(cmd, client);
+		client->addToLoginMask(NICK_LOGIN);
+	} else {
+		throw InvalidLoginCommandException();
+	}
 }
 
 void Server::getUserLogin(const std::string &ircMessage, Client *const client) {
 	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
-	(void)client;
-	//const uint8_t				   logMask = client->getLogMask();
+	const unsigned int			   logMask = client->getLogMask();
 
-	//// std::cout << logMask << std::endl;
-	//try {
-	//	std::cout << "LogMask -> " << logMask << std::endl;
-	//	if (logMask == EMPTY_LOGIN) {
-	//		startClientAuth(cmd, client);
-	//	} else if (logMask == CAP_LOGIN) {
-	//		tryPasswordAuth(cmd, client);
-	//	} else if (logMask == (CAP_LOGIN | PASS_LOGIN)) {
-	//		setClientNickname(cmd, client);
-	//	} else if (logMask == (CAP_LOGIN | PASS_LOGIN | NICK_LOGIN)) {
-	//		setClientUsername(cmd, client);
-	//	} else if (!(logMask & PASS_LOGIN)) {
-	//		throw InvalidLoginCommandException();
-	//	}
-	//} catch (InvalidPasswordException &e) {
-	//	sendError(e.what(), client->getSocketFd());
-	//} catch (InvalidLoginCommandException &e) {
-	//	sendError(e.what(), client->getSocketFd());
-	//}
-	//if (client->isAuthenticated())
-	//	sendRPL(client);
+	try {
+		if (logMask == EMPTY_LOGIN) {
+			cap(cmd, client);
+		} else if (logMask == CAP_LOGIN) {
+			tryPasswordAuth(cmd, client);
+		} else if (logMask & (CAP_LOGIN | PASS_LOGIN)) {
+			setClientLogAssets(cmd, client);
+		} else if (!(logMask & PASS_LOGIN)) {
+			throw InvalidLoginCommandException();
+		}
+	} catch (InvalidPasswordException &e) {
+		sendError(e.what(), client->getSocketFd());
+	} catch (InvalidLoginCommandException &e) {
+		sendError(e.what(), client->getSocketFd());
+	} catch (MissingPasswordException &e) {
+		sendError(e.what(), client->getSocketFd());
+	}
+	if (client->isAuthenticated()) {
+		sendWelcomeMessage(client);
+		std::cout << "Client is authenticated: Nickname["
+				  << client->getNickname() << "]; Username["
+				  << client->getUsername() << "]" << std::endl;
+	}
 }
 
 // Exceptions
@@ -250,6 +274,10 @@ const char *Server::SendFailException::what() const throw() {
 
 const char *Server::InvalidPasswordException::what() const throw() {
 	return (WRONG_PASS__ERROR);
+}
+
+const char *Server::MissingPasswordException::what() const throw() {
+	return (MISS_PASS__ERROR);
 }
 
 const char *Server::InvalidLoginCommandException::what() const throw() {
