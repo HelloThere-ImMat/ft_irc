@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:35:58 by mat              ###   ########.fr       */
+/*   Updated: 2023/11/29 10:02:38 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@
 #define WRONG_CMD__ERROR   "Invalid Login Command!"
 
 class Server {
-
-	typedef void (Server::*CommandFunction)(const std::vector<std::string>&, Client *const);
+	typedef void (Server::*CommandFunction)(const std::vector<std::string> &,
+											Client *const);
 
    public:
 	Server(const std::string &port, const std::string &password);
@@ -64,12 +64,12 @@ class Server {
 
    private:
 	// Attributes
-	DataServ				_socket;
-	int						_epollFd;
+	DataServ							   _socket;
+	int									   _epollFd;
 	std::map<std::string, CommandFunction> _cmdMap;
-	std::string				_name;
-	std::string				_password;
-	std::map<int, Client *> _clientMap;
+	std::string							   _name;
+	std::string							   _password;
+	std::map<int, Client *>				   _clientMap;
 	// Private Methods
 	//    Send Methods
 	void sendMessage(const std::string &message, const int clientFd) const;
@@ -122,4 +122,3 @@ class Server {
 		virtual const char *what() const throw();
 	};
 };
-

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:47:37 by mat              ###   ########.fr       */
+/*   Updated: 2023/11/29 10:02:04 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,11 +34,12 @@ static std::vector<std::string> getCommandTokens(
 
 Server::Server(const std::string &port, const std::string &password)
 	: _socket(port), _name(SERVER_NAME), _password(password) {
-		_cmdMap["PASS"] = &Server::pass;
-		_cmdMap["USER"] = &Server::user;
-		_cmdMap["NICK"] = &Server::nick;
-		_cmdMap["CAP"] =  &Server::cap;
-		_cmdMap["PING"] = &Server::ping;
+	_cmdMap["PASS"] = &Server::pass;
+	_cmdMap["USER"] = &Server::user;
+	_cmdMap["NICK"] = &Server::nick;
+	_cmdMap["CAP"] = &Server::cap;
+	_cmdMap["PING"] = &Server::ping;
+
 	std::cout << "Port is " << port << std::endl;
 	std::cout << "Password is " << password << std::endl;
 }
@@ -182,23 +183,19 @@ void Server::processReceivedData(const std::string &received_data,
 	}
 }
 
-void Server::handleCmd(const std::string &ircMessage, Client *const client)
-{
+void Server::handleCmd(const std::string &ircMessage, Client *const client) {
 	const std::vector<std::string> cmd = getCommandTokens(ircMessage);
-	const int clientfd = client->getSocketFd();
-	std::cout << "cmd received from " << clientfd << " : "  << cmd[0] << std::endl;
+	const int					   clientFd = client->getSocketFd();
+	const std::map<std::string, CommandFunction>::iterator it =
+		_cmdMap.find(cmd[0]);
+	const CommandFunction fct = it->second;
 
-	std::map<std::string, CommandFunction>::iterator it = _cmdMap.find(cmd[0]);
-	CommandFunction fct = it->second;
-	try
-	{
+	try {
 		if (it != _cmdMap.end())
-	 		(this->*fct)(cmd, client);
-	}
-	catch (std::string &e) // catch only commands exceptions
-	{
+			(this->*fct)(cmd, client);
+	} catch (std::string &e) {	// Catch only command exception
 		std::cout << client << ": " << e << std::endl;
-		sendError(e, client->getSocketFd());
+		sendError(e, clientFd);
 	}
 }
 

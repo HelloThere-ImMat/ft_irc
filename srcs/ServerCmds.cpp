@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerCmds.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/11/29 10:48:24 by mat              ###   ########.fr       */
+/*   Updated: 2023/11/29 10:05:18 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void Server::cap(const std::vector<std::string> &cmd, Client *const client) {
 }
 
 void Server::pass(const std::vector<std::string> &cmd, Client *const client) {
-	if (cmd[1] == _password) {
+	if (cmd[1] == _password) {	// Check if argument exists
 		client->addToLoginMask(PASS_LOGIN);
 	} else {
 		throw InvalidPasswordException();
@@ -26,14 +26,15 @@ void Server::pass(const std::vector<std::string> &cmd, Client *const client) {
 }
 
 void Server::user(const std::vector<std::string> &cmd, Client *const client) {
-	client->setUsername(cmd[1]);
+	client->setUsername(cmd[1]);  // Check if argument exists
 }
 
 void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
-	client->setNickname(cmd[1]);
+	client->setNickname(cmd[1]);  // Check if argument exists
 }
 
 void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 	(void)cmd;
-	sendMessage(":127.0.0.1 PONG 127.0.0.1 :" + client->getUsername(), client->getSocketFd());
+	sendMessage(":127.0.0.1 PONG 127.0.0.1 :" + client->getUsername(),
+				client->getSocketFd());
 }
