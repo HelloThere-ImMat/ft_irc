@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 00:03:53 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 08:14:00 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,10 @@
 
 // Sent Errors
 
-#define ERR_PASSWDMISMATCH	"464 <client> :Password incorrect"
-#define ERR_CLOSECONNECTION "Connection closed"
+#define ERR_CLOSECONNECTION	  "Connection closed"
+#define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
+#define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
+#define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 
 // Errors
 

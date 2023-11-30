@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/11/30 00:01:43 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 08:14:40 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,11 @@ void Server::cap(const std::vector<std::string> &cmd, Client *const client) {
 }
 
 void Server::pass(const std::vector<std::string> &cmd, Client *const client) {
-	if (cmd[1] == _password) {	// Check if argument exists
+	if (cmd.size() < 2)
+		sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
+	else if (client->getLogMask() & PASS_LOGIN)
+		sendFormattedMessage(ERR_ALREADYREGISTERED, client);
+	else if (cmd[1] == _password) {
 		client->addToLoginMask(PASS_LOGIN);
 	} else {
 		sendFormattedMessage(ERR_PASSWDMISMATCH, client);
