@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 23:09:08 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 23:19:18 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,7 @@
 #define GREEN  "\033[0;32m"
 #define ORANGE "\033[0;33m"
 #define BLUE   "\033[0;34m"
+#define GREY   "\033[0;90m"
 
 // RPL
 
@@ -103,6 +104,7 @@ class Server {
 	// Private Methods
 	void processReceivedData(const std::string &received_data,
 							 const int			clientFd);
+	void printLog(const std::string &logMessage) const;
 	//    Send Methods
 	void sendMessage(const std::string &message, const int clientFd) const;
 	void sendFormattedMessage(const std::string	&message,

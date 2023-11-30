@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 22:34:15 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 23:23:21 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,8 @@ Server::Server(const std::string &port, const std::string &password)
 	_cmdMap["CAP"] = &Server::cap;
 	_cmdMap["PING"] = &Server::ping;
 
-	std::cout << "Port is " << port << std::endl;
-	std::cout << "Password is " << password << std::endl;
+	printLog("Port: " + port);
+	printLog("Password: " + password);
 }
 
 Server::~Server() {
@@ -142,15 +142,19 @@ void Server::readClientCommand(const int sockfd) {
 			throw ClosedClientException();
 		}
 	} catch (ClosedClientException &e) {
-		std::cout << e.what() << std::endl;
+		printLog(e.what());
 	} catch (ReadFailException &e) {
-		std::cout << e.what() << std::endl;
+		printLog(e.what());
 	}
 }
 
 /////////////
 // PRIVATE //
 /////////////
+
+void Server::printLog(const std::string &logMessage) const {
+	std::cout << GREY << logMessage << NC << std::endl;
+}
 
 //	Send Methods
 
@@ -278,9 +282,8 @@ void Server::getUserLogin(const std::vector<std::string> &cmd,
 	}
 	if (client->isAuthenticated()) {
 		sendFormattedMessage(RPL_WELCOME, client);
-		std::cout << "Client is authenticated: Nickname["
-				  << client->getNickname() << "]; Username["
-				  << client->getUsername() << "]" << std::endl;
+		printLog("Client is authenticated: Nickname[" + client->getNickname() +
+				 "]; Username[" + client->getUsername() + "]");
 	}
 }
 
