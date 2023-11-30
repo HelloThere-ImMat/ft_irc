@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 09:44:00 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 18:01:38 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,15 +24,16 @@
 
 #define BUFFER_SIZE		 1024
 #define TIMEOUT			 -1
-#define PATTERN_COUNT	 5
+#define PATTERN_COUNT	 6
 #define MAX_CLIENT_COUNT 3
 
 // STRINGS
 
-#define DOMAIN_NAME	 "ft_irc.local"
-#define NETWORK_NAME "Server IRC"
-#define SERVER_NAME	 "IRC"
-#define END_MESSAGE	 "\r\n"
+#define DOMAIN_NAME			 "ft_irc.local"
+#define NETWORK_NAME		 "Server IRC"
+#define SERVER_NAME			 "IRC"
+#define END_MESSAGE			 "\r\n"
+#define INVALID_NICK_CHARSET "#: \b\t\n\v\f\r"
 
 // RPL
 
@@ -45,9 +46,11 @@
 // Sent Errors
 
 #define ERR_CLOSECONNECTION	  "Connection closed"
+#define ERR_NONICKNAMEGIVEN	  "431 <client> :No nickname given"
+#define ERR_ERRONEUSNICKNAME  "432 <client> <arg> :Erroneus nickname"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
-#define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
+#define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
 
 // Errors
 

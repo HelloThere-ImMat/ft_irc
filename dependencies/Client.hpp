@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 23:44:04 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 18:00:41 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,12 +35,14 @@ class Client {
 	const std::string &getNickname() const;
 	const std::string &getUsername() const;
 	const std::string &getLastCmd() const;
+	const std::string &getLastArg() const;
 	const std::string &getBuffer() const;
 	// Setters
 	void setBuffer(const std::string &incompleteMessage);
 	void setNickname(const std::string &nickname);
 	void setUsername(const std::string &username);
 	void setLastCmd(const std::string &lastCmd);
+	void setLastArg(const std::string &lastArg);
 	void addToLoginMask(const uint8_t mask);
 	// Members
 	bool isAuthenticated() const;
@@ -52,5 +54,6 @@ class Client {
 	std::string _nickname;
 	std::string _username;
 	std::string _lastCmd;
+	std::string _lastArg;
 	std::string _buffer;
 };

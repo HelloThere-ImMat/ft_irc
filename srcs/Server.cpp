@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 10:57:21 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 18:06:36 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,9 @@ static std::string replacePatterns(std::string		  original,
 static std::string getFormattedMessage(const std::string	 &message,
 									   const Client *const client) {
 	const std::string mapPattern[PATTERN_COUNT][2] = {
-		{"<networkname>", NETWORK_NAME},
-		{"<servername>", SERVER_NAME},
-		{"<client>", client->getUsername()},
-		{"<nick>", client->getNickname()},
-		{"<command>", client->getLastCmd()}};
+		{"<networkname>", NETWORK_NAME},	 {"<servername>", SERVER_NAME},
+		{"<client>", client->getUsername()}, {"<nick>", client->getNickname()},
+		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()}};
 	std::string formattedMessage = message;
 
 	for (size_t i = 0; i < PATTERN_COUNT; ++i) {
@@ -199,6 +197,10 @@ void Server::handleClientMessage(const std::string &message,
 	if (cmd.empty() || cmd[0].empty())
 		return;
 	client->setLastCmd(cmd[0]);
+	if (cmd[1].empty())
+		client->setLastArg("");
+	else
+		client->setLastArg(cmd[1]);
 	if (client->isAuthenticated() == false)
 		getUserLogin(cmd, client);
 	else
@@ -257,10 +259,8 @@ void Server::setClientLogAssets(const std::vector<std::string> &cmd,
 
 	if (cmd[0] == userCommand) {
 		user(cmd, client);
-		client->addToLoginMask(USER_LOGIN);
 	} else if (cmd[0] == nickCommand) {
 		nick(cmd, client);
-		client->addToLoginMask(NICK_LOGIN);
 	}
 }
 
