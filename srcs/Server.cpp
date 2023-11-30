@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 18:06:36 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 21:59:18 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,7 +162,7 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 	if (send(clientFd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
 		throw SendFailException();
 	else
-		std::cout << "Sent message: " << message << std::endl;
+		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
 }
 
 void Server::sendFormattedMessage(const std::string	&message,
@@ -216,8 +216,7 @@ void Server::processReceivedData(const std::string &received_data,
 	while (end_pos != std::string::npos) {
 		std::string ircMessage =
 			received_data.substr(start_pos, end_pos - start_pos);
-		std::cout << "Received IRC message: " << ircMessage << std::endl;
-
+		std::cout << BLUE << INMES_PREFIX << NC << ircMessage << std::endl;
 		handleClientMessage(ircMessage, client);
 		start_pos = end_pos + 2;
 		end_pos = received_data.find(END_MESSAGE, start_pos);

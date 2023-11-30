@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 21:50:31 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 22:00:21 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,16 @@
 #define SERVER_NAME			 "IRC"
 #define END_MESSAGE			 "\r\n"
 #define INVALID_NICK_CHARSET "#: \b\t\n\v\f\r"
+#define INMES_PREFIX		 "<< "
+#define OUTMES_PREFIX		 ">> "
+
+// COLORS
+
+#define NC	   "\033[0m"
+#define RED	   "\033[0;31m"
+#define GREEN  "\033[0;32m"
+#define ORANGE "\033[0;33m"
+#define BLUE   "\033[0;34m"
 
 // RPL
 
