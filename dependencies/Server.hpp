@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 18:01:38 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 21:50:31 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,7 @@
 #define ERR_CLOSECONNECTION	  "Connection closed"
 #define ERR_NONICKNAMEGIVEN	  "431 <client> :No nickname given"
 #define ERR_ERRONEUSNICKNAME  "432 <client> <arg> :Erroneus nickname"
+#define ERR_NICKNAMEINUSE	  "433 <client> <arg> :Nickname is already in use"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
@@ -109,6 +110,8 @@ class Server {
 	void nick(const std::vector<std::string> &cmd, Client *const client);
 	void ping(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
+	// CMD_UTILS
+	bool isNicknameAlreadyUsed(const std::string &nickname);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
