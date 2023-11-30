@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/11/29 17:29:48 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 00:01:43 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,8 @@ void Server::pass(const std::vector<std::string> &cmd, Client *const client) {
 	if (cmd[1] == _password) {	// Check if argument exists
 		client->addToLoginMask(PASS_LOGIN);
 	} else {
-		throw InvalidPasswordException();  // Change by sendFormattedMessage
+		sendFormattedMessage(ERR_PASSWDMISMATCH, client);
+		error(ERR_CLOSECONNECTION, client);
 	}
 }
 
@@ -36,4 +37,11 @@ void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
 void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 	(void)cmd;
 	sendFormattedMessage(PONG_MESSAGE, client);
+}
+
+void Server::error(const std::string &message, Client *const client) {
+	const std::string formatErrorMessage = ERROR_PREFIX + message;
+	sendFormattedMessage(formatErrorMessage, client);
+	closeClient(client);
+	throw ClosedClientException();
 }

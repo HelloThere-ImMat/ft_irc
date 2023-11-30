@@ -6,13 +6,14 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 16:46:42 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/29 23:44:04 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <stdint.h>
+#include <unistd.h>
 
 #include <string>
 

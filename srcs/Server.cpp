@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 17:30:32 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 00:06:02 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,14 @@ void Server::addNewClient() {
 	_clientMap[newFd] = new Client(newFd);
 }
 
+void Server::closeClient(Client *const client) {
+	const int clientFd = client->getSocketFd();
+
+	_clientMap.erase(clientFd);
+	delFdToPoll(clientFd);
+	delete client;
+}
+
 void Server::lookForEvents() {
 	struct epoll_event events[MAX_CLIENT_COUNT];
 	const int		   servfd = _socket.getSocketFd();
@@ -117,25 +125,32 @@ void Server::lookForEvents() {
 }
 
 void Server::readClientCommand(const int sockfd) {
-	const std::string clientBuffer = _clientMap[sockfd]->getBuffer();
+	Client *const	  client = _clientMap[sockfd];
+	const std::string clientBuffer = client->getBuffer();
 	static char		  buffer[BUFFER_SIZE] = {0};
-	ssize_t			  bytes_received;
 
 	memset(buffer, 0, BUFFER_SIZE - 1);
-	if ((bytes_received = recv(sockfd, buffer, BUFFER_SIZE - 1, MSG_NOSIGNAL)) >
-		0) {
-		std::string received_data(buffer, bytes_received);
+	try {
+		ssize_t bytes_received;
+		if ((bytes_received =
+				 recv(sockfd, buffer, BUFFER_SIZE - 1, MSG_NOSIGNAL)) > 0) {
+			std::string received_data(buffer, bytes_received);
 
-		if (!clientBuffer.empty()) {
-			received_data = clientBuffer + received_data;
-			_clientMap[sockfd]->clearBuffer();
+			if (!clientBuffer.empty()) {
+				received_data = clientBuffer + received_data;
+				_clientMap[sockfd]->clearBuffer();
+			}
+			processReceivedData(received_data, sockfd);
+		} else if (bytes_received < 0) {
+			throw ReadFailException();
+		} else {
+			closeClient(client);
+			throw ClosedClientException();
 		}
-		processReceivedData(received_data, sockfd);
-	} else if (bytes_received < 0) {
-		throw ReadFailException();
-	} else {
-		std::cout << "Client left" << std::endl;
-		delFdToPoll(sockfd);
+	} catch (ClosedClientException &e) {
+		std::cout << e.what() << std::endl;
+	} catch (ReadFailException &e) {
+		std::cout << e.what() << std::endl;
 	}
 }
 
@@ -159,11 +174,6 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 void Server::sendFormattedMessage(const std::string	&message,
 								  const Client *const client) const {
 	sendMessage(getFormattedMessage(message, client), client->getSocketFd());
-}
-
-void Server::sendError(const std::string &message, const int clientFd) const {
-	const std::string formatErrorMessage = ERROR_PREFIX + message;
-	sendMessage(formatErrorMessage, clientFd);
 }
 
 //	Poll Methods
@@ -230,14 +240,13 @@ void Server::handleCmd(const std::vector<std::string> &cmd,
 	const std::map<std::string, CommandFunction>::iterator it =
 		_cmdMap.find(cmd[0]);
 	const CommandFunction fct = it->second;
-	const int			  clientFd = client->getSocketFd();
 
 	try {
 		if (it != _cmdMap.end())
 			(this->*fct)(cmd, client);
 	} catch (std::string &e) {	// Catch only command exception
 		std::cout << client << ": " << e << std::endl;
-		sendError(e, clientFd);
+		sendFormattedMessage(e, client);
 	}
 }
 
@@ -247,8 +256,6 @@ void Server::tryPasswordAuth(const std::vector<std::string> &cmd,
 
 	if (cmd[0] == passCommand) {
 		pass(cmd, client);
-	} else {
-		throw MissingPasswordException();
 	}
 }
 
@@ -263,8 +270,6 @@ void Server::setClientLogAssets(const std::vector<std::string> &cmd,
 	} else if (cmd[0] == nickCommand) {
 		nick(cmd, client);
 		client->addToLoginMask(NICK_LOGIN);
-	} else {
-		throw InvalidLoginCommandException();
 	}
 }
 
@@ -272,22 +277,12 @@ void Server::getUserLogin(const std::vector<std::string> &cmd,
 						  Client *const					  client) {
 	const unsigned int logMask = client->getLogMask();
 
-	try {
-		if (logMask == EMPTY_LOGIN) {
-			cap(cmd, client);
-		} else if (logMask == CAP_LOGIN) {
-			tryPasswordAuth(cmd, client);
-		} else if (logMask & (CAP_LOGIN | PASS_LOGIN)) {
-			setClientLogAssets(cmd, client);
-		} else if (!(logMask & PASS_LOGIN)) {
-			throw InvalidLoginCommandException();
-		}
-	} catch (InvalidPasswordException &e) {
-		sendError(e.what(), client->getSocketFd());
-	} catch (InvalidLoginCommandException &e) {
-		sendError(e.what(), client->getSocketFd());
-	} catch (MissingPasswordException &e) {
-		sendError(e.what(), client->getSocketFd());
+	if (logMask == EMPTY_LOGIN) {
+		cap(cmd, client);
+	} else if (logMask == CAP_LOGIN) {
+		tryPasswordAuth(cmd, client);
+	} else if (logMask & (CAP_LOGIN | PASS_LOGIN)) {
+		setClientLogAssets(cmd, client);
 	}
 	if (client->isAuthenticated()) {
 		sendFormattedMessage(RPL_WELCOME, client);
@@ -311,14 +306,10 @@ const char *Server::SendFailException::what() const throw() {
 	return (SEND_FAIL__ERROR);
 }
 
-const char *Server::InvalidPasswordException::what() const throw() {
-	return (WRONG_PASS__ERROR);
-}
-
-const char *Server::MissingPasswordException::what() const throw() {
-	return (MISS_PASS__ERROR);
-}
-
 const char *Server::InvalidLoginCommandException::what() const throw() {
 	return (WRONG_CMD__ERROR);
+}
+
+const char *Server::ClosedClientException::what() const throw() {
+	return (CLOSED_CLIENT__ERROR);
 }

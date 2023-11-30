@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 17:29:26 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 00:03:53 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,15 +42,19 @@
 
 #define PONG_MESSAGE "PONG <servername> :<nick>"
 
+// Sent Errors
+
+#define ERR_PASSWDMISMATCH	"464 <client> :Password incorrect"
+#define ERR_CLOSECONNECTION "Connection closed"
+
 // Errors
 
-#define ERROR_PREFIX	   "Error: "
-#define LISTEN_FAIL__ERROR "listening failed"
-#define READ_FAIL__ERROR   "reading failed"
-#define SEND_FAIL__ERROR   "sending failed"
-#define WRONG_PASS__ERROR  "Invalid password!"
-#define MISS_PASS__ERROR   "Password is missing!"
-#define WRONG_CMD__ERROR   "Invalid Login Command!"
+#define ERROR_PREFIX		 "ERROR :"
+#define LISTEN_FAIL__ERROR	 "listening failed"
+#define READ_FAIL__ERROR	 "reading failed"
+#define SEND_FAIL__ERROR	 "sending failed"
+#define WRONG_CMD__ERROR	 "Invalid Login Command!"
+#define CLOSED_CLIENT__ERROR "Client has been disconnected"
 
 class Server {
 	typedef void (Server::*CommandFunction)(const std::vector<std::string> &,
@@ -64,6 +68,7 @@ class Server {
 	void lookForEvents();
 	void readClientCommand(const int fd);
 	void addNewClient();
+	void closeClient(Client *const client);
 
    private:
 	// Attributes
@@ -79,7 +84,6 @@ class Server {
 	void sendMessage(const std::string &message, const int clientFd) const;
 	void sendFormattedMessage(const std::string	&message,
 							  const Client *const client) const;
-	void sendError(const std::string &message, const int clientFd) const;
 	//    Poll Methods
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
@@ -99,6 +103,7 @@ class Server {
 	void user(const std::vector<std::string> &cmd, Client *const client);
 	void nick(const std::vector<std::string> &cmd, Client *const client);
 	void ping(const std::vector<std::string> &cmd, Client *const client);
+	void error(const std::string &message, Client *const client);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
@@ -112,15 +117,11 @@ class Server {
 	   public:
 		virtual const char *what() const throw();
 	};
-	class InvalidPasswordException : public std::exception {
-	   public:
-		virtual const char *what() const throw();
-	};
-	class MissingPasswordException : public std::exception {
-	   public:
-		virtual const char *what() const throw();
-	};
 	class InvalidLoginCommandException : public std::exception {
+	   public:
+		virtual const char *what() const throw();
+	};
+	class ClosedClientException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};
