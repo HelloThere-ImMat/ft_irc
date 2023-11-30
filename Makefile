@@ -22,6 +22,7 @@ SRCS += Client.cpp
 SRCS += Signal.cpp
 SRCS += main.cpp
 SRCS += ServerCmds.cpp
+SRCS += Channel.cpp
 
 vpath %.cpp $(SRCS_PATH)
 
@@ -43,6 +44,7 @@ DEPS += DataServ.hpp
 DEPS += Client.hpp
 DEPS += Signal.hpp
 DEPS += irc.hpp
+DEPS += Channel.hpp
 
 vpath %.hpp $(DEPS_PATH)
 

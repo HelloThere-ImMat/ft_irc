@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerCmds.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/11/29 10:24:35 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 01:55:01 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,4 +37,27 @@ void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 	(void)cmd;
 	sendMessage(":127.0.0.1 PONG 127.0.0.1 :" + client->getUsername(),
 				client->getSocketFd());
+}
+
+void Server::join(const std::vector<std::string> &cmd, Client *const client) {
+	if (!cmd[1].empty())
+	{
+		std::map<std::string, Channel *>::iterator it = _channels.find(cmd[1]);
+		if (it == _channels.end())
+			_channels["#" + cmd[1]] = new Channel(cmd[1], client, client->getUsername());
+		else
+			it->second->addNewUser(client);
+	}
+}
+
+void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
+{
+	(void)client;
+	if (_channels.find(cmd[1]) != _channels.end())
+		std::cout << "Talks on a channel" << std::endl;
+	else
+		std::cout << "Talks to a user" << std::endl;
+	//Add a vector<string> -> user list to search here in a else if;
+	// else
+	//		do nothing
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:29:44 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 01:35:40 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,8 @@ Server::Server(const std::string &port, const std::string &password)
 	_cmdMap["NICK"] = &Server::nick;
 	_cmdMap["CAP"] = &Server::cap;
 	_cmdMap["PING"] = &Server::ping;
+	_cmdMap["JOIN"] = &Server::join;
+	_cmdMap["PRIVMSG"] = &Server::privmsg;
 
 	std::cout << "Port is " << port << std::endl;
 	std::cout << "Password is " << password << std::endl;

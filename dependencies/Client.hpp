@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:35:53 by mat              ###   ########.fr       */
+/*   Updated: 2023/11/29 13:24:47 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,9 +25,10 @@
 
 class Client {
    public:
-	Client();
+	Client(const Client &ref);
 	explicit Client(const int sockfd);
-	~Client();
+	Client();
+	virtual ~Client();
 	// Getters
 	int				   getSocketFd() const;
 	uint8_t			   getLogMask() const;

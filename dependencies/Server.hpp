@@ -3,20 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 10:26:03 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 01:36:03 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <map>
 #include <sstream>
 #include <vector>
 
-#include "Client.hpp"
+#include "Channel.hpp"
 #include "DataServ.hpp"
 #include "irc.hpp"
 
@@ -52,6 +51,7 @@
 class Server {
 	typedef void (Server::*CommandFunction)(const std::vector<std::string> &,
 											Client *const);
+	
 
    public:
 	Server(const std::string &port, const std::string &password);
@@ -66,6 +66,7 @@ class Server {
 	// Attributes
 	DataServ							   _socket;
 	int									   _epollFd;
+	std::map<std::string, Channel *>  _channels;
 	std::map<std::string, CommandFunction> _cmdMap;
 	std::string							   _name;
 	std::string							   _password;
@@ -96,6 +97,8 @@ class Server {
 	void user(const std::vector<std::string> &cmd, Client *const client);
 	void nick(const std::vector<std::string> &cmd, Client *const client);
 	void ping(const std::vector<std::string> &cmd, Client *const client);
+	void join(const std::vector<std::string> &cmd, Client *const client);
+	void privmsg(const std::vector<std::string> &cmd, Client *const client);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
