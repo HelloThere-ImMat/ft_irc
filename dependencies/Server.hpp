@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 08:14:00 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 09:44:00 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 #include <sstream>
 #include <vector>
 
-#include "Client.hpp"
+#include "ClientManager.hpp"
 #include "DataServ.hpp"
 #include "irc.hpp"
 
@@ -78,7 +78,7 @@ class Server {
 	int									   _epollFd;
 	std::map<std::string, CommandFunction> _cmdMap;
 	std::string							   _password;
-	std::map<int, Client *>				   _clientMap;
+	ClientManager						   _clientMap;
 	// Private Methods
 	void processReceivedData(const std::string &received_data,
 							 const int			clientFd);

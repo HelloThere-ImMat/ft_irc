@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/11/30 08:14:40 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 10:12:37 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,7 @@ void Server::user(const std::vector<std::string> &cmd, Client *const client) {
 
 void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
 	client->setNickname(cmd[1]);  // Check if argument exists
+	_clientMap.updateClientNickname(client, cmd[1]);
 }
 
 void Server::ping(const std::vector<std::string> &cmd, Client *const client) {

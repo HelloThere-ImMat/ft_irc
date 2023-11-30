@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 08:02:48 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 10:57:21 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,10 +74,6 @@ Server::Server(const std::string &port, const std::string &password)
 
 Server::~Server() {
 	delFdToPoll(_socket.getSocketFd());
-	for (std::map<int, Client *>::iterator it = _clientMap.begin();
-		 it != _clientMap.end(); ++it) {
-		delete it->second;
-	}
 	close(_epollFd);
 }
 
@@ -98,15 +94,14 @@ void Server::addNewClient() {
 	const int newFd = _socket.acceptNewConnectionSocket();
 
 	addFdToPoll(newFd);
-	_clientMap[newFd] = new Client(newFd);
+	_clientMap.addClient(new Client(newFd));
 }
 
 void Server::closeClient(Client *const client) {
 	const int clientFd = client->getSocketFd();
 
-	_clientMap.erase(clientFd);
 	delFdToPoll(clientFd);
-	delete client;
+	_clientMap.eraseClient(client);
 }
 
 void Server::lookForEvents() {
@@ -126,7 +121,7 @@ void Server::lookForEvents() {
 }
 
 void Server::readClientCommand(const int sockfd) {
-	Client *const	  client = _clientMap[sockfd];
+	Client *const	  client = _clientMap.getClient(sockfd);
 	const std::string clientBuffer = client->getBuffer();
 	static char		  buffer[BUFFER_SIZE] = {0};
 
@@ -139,7 +134,7 @@ void Server::readClientCommand(const int sockfd) {
 
 			if (!clientBuffer.empty()) {
 				received_data = clientBuffer + received_data;
-				_clientMap[sockfd]->clearBuffer();
+				client->clearBuffer();
 			}
 			processReceivedData(received_data, sockfd);
 		} else if (bytes_received < 0) {
@@ -212,7 +207,7 @@ void Server::handleClientMessage(const std::string &message,
 
 void Server::processReceivedData(const std::string &received_data,
 								 const int			clientFd) {
-	Client *const client = _clientMap[clientFd];
+	Client *const client = _clientMap.getClient(clientFd);
 	size_t		  start_pos = 0;
 	size_t		  end_pos = received_data.find(END_MESSAGE, start_pos);
 
@@ -227,7 +222,7 @@ void Server::processReceivedData(const std::string &received_data,
 	}
 	if (start_pos < received_data.length()) {
 		std::string incompleteMessage = received_data.substr(start_pos);
-		_clientMap[clientFd]->setBuffer(incompleteMessage);
+		client->setBuffer(incompleteMessage);
 	}
 }
 
