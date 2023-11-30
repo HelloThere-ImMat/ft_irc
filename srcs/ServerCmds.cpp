@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/11/30 21:50:20 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 22:36:07 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,17 @@ void Server::pass(const std::vector<std::string> &cmd, Client *const client) {
 }
 
 void Server::user(const std::vector<std::string> &cmd, Client *const client) {
-	client->setUsername(cmd[1]);  // Check if argument exists
-	client->addToLoginMask(USER_LOGIN);
+	if (cmd.size() < 2 || cmd[1].empty())
+		sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
+	else if (client->getLogMask() & USER_LOGIN)
+		sendFormattedMessage(ERR_ALREADYREGISTERED, client);
+	else {
+		std::string username = cmd[1];
+		if (username.length() > USERLEN)
+			username = username.substr(0, USERLEN);
+		client->setUsername(username);
+		client->addToLoginMask(USER_LOGIN);
+	}
 }
 
 bool Server::isNicknameAlreadyUsed(const std::string &nickname) {

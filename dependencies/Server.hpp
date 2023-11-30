@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 22:00:21 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 22:18:44 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,10 @@
 #define TIMEOUT			 -1
 #define PATTERN_COUNT	 6
 #define MAX_CLIENT_COUNT 3
+
+// Parameters
+
+#define USERLEN 18
 
 // STRINGS
 
@@ -56,6 +60,7 @@
 // Sent Errors
 
 #define ERR_CLOSECONNECTION	  "Connection closed"
+#define ERR_UNKNOWNCOMMAND	  "421 <client> <command> :Unknown command"
 #define ERR_NONICKNAMEGIVEN	  "431 <client> :No nickname given"
 #define ERR_ERRONEUSNICKNAME  "432 <client> <arg> :Erroneus nickname"
 #define ERR_NICKNAMEINUSE	  "433 <client> <arg> :Nickname is already in use"

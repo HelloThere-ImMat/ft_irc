@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 21:59:18 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 22:34:15 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,7 +197,7 @@ void Server::handleClientMessage(const std::string &message,
 	if (cmd.empty() || cmd[0].empty())
 		return;
 	client->setLastCmd(cmd[0]);
-	if (cmd[1].empty())
+	if (cmd.size() == 1 || cmd[1].empty())
 		client->setLastArg("");
 	else
 		client->setLastArg(cmd[1]);
@@ -236,6 +236,8 @@ void Server::handleCmd(const std::vector<std::string> &cmd,
 	try {
 		if (it != _cmdMap.end())
 			(this->*fct)(cmd, client);
+		else
+			sendFormattedMessage(ERR_UNKNOWNCOMMAND, client);
 	} catch (std::string &e) {	// Catch only command exception
 		std::cout << client << ": " << e << std::endl;
 		sendFormattedMessage(e, client);
