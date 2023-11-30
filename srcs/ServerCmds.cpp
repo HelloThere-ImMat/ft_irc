@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/11/30 22:50:13 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 23:09:26 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,27 @@
 // STATIC //
 ////////////
 
-static bool containsCharactersFromSet(const std::string &str,
-									  const std::string &charSet) {
+static bool isAuthorizedChar(const char c) {
+	static const std::string specialAuthorizedSet = SPECIAL_NICK_CHARSET;
+
+	return isalnum(c) || specialAuthorizedSet.find(c) != std::string::npos;
+}
+
+static bool areOnlyAuthorizedChar(const std::string &str) {
 	for (size_t i = 0; i < str.length(); ++i) {
-		if (charSet.find(str[i]) != std::string::npos) {
-			return true;
-		}
+		if (isAuthorizedChar(str[i]) == false)
+			return false;
 	}
-	return false;
+	return true;
 }
 
 static bool isNicknameValid(const std::string &nickname) {
-	return isdigit(nickname[0]) == false &&
-		   containsCharactersFromSet(nickname, INVALID_NICK_CHARSET) == false;
+	return isdigit(nickname[0]) == false && areOnlyAuthorizedChar(nickname);
 }
+
+/////////////
+// PRIVATE //
+/////////////
 
 void Server::cap(const std::vector<std::string> &cmd, Client *const client) {
 	(void)cmd;

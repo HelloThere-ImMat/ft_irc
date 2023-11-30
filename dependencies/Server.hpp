@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 22:50:41 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 23:09:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,7 @@
 #define INMES_PREFIX		 "<< "
 #define OUTMES_PREFIX		 ">> "
 #define DEFAULT_USERNAME	 "Placeholder"
+#define SPECIAL_NICK_CHARSET "[]{}*\\|"
 
 // COLORS
 
