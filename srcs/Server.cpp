@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 00:06:02 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/11/30 08:02:48 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ Server::~Server() {
 		 it != _clientMap.end(); ++it) {
 		delete it->second;
 	}
+	close(_epollFd);
 }
 
 void Server::start() {
@@ -220,15 +221,10 @@ void Server::processReceivedData(const std::string &received_data,
 			received_data.substr(start_pos, end_pos - start_pos);
 		std::cout << "Received IRC message: " << ircMessage << std::endl;
 
-		// Process the IRC message (e.g., parse and handle different IRC
-		// commands)
-
 		handleClientMessage(ircMessage, client);
-		start_pos = end_pos + 2;  // Move to the start of the next IRC message
+		start_pos = end_pos + 2;
 		end_pos = received_data.find(END_MESSAGE, start_pos);
 	}
-
-	// Check for any remaining incomplete message and buffer it
 	if (start_pos < received_data.length()) {
 		std::string incompleteMessage = received_data.substr(start_pos);
 		_clientMap[clientFd]->setBuffer(incompleteMessage);
