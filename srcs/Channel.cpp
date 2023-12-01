@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/11/30 12:36:26 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/01 14:57:18 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,12 +28,5 @@ void Channel::addNewUser(Client *const client)
 void Channel::sendToChannel(std::string &nickname)
 {
 	(void)nickname;
-}
 
-std::vector<int> Channel::getUserfds()
-{
-	std::vector<int> channelFds;
-	for (std::map<std::string, SpecifiedClient *>::iterator it = _userMap.begin(); it != _userMap.end(); it++)
-		channelFds.push_back(it->second->getSocketFd());
-	return (channelFds);
 }

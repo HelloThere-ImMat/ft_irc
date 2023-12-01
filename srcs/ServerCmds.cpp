@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/11/30 12:33:59 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/01 14:59:57 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,27 +57,26 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
 {
 	std::string senderNickname = client->getNickname();
-	std::vector<int> channelFds;
+	(void)cmd;
 
 	if (_channels.find(cmd[1]) != _channels.end())
 	{
-		Channel *channel = _channels.find(cmd[1])->second;
-		channelFds = channel->getUserfds();
-		for (std::vector<int>::iterator it = channelFds.begin(); it != channelFds.end(); it++)
-			std::cout << "sending a message on channel to " << *it << std::endl;
-		std::cout << "Talks on a channel" << std::endl;
+		std::cout << "user: found channel" << std::endl;
+		//Channel *channel = _channels.find(cmd[1])->second;
+	//	for (std::vector<int>::iterator it = channelFds.begin(); it != channelFds.end(); it++)
+	//		std::cout << "sending a message on channel to " << *it << std::endl;
+	//	std::cout << "Talks on a channel" << std::endl;
 	}
 	//else if test for nicknames
-	else
-		std::cout << "Talks to a user" << std::endl;
+		//std::cout << "Talks to a user" << std::endl;
+	//else
 
 ///////////////////// MSG SENT FORMAT /////////////////////////////////////
 // query PRIVMSG
 // >> :MATnb2!~mat@60ef-2fc4-d0c4-c934-68b4.abo.wanadoo.fr PRIVMSG MATnb1 :hi
-// >> :<nickname sender>!~<hostname>@<address> PRIVMSG <nickname receiver> : <msg>
+// >> :<nickname sender>!~<hostname>@<address> PRIVMSG <nickname receiver> : hi
 
 // channel PRIVMSG
 // >> :MATnb2!~mat@60ef-2fc4-d0c4-c934-68b4.abo.wanadoo.fr PRIVMSG #testChannel :comment va
 // >> :<nickname sender>!~<hostname>@<address> PRIVMSG <channel> : <msg>
-
 }

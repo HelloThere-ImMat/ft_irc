@@ -6,12 +6,11 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/11/30 12:36:00 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/01 14:56:40 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <map>
-#include <vector>
 #include "Client.hpp"
 
 // DEBUGING
@@ -22,12 +21,13 @@ enum e_job {
 	OPERATOR
 };
 
-class SpecifiedClient : public Client {
+class SpecifiedClient {
 	public :
-		SpecifiedClient() : Client(){}
-		SpecifiedClient(Client *const ptr, e_job job) : Client(*ptr), _job(job) {}
+		SpecifiedClient(Client *const ptr, e_job job) : clientRef(ptr), _job(job) {}
 		~SpecifiedClient() {}
+		Client	*clientRef;
 	private:
+		SpecifiedClient() {}
 		e_job	_job;
 		
 
@@ -39,7 +39,6 @@ class Channel {
 		Channel() {}
 		void addNewUser(Client *const client);
 		void sendToChannel(std::string &nickname);
-		std::vector<int> getUserfds();
 	private:
 		std::string								_name;
 		std::map<std::string,SpecifiedClient *>	_userMap;
