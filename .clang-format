@@ -1,5 +1,10 @@
 BasedOnStyle: Google
-IndentWidth: 4
 UseTab: Always
+IndentWidth: 4
 TabWidth: 4
 AllowShortIfStatementsOnASingleLine: false
+IndentPPDirectives: BeforeHash  # Specify the indentation for preprocessor directives
+AlignConsecutiveMacros: true
+AlignConsecutiveDeclarations: true
+AlignAfterOpenBracket: DontAlign  # Prevent alignment after open brackets
+
