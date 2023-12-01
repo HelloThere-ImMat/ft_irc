@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:03 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 21:45:53 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/01 16:46:56 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,4 +56,11 @@ Client* ClientManager::getClient(const int sockFd) {
 		return _socketToClientMap[sockFd];
 	}
 	return NULL;
+}
+
+void	ClientManager::printUserList()
+{
+	std::cout << "USER LIST" << std::endl;
+	for (std::map<std::string, Client *>::iterator it = _nicknameToClientMap.begin(); it != _nicknameToClientMap.end(); it++)
+		std::cout << "-- > " << it->second->getNickname() << std::endl;
 }

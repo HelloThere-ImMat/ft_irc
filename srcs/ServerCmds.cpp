@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/01 15:11:04 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/01 17:11:21 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,18 +91,21 @@ void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
 
 void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 	(void)cmd;
-	sendMessage(":127.0.0.1 PONG 127.0.0.1 :" + client->getUsername(),
-				client->getSocketFd());
+	sendFormattedMessage(PONG_MESSAGE, client);
+	_clientMap.printUserList();
 }
 
 void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 	if (!cmd[1].empty())
 	{
-		std::map<std::string, Channel *>::iterator it = _channels.find(cmd[1]);
+		std::map<std::string, Channel *>::iterator it = _channels.find("#" + cmd[1]);
 		if (it == _channels.end())
-			_channels["#" + cmd[1]] = new Channel(cmd[1], client, client->getNickname());
+			_channels["#" + cmd[1]] = new Channel(cmd[1], client->getSocketFd());
 		else
-			it->second->addNewUser(client);
+		{
+			std::cout << "on est la" << std::endl;
+			it->second->addNewUser(client->getSocketFd());
+		}
 	}	
 ///////////////////// MSG SENT FORMAT /////////////////////////////////////
 // >> :MATnb1!~mat@60ef-2fc4-d0c4-c934-68b4.abo.wanadoo.fr JOIN :#testChannel
@@ -117,25 +120,14 @@ void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
 
 	if (_channels.find(cmd[1]) != _channels.end())
 	{
-		std::cout << "user: found channel" << std::endl;
-		//Channel *channel = _channels.find(cmd[1])->second;
-	//	for (std::vector<int>::iterator it = channelFds.begin(); it != channelFds.end(); it++)
-	//		std::cout << "sending a message on channel to " << *it << std::endl;
-	//	std::cout << "Talks on a channel" << std::endl;
+		Channel *channel  = _channels.find(cmd[1])->second;
+		for (std::vector<int>::iterator it = channel->_userFds.begin(); it != channel->_userFds.end(); it++)
+			sendFormattedMessage(PRIVMSG_PREFIX + cmd[1] + cmd[2], _clientMap.getClient(*it));
 	}
-	//else if test for nicknames
-		//std::cout << "Talks to a user" << std::endl;
+	else if (_clientMap.getClient(cmd[1]) != NULL)
+		sendFormattedMessage(PRIVMSG_PREFIX + cmd[1] + cmd[2], _clientMap.getClient(cmd[1]));
 	//else
-
-///////////////////// MSG SENT FORMAT /////////////////////////////////////
-// query PRIVMSG
-// >> :MATnb2!~mat@60ef-2fc4-d0c4-c934-68b4.abo.wanadoo.fr PRIVMSG MATnb1 :hi
-// >> :<nickname sender>!~<hostname>@<address> PRIVMSG <nickname receiver> : hi
-
-// channel PRIVMSG
-// >> :MATnb2!~mat@60ef-2fc4-d0c4-c934-68b4.abo.wanadoo.fr PRIVMSG #testChannel :comment va
-// >> :<nickname sender>!~<hostname>@<address> PRIVMSG <channel> : <msg>
-	sendFormattedMessage(PONG_MESSAGE, client);
+		//find correct error
 }
 
 void Server::error(const std::string &message, Client *const client) {

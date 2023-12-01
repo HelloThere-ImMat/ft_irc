@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/01 15:21:48 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/01 17:02:28 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@
 #define INMES_PREFIX		 "<< "
 #define OUTMES_PREFIX		 ">> "
 #define DEFAULT_USERNAME	 "Placeholder"
-#define SPECIAL_NICK_CHARSET "[]{}*\\|"
+#define SPECIAL_NICK_CHARSET "[]{}*\\|_"
 
 // COLORS
 
@@ -58,8 +58,8 @@
 
 // Message
 
-#define PONG_MESSAGE "PONG <servername> :<nick>"
-
+#define PONG_MESSAGE	"PONG <servername> :<nick>"
+#define PRIVMSG_PREFIX	":<client> PRIVMSG"
 // Logs
 
 #define CLOSED_CLIENT_MESSAGE "Client has been disconnected"
@@ -71,7 +71,7 @@
 #define ERR_UNKNOWNCOMMAND	  "421 <client> <command> :Unknown command"
 #define ERR_NONICKNAMEGIVEN	  "431 <client> :No nickname given"
 #define ERR_ERRONEUSNICKNAME  "432 <client> <arg> :Erroneus nickname"
-#define ERR_NICKNAMEINUSE	  "433 <client> <arg> :Nickname is already in use"
+#define ERR_NICKNAMEINUSE	  "433 *<client> <arg> :Nickname is already in use"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
