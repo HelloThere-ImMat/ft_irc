@@ -6,13 +6,14 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/29 13:24:47 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/01 15:02:42 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <stdint.h>
+#include <unistd.h>
 
 #include <string>
 
@@ -27,18 +28,21 @@ class Client {
    public:
 	Client(const Client &ref);
 	explicit Client(const int sockfd);
-	Client();
-	virtual ~Client();
+	~Client();
 	// Getters
 	int				   getSocketFd() const;
 	uint8_t			   getLogMask() const;
 	const std::string &getNickname() const;
 	const std::string &getUsername() const;
+	const std::string &getLastCmd() const;
+	const std::string &getLastArg() const;
 	const std::string &getBuffer() const;
 	// Setters
 	void setBuffer(const std::string &incompleteMessage);
 	void setNickname(const std::string &nickname);
 	void setUsername(const std::string &username);
+	void setLastCmd(const std::string &lastCmd);
+	void setLastArg(const std::string &lastArg);
 	void addToLoginMask(const uint8_t mask);
 	// Members
 	bool isAuthenticated() const;
@@ -49,5 +53,7 @@ class Client {
 	uint8_t		_loginMask;
 	std::string _nickname;
 	std::string _username;
+	std::string _lastCmd;
+	std::string _lastArg;
 	std::string _buffer;
 };

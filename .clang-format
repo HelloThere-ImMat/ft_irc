@@ -6,3 +6,8 @@ AllowShortIfStatementsOnASingleLine: false
 IndentPPDirectives: BeforeHash  # Specify the indentation for preprocessor directives
 AlignConsecutiveMacros: true
 AlignConsecutiveDeclarations: true
+<<<<<<< HEAD
+=======
+AlignAfterOpenBracket: DontAlign  # Prevent alignment after open brackets
+
+>>>>>>> main
