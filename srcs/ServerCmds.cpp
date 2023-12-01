@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/11/30 23:09:26 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/01 09:23:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,8 @@ void Server::user(const std::vector<std::string> &cmd, Client *const client) {
 			sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
 		} else if (cmd[1].length() > USERLEN) {
 			client->setUsername(cmd[1].substr(0, USERLEN));
-		}
+		} else
+			client->setUsername(cmd[1]);
 		client->addToLoginMask(USER_LOGIN);
 	}
 }
