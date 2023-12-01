@@ -28,9 +28,8 @@ static std::vector<std::string> getCommandTokens(
 	return tokens;
 }
 
-static std::string replacePatterns(std::string		  original,
-								   const std::string &pattern,
-								   const std::string &replacement) {
+static std::string replacePatterns(std::string original,
+	const std::string &pattern, const std::string &replacement) {
 	size_t startPos = 0;
 	while ((startPos = original.find(pattern, startPos)) != std::string::npos) {
 		original.replace(startPos, pattern.length(), replacement);
@@ -39,17 +38,17 @@ static std::string replacePatterns(std::string		  original,
 	return original;
 }
 
-static std::string getFormattedMessage(const std::string	 &message,
-									   const Client *const client) {
+static std::string getFormattedMessage(
+	const std::string &message, const Client *const client) {
 	const std::string mapPattern[PATTERN_COUNT][2] = {
-		{"<networkname>", NETWORK_NAME},	 {"<servername>", SERVER_NAME},
+		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
 		{"<client>", client->getUsername()}, {"<nick>", client->getNickname()},
 		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()}};
 	std::string formattedMessage = message;
 
 	for (size_t i = 0; i < PATTERN_COUNT; ++i) {
-		formattedMessage = replacePatterns(formattedMessage, mapPattern[i][0],
-										   mapPattern[i][1]);
+		formattedMessage = replacePatterns(
+			formattedMessage, mapPattern[i][0], mapPattern[i][1]);
 	}
 	return formattedMessage;
 }
@@ -127,7 +126,7 @@ void Server::readClientCommand(const int sockfd) {
 	try {
 		ssize_t bytes_received;
 		if ((bytes_received =
-				 recv(sockfd, buffer, BUFFER_SIZE - 1, MSG_NOSIGNAL)) > 0) {
+					recv(sockfd, buffer, BUFFER_SIZE - 1, MSG_NOSIGNAL)) > 0) {
 			std::string received_data(buffer, bytes_received);
 
 			if (!clientBuffer.empty()) {
@@ -169,8 +168,8 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
 }
 
-void Server::sendFormattedMessage(const std::string	&message,
-								  const Client *const client) const {
+void Server::sendFormattedMessage(
+	const std::string &message, const Client *const client) const {
 	sendMessage(getFormattedMessage(message, client), client->getSocketFd());
 }
 
@@ -194,8 +193,8 @@ void Server::delFdToPoll(const int fd) {
 
 //	Commands methods
 
-void Server::handleClientMessage(const std::string &message,
-								 Client *const		client) {
+void Server::handleClientMessage(
+	const std::string &message, Client *const client) {
 	const std::vector<std::string> cmd = getCommandTokens(message);
 
 	if (cmd.empty() || cmd[0].empty())
@@ -211,8 +210,8 @@ void Server::handleClientMessage(const std::string &message,
 		handleCmd(cmd, client);
 }
 
-void Server::processReceivedData(const std::string &received_data,
-								 const int			clientFd) {
+void Server::processReceivedData(
+	const std::string &received_data, const int clientFd) {
 	Client *const client = _clientMap.getClient(clientFd);
 	size_t		  start_pos = 0;
 	size_t		  end_pos = received_data.find(END_MESSAGE, start_pos);
@@ -231,8 +230,8 @@ void Server::processReceivedData(const std::string &received_data,
 	}
 }
 
-void Server::handleCmd(const std::vector<std::string> &cmd,
-					   Client *const				   client) {
+void Server::handleCmd(
+	const std::vector<std::string> &cmd, Client *const client) {
 	const std::map<std::string, CommandFunction>::iterator it =
 		_cmdMap.find(cmd[0]);
 	const CommandFunction fct = it->second;
@@ -248,8 +247,8 @@ void Server::handleCmd(const std::vector<std::string> &cmd,
 	}
 }
 
-void Server::tryPasswordAuth(const std::vector<std::string> &cmd,
-							 Client *const					 client) {
+void Server::tryPasswordAuth(
+	const std::vector<std::string> &cmd, Client *const client) {
 	static const std::string passCommand = "PASS";
 
 	if (cmd[0] == passCommand) {
@@ -257,8 +256,8 @@ void Server::tryPasswordAuth(const std::vector<std::string> &cmd,
 	}
 }
 
-void Server::setClientLogAssets(const std::vector<std::string> &cmd,
-								Client *const					client) {
+void Server::setClientLogAssets(
+	const std::vector<std::string> &cmd, Client *const client) {
 	static const std::string userCommand = "USER";
 	static const std::string nickCommand = "NICK";
 
@@ -269,8 +268,8 @@ void Server::setClientLogAssets(const std::vector<std::string> &cmd,
 	}
 }
 
-void Server::getUserLogin(const std::vector<std::string> &cmd,
-						  Client *const					  client) {
+void Server::getUserLogin(
+	const std::vector<std::string> &cmd, Client *const client) {
 	const unsigned int logMask = client->getLogMask();
 
 	if (logMask == EMPTY_LOGIN) {

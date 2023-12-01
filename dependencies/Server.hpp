@@ -81,8 +81,8 @@
 #define CLOSED_CLIENT__ERROR "Client has been disconnected"
 
 class Server {
-	typedef void (Server::*CommandFunction)(const std::vector<std::string> &,
-											Client *const);
+	typedef void (Server::*CommandFunction)(
+		const std::vector<std::string> &, Client *const);
 
    public:
 	Server(const std::string &port, const std::string &password);
@@ -102,26 +102,26 @@ class Server {
 	std::string							   _password;
 	ClientManager						   _clientMap;
 	// Private Methods
-	void processReceivedData(const std::string &received_data,
-							 const int			clientFd);
+	void processReceivedData(
+		const std::string &received_data, const int clientFd);
 	void printLog(const std::string &logMessage) const;
 	//    Send Methods
 	void sendMessage(const std::string &message, const int clientFd) const;
-	void sendFormattedMessage(const std::string	&message,
-							  const Client *const client) const;
+	void sendFormattedMessage(
+		const std::string &message, const Client *const client) const;
 	//    Poll Methods
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
 	//    Cmd Methods
 	void handleClientMessage(const std::string &message, Client *const client);
 	void handleCmd(const std::vector<std::string> &cmd, Client *const client);
-	void getUserLogin(const std::vector<std::string> &cmd,
-					  Client *const					  client);
+	void getUserLogin(
+		const std::vector<std::string> &cmd, Client *const client);
 	//    Log Methods
-	void tryPasswordAuth(const std::vector<std::string> &cmd,
-						 Client *const					 client);
-	void setClientLogAssets(const std::vector<std::string> &cmd,
-							Client *const					client);
+	void tryPasswordAuth(
+		const std::vector<std::string> &cmd, Client *const client);
+	void setClientLogAssets(
+		const std::vector<std::string> &cmd, Client *const client);
 	// CMD
 	void cap(const std::vector<std::string> &cmd, Client *const client);
 	void pass(const std::vector<std::string> &cmd, Client *const client);

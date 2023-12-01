@@ -27,8 +27,8 @@ void ClientManager::addClient(Client* const client) {
 	updateClientNickname(client, client->getNickname());
 }
 
-void ClientManager::updateClientNickname(Client* const		client,
-										 const std::string& nickname) {
+void ClientManager::updateClientNickname(
+	Client* const client, const std::string& nickname) {
 	if (nickname.empty() == false) {
 		const std::string oldNickname = client->getNickname();
 		if (oldNickname.empty() == false)
