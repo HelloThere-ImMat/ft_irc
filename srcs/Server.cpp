@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/01 09:23:24 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/01 10:17:13 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static std::string getFormattedMessage(
 	const std::string &message, const Client *const client) {
 	const std::string mapPattern[PATTERN_COUNT][2] = {
 		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
-		{"<client>", client->getUsername()}, {"<nick>", client->getNickname()},
+		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},
 		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()}};
 	std::string formattedMessage = message;
 
@@ -67,11 +67,13 @@ Server::Server(const std::string &port, const std::string &password)
 
 	printLog("Port: " + port);
 	printLog("Password: " + password);
+	_epollFd = 0;
 }
 
 Server::~Server() {
 	delFdToPoll(_socket.getSocketFd());
-	close(_epollFd);
+	if (_epollFd != 0)
+		close(_epollFd);
 }
 
 void Server::start() {
@@ -138,10 +140,8 @@ void Server::readClientCommand(const int sockfd) {
 			throw ReadFailException();
 		} else {
 			closeClient(client);
-			throw ClosedClientException();
+			printLog(CLOSED_CLIENT_MESSAGE);
 		}
-	} catch (ClosedClientException &e) {
-		printLog(e.what());
 	} catch (ReadFailException &e) {
 		printLog(e.what());
 	}
@@ -191,24 +191,7 @@ void Server::delFdToPoll(const int fd) {
 	epoll_ctl(_epollFd, EPOLL_CTL_DEL, event.data.fd, &event);
 }
 
-//	Commands methods
-
-void Server::handleClientMessage(
-	const std::string &message, Client *const client) {
-	const std::vector<std::string> cmd = getCommandTokens(message);
-
-	if (cmd.empty() || cmd[0].empty())
-		return;
-	client->setLastCmd(cmd[0]);
-	if (cmd.size() == 1 || cmd[1].empty())
-		client->setLastArg("");
-	else
-		client->setLastArg(cmd[1]);
-	if (client->isAuthenticated() == false)
-		getUserLogin(cmd, client);
-	else
-		handleCmd(cmd, client);
-}
+//	Command handling methods
 
 void Server::processReceivedData(
 	const std::string &received_data, const int clientFd) {
@@ -228,6 +211,23 @@ void Server::processReceivedData(
 		std::string incompleteMessage = received_data.substr(start_pos);
 		client->setBuffer(incompleteMessage);
 	}
+}
+
+void Server::handleClientMessage(
+	const std::string &message, Client *const client) {
+	const std::vector<std::string> cmd = getCommandTokens(message);
+
+	if (cmd.empty() || cmd[0].empty())
+		return;
+	client->setLastCmd(cmd[0]);
+	if (cmd.size() == 1 || cmd[1].empty())
+		client->setLastArg("");
+	else
+		client->setLastArg(cmd[1]);
+	if (client->isAuthenticated() == false)
+		getUserLogin(cmd, client);
+	else
+		handleCmd(cmd, client);
 }
 
 void Server::handleCmd(
@@ -302,8 +302,4 @@ const char *Server::SendFailException::what() const throw() {
 
 const char *Server::InvalidLoginCommandException::what() const throw() {
 	return (WRONG_CMD__ERROR);
-}
-
-const char *Server::ClosedClientException::what() const throw() {
-	return (CLOSED_CLIENT__ERROR);
 }

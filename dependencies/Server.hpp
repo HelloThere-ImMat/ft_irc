@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 23:19:18 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/01 10:17:23 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,10 +34,9 @@
 // STRINGS
 
 #define DOMAIN_NAME			 "ft_irc.local"
-#define NETWORK_NAME		 "Server IRC"
-#define SERVER_NAME			 "IRC"
+#define NETWORK_NAME		 "IRC"
+#define SERVER_NAME			 "IRCserv"
 #define END_MESSAGE			 "\r\n"
-#define INVALID_NICK_CHARSET "#: \b\t\n\v\f\r"
 #define INMES_PREFIX		 "<< "
 #define OUTMES_PREFIX		 ">> "
 #define DEFAULT_USERNAME	 "Placeholder"
@@ -60,8 +59,13 @@
 
 #define PONG_MESSAGE "PONG <servername> :<nick>"
 
+// Logs
+
+#define CLOSED_CLIENT_MESSAGE "Client has been disconnected"
+
 // Sent Errors
 
+#define ERROR_PREFIX		  "ERROR :"
 #define ERR_CLOSECONNECTION	  "Connection closed"
 #define ERR_UNKNOWNCOMMAND	  "421 <client> <command> :Unknown command"
 #define ERR_NONICKNAMEGIVEN	  "431 <client> :No nickname given"
@@ -73,12 +77,10 @@
 
 // Errors
 
-#define ERROR_PREFIX		 "ERROR :"
-#define LISTEN_FAIL__ERROR	 "listening failed"
-#define READ_FAIL__ERROR	 "reading failed"
-#define SEND_FAIL__ERROR	 "sending failed"
-#define WRONG_CMD__ERROR	 "Invalid Login Command!"
-#define CLOSED_CLIENT__ERROR "Client has been disconnected"
+#define LISTEN_FAIL__ERROR "listening failed"
+#define READ_FAIL__ERROR   "reading failed"
+#define SEND_FAIL__ERROR   "sending failed"
+#define WRONG_CMD__ERROR   "Invalid Login Command!"
 
 class Server {
 	typedef void (Server::*CommandFunction)(
@@ -102,8 +104,6 @@ class Server {
 	std::string							   _password;
 	ClientManager						   _clientMap;
 	// Private Methods
-	void processReceivedData(
-		const std::string &received_data, const int clientFd);
 	void printLog(const std::string &logMessage) const;
 	//    Send Methods
 	void sendMessage(const std::string &message, const int clientFd) const;
@@ -112,7 +112,9 @@ class Server {
 	//    Poll Methods
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
-	//    Cmd Methods
+	//    Cmd Handling Methods
+	void processReceivedData(
+		const std::string &received_data, const int clientFd);
 	void handleClientMessage(const std::string &message, Client *const client);
 	void handleCmd(const std::vector<std::string> &cmd, Client *const client);
 	void getUserLogin(
@@ -145,10 +147,6 @@ class Server {
 		virtual const char *what() const throw();
 	};
 	class InvalidLoginCommandException : public std::exception {
-	   public:
-		virtual const char *what() const throw();
-	};
-	class ClosedClientException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};
