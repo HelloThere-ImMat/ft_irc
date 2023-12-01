@@ -9,14 +9,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Install Clang-Format
-        run: |
-          wget https://releases.llvm.org/14.0.0/clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-          tar -xf clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-20.04.tar.xz
-          sudo cp clang+llvm-14.0.0-x86_64-linux-gnu-ubuntu-20.04/bin/clang-format /usr/bin/clang-format
-          clang-format --version  # Verify installation
-
       - uses: cpp-linter/cpp-linter-action@v2
         id: linter
         continue-on-error: true
