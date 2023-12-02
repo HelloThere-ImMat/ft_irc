@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/01 15:16:12 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/02 19:47:51 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,9 @@ static std::string getFormattedMessage(
 	const std::string mapPattern[PATTERN_COUNT][2] = {
 		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
 		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},
-		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()}};
+		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()},
+		{"<username>", client->getUsername()}, {"<hostname>", HOST_NAME}};
+
 	std::string formattedMessage = message;
 
 	for (size_t i = 0; i < PATTERN_COUNT; ++i) {
@@ -168,6 +170,17 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 		throw SendFailException();
 	else
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
+}
+
+void Server::sendPrivateMessage(const std::string &message, Client *const client) const {
+	static const std::string senderSpec = client->getNickname() + "!~" + client->getUsername() + "@localhost";
+	const std::string		 formatMessage =
+		":" + senderSpec + " " + message + END_MESSAGE;
+
+	if (send(client->getSocketFd(), formatMessage.c_str(), formatMessage.size(), 0) < 0)
+		throw SendFailException();
+	else
+		std::cout << RED << OUTMES_PREFIX << NC << message << std::endl;
 }
 
 void Server::sendFormattedMessage(

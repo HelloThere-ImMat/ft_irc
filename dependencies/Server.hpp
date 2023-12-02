@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/01 17:02:28 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/02 19:57:55 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@
 
 #define BUFFER_SIZE		 1024
 #define TIMEOUT			 -1
-#define PATTERN_COUNT	 6
+#define PATTERN_COUNT	 8
 #define MAX_CLIENT_COUNT 3
 
 // Parameters
@@ -35,6 +35,7 @@
 // STRINGS
 
 #define DOMAIN_NAME			 "ft_irc.local"
+#define HOST_NAME			 "localhost"
 #define NETWORK_NAME		 "IRC"
 #define SERVER_NAME			 "IRCserv"
 #define END_MESSAGE			 "\r\n"
@@ -56,10 +57,17 @@
 
 #define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
 
+//Specified Message
+
+#define JOIN_MESSAGE		"JOIN :"
+#define PRIVMSG_PREFIX		"PRIVMSG "
+
 // Message
 
-#define PONG_MESSAGE	"PONG <servername> :<nick>"
-#define PRIVMSG_PREFIX	":<client> PRIVMSG"
+#define UL_JOIN_MESSAGE		"353 <nick> = <arg> :"
+#define EUL_JOIN_MESSAGE	"366 <client> <arg> :End of /NAMES list."
+#define TOPIC_JOIN_MESSAGE	"332 <client> <arg> :default"
+#define PONG_MESSAGE		"PONG <servername> :<nick>"
 // Logs
 
 #define CLOSED_CLIENT_MESSAGE "Client has been disconnected"
@@ -110,6 +118,7 @@ class Server {
 	void printLog(const std::string &logMessage) const;
 	//    Send Methods
 	void sendMessage(const std::string &message, const int clientFd) const;
+	void sendPrivateMessage(const std::string &message, Client *const client) const;
 	void sendFormattedMessage(
 		const std::string &message, const Client *const client) const;
 	//    Poll Methods
@@ -137,7 +146,8 @@ class Server {
 	void privmsg(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
-	bool isNicknameAlreadyUsed(const std::string &nickname);
+	bool	isNicknameAlreadyUsed(const std::string &nickname);
+	void	sendJoinMessage(Channel *channel, Client *const client, std::string channelName);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:

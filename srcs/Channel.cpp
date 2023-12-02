@@ -6,31 +6,40 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/01 17:07:39 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/02 20:07:16 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
-Channel::Channel(std::string name, int operatorFd)
+Channel::Channel(std::string name, Client *const client)
 {
 	_name = name;
-	_userFds.push_back(operatorFd);
+	userFds.push_back(client->getSocketFd());
+	userNames.push_back("@" + client->getNickname());
 	std::cout << "Successfully created a Channel" << std::endl;
 }
 
 
-void Channel::addNewUser(int userFd)
+void Channel::addNewUser(Client *const client)
 {
-	std::cout << "Successfully joined a Channel" << std::cout;
-	_userFds.push_back(userFd);
+	userFds.push_back(client->getSocketFd());
+	userNames.push_back(client->getNickname());
 }
 
-void Channel::removeUser(int userFd)
+void Channel::removeUser(Client *const client)
 {
-	for (std::vector<int>::iterator it = _userFds.begin(); it != _userFds.end(); it++)
+	int userFd = client->getSocketFd();
+	std::string nickname = client->getNickname();
+	for (std::vector<int>::iterator it = userFds.begin(); it != userFds.end(); it++)
 	{
 		if (*it == userFd)
-			_userFds.erase(it);
+			userFds.erase(it);
 	}
+	//remove from usernames aswell
+}
+
+const std::string &Channel::getName() const
+{
+	return _name;
 }

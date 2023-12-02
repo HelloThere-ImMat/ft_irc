@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/01 15:02:42 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/02 00:35:44 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 #include <unistd.h>
+#include <netdb.h>
 
 #include <string>
 
@@ -56,4 +57,5 @@ class Client {
 	std::string _lastCmd;
 	std::string _lastArg;
 	std::string _buffer;
+	addrinfo	*_address;
 };
