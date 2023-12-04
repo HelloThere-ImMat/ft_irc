@@ -23,7 +23,8 @@ jobs:
   #       run: |
   #         echo "some linter checks failed. ${{ steps.linter.outputs.checks-failed }}"
   #         exit 1
-      
+      - name: Installation
+        run: sudo apt-get install bear
       - name: Linter
         run: make linter
       
