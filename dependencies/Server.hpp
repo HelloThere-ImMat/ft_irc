@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 12:49:01 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/04 12:55:37 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,15 +80,6 @@
 #define LISTEN_FAIL__ERROR "listening failed"
 #define READ_FAIL__ERROR   "reading failed"
 #define SEND_FAIL__ERROR   "sending failed"
-#define WRONG_CMD__ERROR   "Invalid Login Command!"
-
-// Errors
-
-#define LISTEN_FAIL__ERROR "listening failed"
-#define READ_FAIL__ERROR   "reading failed"
-#define SEND_FAIL__ERROR   "sending failed"
-#define WRONG_PASS__ERROR  "Invalid password!"
-#define MISS_PASS__ERROR   "Password is missing!"
 #define WRONG_CMD__ERROR   "Invalid Login Command!"
 
 class Server {

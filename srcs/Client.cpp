@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:30:35 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 12:45:21 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/04 12:55:57 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@ Client::Client(const int sockfd) : _sockfd(sockfd), _loginMask(EMPTY_LOGIN) {}
 // Destructor
 
 Client::~Client() { close(_sockfd); }
-
-// Getters
 
 // Getters
 

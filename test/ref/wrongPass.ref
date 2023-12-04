@@ -1,0 +1,9 @@
+[0;90mPort: 6667[0m
+[0;90mPassword: lol[0m
+[0;34m<< [0mCAP LS
+[0;34m<< [0mPASS i
+[0;32m>> [0m464  :Password incorrect
+[0;32m>> [0mERROR :Connection closed
+[0;90mClient has been disconnected[0m
+[0;34m<< [0mNICK screw
+Exited by signal
