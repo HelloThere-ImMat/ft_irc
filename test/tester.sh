@@ -17,7 +17,7 @@ ADDRESS=127.0.0.1
 PORT=6667
 PASSWORD=lol
 
-files=("successLog" "failedLog")
+files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick")
 
 #################
 ### FUNCTIONS ###
@@ -32,7 +32,7 @@ function ircTest() {
 	ircserv_pid=$!
 	sleep 1
 	cat ${infile} | sed 's/$/\r/g' | nc ${ADDRESS} ${PORT} >/dev/null &
-	sleep 2
+	sleep 1
 	kill -s SIGINT $ircserv_pid
 	diff "${outfile}" "${outref}"
 	return $?

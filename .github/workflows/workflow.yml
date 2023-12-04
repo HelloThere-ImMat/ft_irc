@@ -25,4 +25,4 @@ jobs:
           exit 1
       
       - name: Tester
-        run: make re test
+        run: make re test; make re debug=true test

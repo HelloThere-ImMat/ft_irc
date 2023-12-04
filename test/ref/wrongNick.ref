@@ -1,0 +1,8 @@
+[0;90mPort: 6667[0m
+[0;90mPassword: lol[0m
+[0;34m<< [0mCAP LS
+[0;34m<< [0mPASS lol
+[0;34m<< [0mNICK 5screw
+[0;32m>> [0m432  5screw :Erroneus nickname
+[0;34m<< [0mUSER pouet
+Exited by signal
