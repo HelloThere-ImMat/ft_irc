@@ -7,3 +7,4 @@ repos:
         args: [-i, --style=file]
       - id: clang-tidy
       - id: cppcheck
+        args: [--check-config]

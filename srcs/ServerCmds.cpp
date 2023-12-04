@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerCmds.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/04 15:16:53 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 14:34:19 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,16 +34,14 @@ static bool isNicknameValid(const std::string &nickname) {
 	return isdigit(nickname[0]) == false && areOnlyAuthorizedChar(nickname);
 }
 
-static std::string getFullMessage(const std::vector<std::string> &cmd)
-{
-	std::string fullMessage;
-	int size = cmd.size();
-	int i = 3;
-	if (size > 2)
-	{
+static std::string getFullMessage(const std::vector<std::string> &cmd) {
+	const size_t size = cmd.size();
+	std::string	 fullMessage;
+
+	if (size > 2) {
 		fullMessage = cmd[2];
-		while (i < size)
-			fullMessage += " " + cmd[i++];
+		size_t i = 3;
+		while (i < size) fullMessage += " " + cmd[i++];
 	}
 	return (fullMessage);
 }
@@ -106,18 +104,20 @@ void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
 void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 	(void)cmd;
 	sendFormattedMessage(PONG_MESSAGE, client);
-	_clientMap.printUserList();
 }
 
-void Server::sendJoinMessage(Channel *channel, Client *client, std::string channelName)
-{
+void Server::sendJoinMessage(
+	Channel *channel, Client *client, std::string channelName) {
 	std::string channelUserList;
 
 	printLog(client->getNickname());
 	sendPrivateMessage(JOIN_MESSAGE + channelName, client, client);
-	for (std::map<std::string, SpecifiedClient>::iterator it = channel->userMap.begin(); it != channel->userMap.end(); it++) {
+	for (std::map<std::string, SpecifiedClient>::iterator it =
+			 channel->userMap.begin();
+		 it != channel->userMap.end(); ++it) {
 		if (it->second.client->getSocketFd() != client->getSocketFd())
-			sendPrivateMessage(JOIN_MESSAGE + channelName, client, it->second.client);
+			sendPrivateMessage(
+				JOIN_MESSAGE + channelName, client, it->second.client);
 	}
 	if (!channel->topic.empty())
 		sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic, client);
@@ -127,18 +127,15 @@ void Server::sendJoinMessage(Channel *channel, Client *client, std::string chann
 }
 
 void Server::join(const std::vector<std::string> &cmd, Client *const client) {
-	if (!cmd[1].empty())
-	{
-		std::map<std::string, Channel *>::iterator it = _channels.find("#" + cmd[1]);
-		if (it == _channels.end())
-		{
+	if (!cmd[1].empty()) {
+		std::map<std::string, Channel *>::iterator it =
+			_channels.find("#" + cmd[1]);
+		if (it == _channels.end()) {
 			Channel *channel = new Channel(cmd[1], client);
-			_channels["#" + cmd[1]] = channel; 
+			_channels["#" + cmd[1]] = channel;
 			printLog("New Channel !");
 			sendJoinMessage(channel, client, cmd[1]);
-		}
-		else
-		{
+		} else {
 			it->second->addNewUser(client);
 			printLog("Join Channel !");
 			sendJoinMessage(it->second, client, cmd[1]);
@@ -146,44 +143,44 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 	}
 }
 
-void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
-{
-	std::string senderNickname = client->getNickname();
+void Server::privmsg(
+	const std::vector<std::string> &cmd, Client *const client) {
 	std::string fullMessage = getFullMessage(cmd);
 
 	printLog("1-> Searching for :" + cmd[1] + " channel");
-	if (_channels.find("#" + cmd[1]) != _channels.end())
-	{
-		Channel *channel  = _channels.find("#" + cmd[1])->second;
+	if (_channels.find("#" + cmd[1]) != _channels.end()) {
+		Channel *channel = _channels.find("#" + cmd[1])->second;
 		printLog("2 -> Found a channel :" + channel->getName());
-		for (std::map<std::string, SpecifiedClient>::iterator it = channel->userMap.begin(); it != channel->userMap.end(); it++)
-		{
-			if (it->second.client->getSocketFd() != client->getSocketFd())
-			{
-				printLog("3 -> Sent channel message to :" + it->second.client->getNickname());
-				sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, it->second.client);
+		for (std::map<std::string, SpecifiedClient>::iterator it =
+				 channel->userMap.begin();
+			 it != channel->userMap.end(); ++it) {
+			if (it->second.client->getSocketFd() != client->getSocketFd()) {
+				printLog("3 -> Sent channel message to :" +
+						 it->second.client->getNickname());
+				sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage,
+					client, it->second.client);
 			}
 		}
-	}
-	else if (_clientMap.getClient(cmd[1]) != NULL)
-		sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, _clientMap.getClient(cmd[1]));
+	} else if (_clientMap.getClient(cmd[1]) != NULL)
+		sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client,
+			_clientMap.getClient(cmd[1]));
 	else
 		printLog("Cound not send message");
 }
 
-void Server::part(const std::vector<std::string> &cmd, Client *const client)
-{
+void Server::part(const std::vector<std::string> &cmd, Client *const client) {
 	std::cout << cmd[1] << std::endl;
-	if (_channels.find("#" + cmd[1]) !=	_channels.end()) {
+	if (_channels.find("#" + cmd[1]) != _channels.end()) {
 		Channel *channel = _channels.find("#" + cmd[1])->second;
-		for (std::map<std::string, SpecifiedClient>::iterator it = channel->userMap.begin(); it != channel->userMap.end(); it++) {
-			sendPrivateMessage(PART_MESSAGE + cmd[1], client, it->second.client);
+		for (std::map<std::string, SpecifiedClient>::iterator it =
+				 channel->userMap.begin();
+			 it != channel->userMap.end(); ++it) {
+			sendPrivateMessage(
+				PART_MESSAGE + cmd[1], client, it->second.client);
 		}
 		channel->removeUser(client);
-	}
-	else
+	} else
 		printLog("Could not part channel");
-
 }
 
 void Server::error(const std::string &message, Client *const client) {

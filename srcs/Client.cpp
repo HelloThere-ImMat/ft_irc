@@ -11,15 +11,17 @@
 /* ************************************************************************** */
 
 #include "Client.hpp"
-#include <iostream>
+
 #include <string.h>
+
+#include <iostream>
 
 // Constructors
 
 Client::Client(const int sockfd) : _sockfd(sockfd), _loginMask(EMPTY_LOGIN) {}
 
-Client::Client(const Client &ref) : _sockfd(ref.getSocketFd()), _loginMask(ref.getLogMask())
-{
+Client::Client(const Client &ref)
+	: _sockfd(ref.getSocketFd()), _loginMask(ref.getLogMask()) {
 	_nickname = ref.getNickname();
 	_username = ref.getUsername();
 	_buffer = ref.getBuffer();
