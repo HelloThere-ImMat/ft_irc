@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/04 11:41:38 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 14:43:00 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,19 +115,13 @@ void Server::sendJoinMessage(Channel *channel, Client *client, std::string chann
 
 	printLog(client->getNickname());
 	sendPrivateMessage(JOIN_MESSAGE + channelName, client, client);
-	for (std::vector<int>::iterator it = channel->userFds.begin(); it != channel->userFds.end(); it++) {
-		if (*it != client->getSocketFd())
-			sendPrivateMessage(JOIN_MESSAGE + channelName, client, _clientMap.getClient(*it));
+	for (std::map<std::string, SpecifiedClient>::iterator it = channel->userMap.begin(); it != channel->userMap.end(); it++) {
+		if (it->second.client->getSocketFd() != client->getSocketFd())
+			sendPrivateMessage(JOIN_MESSAGE + channelName, client, it->second.client);
 	}
 	if (!channel->topic.empty())
 		sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic, client);
-	for (std::vector<std::string>::iterator it = channel->userNicks.begin(); it != channel->userNicks.end(); it++)
-	{
-		if (it == channel->userNicks.begin())
-			channelUserList = *it;
-		else
-			channelUserList += " " + *it;
-	}
+	channelUserList = channel->getUserList();
 	sendFormattedMessage(UL_JOIN_MESSAGE + channelUserList, client);
 	sendFormattedMessage(EUL_JOIN_MESSAGE, client);
 }
@@ -162,12 +156,12 @@ void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
 	{
 		Channel *channel  = _channels.find("#" + cmd[1])->second;
 		printLog("2 -> Found a channel :" + channel->getName());
-		for (std::vector<int>::iterator it = channel->userFds.begin(); it != channel->userFds.end(); it++)
+		for (std::map<std::string, SpecifiedClient>::iterator it = channel->userMap.begin(); it != channel->userMap.end(); it++)
 		{
-			if (*it != client->getSocketFd())
+			if (it->second.client->getSocketFd() != client->getSocketFd())
 			{
-				printLog("3 -> Sent channel message to :" + _clientMap.getClient(*it)->getNickname());
-				sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, _clientMap.getClient(*it));
+				printLog("3 -> Sent channel message to :" + it->second.client->getNickname());
+				sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, it->second.client);
 			}
 		}
 	}
@@ -175,6 +169,21 @@ void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
 		sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, _clientMap.getClient(cmd[1]));
 	else
 		printLog("Cound not send message");
+}
+
+void Server::part(const std::vector<std::string> &cmd, Client *const client)
+{
+	std::cout << cmd[1] << std::endl;
+	if (_channels.find("#" + cmd[1]) !=	_channels.end()) {
+		Channel *channel = _channels.find("#" + cmd[1])->second;
+		for (std::map<std::string, SpecifiedClient>::iterator it = channel->userMap.begin(); it != channel->userMap.end(); it++) {
+			sendPrivateMessage(PART_MESSAGE + cmd[1], client, it->second.client);
+		}
+		channel->removeUser(client);
+	}
+	else
+		printLog("Could not part channel");
+
 }
 
 void Server::error(const std::string &message, Client *const client) {

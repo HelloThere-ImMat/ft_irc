@@ -6,13 +6,12 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/03 14:13:45 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 13:50:20 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <map>
 #include <sstream>
 #include <vector>
 
@@ -60,6 +59,7 @@
 //Specified Message
 
 #define JOIN_MESSAGE		"JOIN :"
+#define PART_MESSAGE		"PART "
 #define PRIVMSG_PREFIX		"PRIVMSG "
 
 // Message
@@ -144,6 +144,7 @@ class Server {
 	void ping(const std::vector<std::string> &cmd, Client *const client);
 	void join(const std::vector<std::string> &cmd, Client *const client);
 	void privmsg(const std::vector<std::string> &cmd, Client *const client);
+	void part(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
 	bool	isNicknameAlreadyUsed(const std::string &nickname);

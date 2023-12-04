@@ -6,44 +6,61 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/04 11:39:36 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 14:52:56 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
+// Static
+
+std::string getSpecifiedNick(SpecifiedClient &spClient)
+{
+	if (spClient.isOp)
+		return ("@" + spClient.client->getNickname());
+	return (spClient.client->getNickname());
+}
+
+// Methods
+
 Channel::Channel(std::string name, Client *const client)
 {
+	SpecifiedClient spClient = {.client = client, .isOp = true};
+
 	_name = name;
-	userFds.push_back(client->getSocketFd());
-	_operatorFd = client->getSocketFd();
-	userNicks.push_back("@" + client->getNickname());
+	userMap[client->getNickname()] = spClient;
 	std::cout << "Successfully created a Channel" << std::endl;
 }
 
 Channel::~Channel() {
-	// _userNicks.clear();
+	userMap.clear();
 }
 
 void Channel::addNewUser(Client *const client)
 {
-	userFds.push_back(client->getSocketFd());
-	userNicks.push_back(client->getNickname());
-	// mettre les deux vectors en un (std::vector<Client *>)
+	SpecifiedClient spClient = {.client = client, .isOp = false};
+
+	userMap[client->getNickname()] = spClient;
+}
+
+const std::string Channel::getUserList()
+{
+	std::string userList;
+	for (std::map<std::string, SpecifiedClient>::iterator it = userMap.begin(); it != userMap.end(); it++)
+	{
+		if (it == userMap.begin())
+			userList = getSpecifiedNick(it->second);
+		else
+			userList += " " + getSpecifiedNick(it->second);
+	}
+	return (userList);
 }
 
 void Channel::removeUser(Client *const client)
 {
-	int userFd = client->getSocketFd();
+	std::map<std::string, SpecifiedClient>::iterator it;
 	std::string nickname = client->getNickname();
-	for (std::vector<int>::iterator it = userFds.begin(); it != userFds.end(); it++) {
-		if (*it == userFd)
-			userFds.erase(it);
-	}	
-	for (std::vector<std::string>::iterator it = userNicks.begin(); it != userNicks.end(); it++) {
-		if (*it == nickname || *it == "@" + nickname)
-			userNicks.erase(it);
-	}
+	userMap.erase(nickname);
 }
 
 const std::string &Channel::getName() const

@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 11:52:07 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 12:36:59 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ Server::Server(const std::string &port, const std::string &password)
 	_cmdMap["PING"] = &Server::ping;
 	_cmdMap["JOIN"] = &Server::join;
 	_cmdMap["PRIVMSG"] = &Server::privmsg;
+	_cmdMap["PART"] = &Server::part;
 
 	printLog("Port: " + port);
 	printLog("Password: " + password);
