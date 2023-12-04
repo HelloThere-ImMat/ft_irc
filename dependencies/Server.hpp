@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 13:50:20 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 15:14:32 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,6 @@
 #define READ_FAIL__ERROR   "reading failed"
 #define SEND_FAIL__ERROR   "sending failed"
 #define WRONG_CMD__ERROR   "Invalid Login Command!"
-
 
 class Server {
 	typedef void (Server::*CommandFunction)(

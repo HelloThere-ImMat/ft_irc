@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:30:35 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/02 00:55:55 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 15:16:20 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,20 +16,7 @@
 
 // Constructors
 
-Client::Client(const int sockfd) : _sockfd(sockfd), _loginMask(EMPTY_LOGIN) {
-	addrinfo	hints;
-
-	memset(&hints, 0, sizeof(struct addrinfo));
-
-
-	hints.ai_family = AF_UNSPEC;
-	hints.ai_socktype = SOCK_STREAM;
-	//getaddrinfo("127.0.0.1", NULL, &hints, &_address);
-	//std::cout << "hola" << std::endl;
-	////std::cout << "Protocol :" << _address->ai_protocol << std::endl;
-	//std::cout << "Canonname :" << _address->ai_canonname << std::endl;
-	//std::cout << "Family :" << _address->ai_family << std::endl;
-}
+Client::Client(const int sockfd) : _sockfd(sockfd), _loginMask(EMPTY_LOGIN) {}
 
 Client::Client(const Client &ref) : _sockfd(ref.getSocketFd()), _loginMask(ref.getLogMask())
 {
@@ -41,8 +28,6 @@ Client::Client(const Client &ref) : _sockfd(ref.getSocketFd()), _loginMask(ref.g
 // Destructor
 
 Client::~Client() { close(_sockfd); }
-
-// Getters
 
 // Getters
 
