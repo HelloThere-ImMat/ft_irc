@@ -3,11 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>                    +#+  +:+       +#+
- */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/04 14:52:59 by mat              ###   ########.fr       */
+/*   Created: 2023/12/04 14:37:48 by rbroque           #+#    #+#             */
+/*   Updated: 2023/12/04 14:38:26 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +18,10 @@
 // DEBUGING
 #include <iostream>
 
-struct SpecifiedClient {
+typedef struct s_specifiedClient {
 	Client *client;
 	bool	isOp;
-};
+} SpecifiedClient;
 
 class Channel {
    public:
