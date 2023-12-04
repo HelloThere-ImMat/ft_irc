@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/02 20:14:28 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 11:41:38 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,20 @@ static bool areOnlyAuthorizedChar(const std::string &str) {
 
 static bool isNicknameValid(const std::string &nickname) {
 	return isdigit(nickname[0]) == false && areOnlyAuthorizedChar(nickname);
+}
+
+static std::string getFullMessage(const std::vector<std::string> &cmd)
+{
+	std::string fullMessage;
+	int size = cmd.size();
+	int i = 3;
+	if (size > 2)
+	{
+		fullMessage = cmd[2];
+		while (i < size)
+			fullMessage += " " + cmd[i++];
+	}
+	return (fullMessage);
 }
 
 /////////////
@@ -99,12 +113,17 @@ void Server::sendJoinMessage(Channel *channel, Client *client, std::string chann
 {
 	std::string channelUserList;
 
-	sendPrivateMessage(JOIN_MESSAGE + channelName, client);
+	printLog(client->getNickname());
+	sendPrivateMessage(JOIN_MESSAGE + channelName, client, client);
+	for (std::vector<int>::iterator it = channel->userFds.begin(); it != channel->userFds.end(); it++) {
+		if (*it != client->getSocketFd())
+			sendPrivateMessage(JOIN_MESSAGE + channelName, client, _clientMap.getClient(*it));
+	}
 	if (!channel->topic.empty())
 		sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic, client);
-	for (std::vector<std::string>::iterator it = channel->userNames.begin(); it != channel->userNames.end(); it++)
+	for (std::vector<std::string>::iterator it = channel->userNicks.begin(); it != channel->userNicks.end(); it++)
 	{
-		if (it == channel->userNames.begin())
+		if (it == channel->userNicks.begin())
 			channelUserList = *it;
 		else
 			channelUserList += " " + *it;
@@ -121,11 +140,13 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 		{
 			Channel *channel = new Channel(cmd[1], client);
 			_channels["#" + cmd[1]] = channel; 
+			printLog("New Channel !");
 			sendJoinMessage(channel, client, cmd[1]);
 		}
 		else
 		{
 			it->second->addNewUser(client);
+			printLog("Join Channel !");
 			sendJoinMessage(it->second, client, cmd[1]);
 		}
 	}
@@ -134,6 +155,7 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
 {
 	std::string senderNickname = client->getNickname();
+	std::string fullMessage = getFullMessage(cmd);
 
 	printLog("1-> Searching for :" + cmd[1] + " channel");
 	if (_channels.find("#" + cmd[1]) != _channels.end())
@@ -145,12 +167,12 @@ void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
 			if (*it != client->getSocketFd())
 			{
 				printLog("3 -> Sent channel message to :" + _clientMap.getClient(*it)->getNickname());
-				sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + cmd[2], _clientMap.getClient(*it));
+				sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, _clientMap.getClient(*it));
 			}
 		}
 	}
 	else if (_clientMap.getClient(cmd[1]) != NULL)
-		sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + cmd[2], _clientMap.getClient(cmd[1]));
+		sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, _clientMap.getClient(cmd[1]));
 	else
 		printLog("Cound not send message");
 }

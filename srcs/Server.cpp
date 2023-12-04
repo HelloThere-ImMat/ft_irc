@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/02 19:47:51 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 11:52:07 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -172,15 +172,15 @@ void Server::sendMessage(const std::string &message, const int clientFd) const {
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
 }
 
-void Server::sendPrivateMessage(const std::string &message, Client *const client) const {
-	static const std::string senderSpec = client->getNickname() + "!~" + client->getUsername() + "@localhost";
+void Server::sendPrivateMessage(const std::string &message,Client *const sender, Client *const receiver) const {
+	const std::string senderSpec = sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
 	const std::string		 formatMessage =
 		":" + senderSpec + " " + message + END_MESSAGE;
 
-	if (send(client->getSocketFd(), formatMessage.c_str(), formatMessage.size(), 0) < 0)
+	if (send(receiver->getSocketFd(), formatMessage.c_str(), formatMessage.size(), 0) < 0)
 		throw SendFailException();
 	else
-		std::cout << RED << OUTMES_PREFIX << NC << message << std::endl;
+		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
 }
 
 void Server::sendFormattedMessage(

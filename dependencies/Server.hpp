@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/02 19:57:55 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/03 14:13:45 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -118,7 +118,7 @@ class Server {
 	void printLog(const std::string &logMessage) const;
 	//    Send Methods
 	void sendMessage(const std::string &message, const int clientFd) const;
-	void sendPrivateMessage(const std::string &message, Client *const client) const;
+	void sendPrivateMessage(const std::string &message, Client *const sender, Client *const receiver) const;
 	void sendFormattedMessage(
 		const std::string &message, const Client *const client) const;
 	//    Poll Methods
