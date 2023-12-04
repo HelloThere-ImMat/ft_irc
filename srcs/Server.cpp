@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 12:36:59 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/04 15:08:23 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,6 +79,9 @@ Server::~Server() {
 	delFdToPoll(_socket.getSocketFd());
 	if (_epollFd != 0)
 		close(_epollFd);
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++) {
+		delete it->second;
+	}
 }
 
 void Server::start() {
@@ -103,7 +106,8 @@ void Server::addNewClient() {
 
 void Server::closeClient(Client *const client) {
 	const int clientFd = client->getSocketFd();
-
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin(); it != _channels.end(); it++)
+		it->second->removeUser(client);
 	delFdToPoll(clientFd);
 	_clientMap.eraseClient(client);
 }
