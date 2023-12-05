@@ -6,24 +6,15 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:30:35 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 15:16:20 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:06:33 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Client.hpp"
-#include <iostream>
-#include <string.h>
 
 // Constructors
 
 Client::Client(const int sockfd) : _sockfd(sockfd), _loginMask(EMPTY_LOGIN) {}
-
-Client::Client(const Client &ref) : _sockfd(ref.getSocketFd()), _loginMask(ref.getLogMask())
-{
-	_nickname = ref.getNickname();
-	_username = ref.getUsername();
-	_buffer = ref.getBuffer();
-}
 
 // Destructor
 

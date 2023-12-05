@@ -6,33 +6,34 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/04 14:52:59 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:06:02 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <map>
 #include <algorithm>
-#include "Client.hpp"
+#include "SendCmd.hpp"
 
-// DEBUGING
-#include <iostream>
+#define OP_PREFIX	"@"
 
 struct SpecifiedClient
 {
-	Client	*client;
+	const Client *client;
 	bool 	isOp;
 };
 
 class Channel {
 	public :
-		Channel(std::string name, Client *const client);
+		Channel(const std::string name, const Client *const client);
 		~Channel();
-		void addNewUser(Client *const client);
-		void removeUser(Client *const client);
-		const std::string getUserList();
+		void addNewUser(const Client *const client);
+		void removeUser(const Client *const client);
+		const std::string getUserList() const;
 		const std::string &getName() const;
-		std::map<std::string, SpecifiedClient>	userMap;
-		std::string									topic;
+		void sendToChannel(const Client *const client, std::string message, bool sendToSelf) const;
+		bool userIsInChannel(Client *const client);
 	private:
-		std::string								_name;
+		std::map<std::string, SpecifiedClient>	userMap;
+		std::string								topic;
+		const std::string						_name;
 };

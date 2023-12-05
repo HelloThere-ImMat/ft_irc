@@ -6,26 +6,29 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 15:14:32 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:01:22 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <sstream>
 #include <vector>
+#include <exception>
+#include <string.h>
+#include <sys/epoll.h>
+#include <typeinfo>
 
 #include "ClientManager.hpp"
+#include "Signal.hpp"
 #include "Channel.hpp"
 #include "DataServ.hpp"
-#include "irc.hpp"
 
 // Count
 
-#define BUFFER_SIZE		 1024
-#define TIMEOUT			 -1
-#define PATTERN_COUNT	 8
-#define MAX_CLIENT_COUNT 3
+#define BUFFER_SIZE			 1024
+#define TIMEOUT				 -1
+#define MAX_CLIENT_COUNT	 3
+#define PRIVMSG_START_INDEX	 2
 
 // Parameters
 
@@ -33,41 +36,26 @@
 
 // STRINGS
 
-#define DOMAIN_NAME			 "ft_irc.local"
-#define HOST_NAME			 "localhost"
-#define NETWORK_NAME		 "IRC"
-#define SERVER_NAME			 "IRCserv"
-#define END_MESSAGE			 "\r\n"
 #define INMES_PREFIX		 "<< "
-#define OUTMES_PREFIX		 ">> "
 #define DEFAULT_USERNAME	 "Placeholder"
 #define SPECIAL_NICK_CHARSET "[]{}*\\|_"
+#define CHANNEL_PREFIX		 "#"
 
-// COLORS
-
-#define NC	   "\033[0m"
-#define RED	   "\033[0;31m"
-#define GREEN  "\033[0;32m"
-#define ORANGE "\033[0;33m"
-#define BLUE   "\033[0;34m"
-#define GREY   "\033[0;90m"
 
 // RPL
 
 #define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
 
-//Specified Message
-
-#define JOIN_MESSAGE		"JOIN :"
-#define PART_MESSAGE		"PART "
-#define PRIVMSG_PREFIX		"PRIVMSG "
-
 // Message
 
+#define JOIN_PREFIX			"JOIN :"
+#define PART_PREFIX			"PART "
 #define UL_JOIN_MESSAGE		"353 <nick> = <arg> :"
 #define EUL_JOIN_MESSAGE	"366 <client> <arg> :End of /NAMES list."
 #define TOPIC_JOIN_MESSAGE	"332 <client> <arg> :default"
 #define PONG_MESSAGE		"PONG <servername> :<nick>"
+#define PRIVMSG_PREFIX		"PRIVMSG "
+
 // Logs
 
 #define CLOSED_CLIENT_MESSAGE "Client has been disconnected"
@@ -88,7 +76,6 @@
 
 #define LISTEN_FAIL__ERROR "listening failed"
 #define READ_FAIL__ERROR   "reading failed"
-#define SEND_FAIL__ERROR   "sending failed"
 #define WRONG_CMD__ERROR   "Invalid Login Command!"
 
 class Server {
@@ -115,11 +102,6 @@ class Server {
 	ClientManager						   _clientMap;
 	// Private Methods
 	void printLog(const std::string &logMessage) const;
-	//    Send Methods
-	void sendMessage(const std::string &message, const int clientFd) const;
-	void sendPrivateMessage(const std::string &message, Client *const sender, Client *const receiver) const;
-	void sendFormattedMessage(
-		const std::string &message, const Client *const client) const;
 	//    Poll Methods
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
@@ -147,17 +129,13 @@ class Server {
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
 	bool	isNicknameAlreadyUsed(const std::string &nickname);
-	void	sendJoinMessage(Channel *channel, Client *const client, std::string channelName);
+	void	sendJoinMessage(Channel *const channel, const Client *const client, const std::string &channelName);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};
 	class ReadFailException : public std::exception {
-	   public:
-		virtual const char *what() const throw();
-	};
-	class SendFailException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};

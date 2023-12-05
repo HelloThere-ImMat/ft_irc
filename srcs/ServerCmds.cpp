@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/04 15:16:53 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:01:26 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,12 +38,15 @@ static std::string getFullMessage(const std::vector<std::string> &cmd)
 {
 	std::string fullMessage;
 	int size = cmd.size();
-	int i = 3;
+	int i = PRIVMSG_START_INDEX;
 	if (size > 2)
 	{
-		fullMessage = cmd[2];
 		while (i < size)
-			fullMessage += " " + cmd[i++];
+		{
+			if (i > PRIVMSG_START_INDEX)
+				fullMessage += " ";
+			fullMessage += cmd[i++];
+		}
 	}
 	return (fullMessage);
 }
@@ -59,24 +62,24 @@ void Server::cap(const std::vector<std::string> &cmd, Client *const client) {
 
 void Server::pass(const std::vector<std::string> &cmd, Client *const client) {
 	if (client->getLogMask() & PASS_LOGIN)
-		sendFormattedMessage(ERR_ALREADYREGISTERED, client);
+		SendCmd::sendFormattedMessage(ERR_ALREADYREGISTERED, client);
 	else if (cmd.size() < 2)
-		sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
+		SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
 	else if (cmd[1] == _password) {
 		client->addToLoginMask(PASS_LOGIN);
 	} else {
-		sendFormattedMessage(ERR_PASSWDMISMATCH, client);
+		SendCmd::sendFormattedMessage(ERR_PASSWDMISMATCH, client);
 		error(ERR_CLOSECONNECTION, client);
 	}
 }
 
 void Server::user(const std::vector<std::string> &cmd, Client *const client) {
 	if (client->getLogMask() & USER_LOGIN)
-		sendFormattedMessage(ERR_ALREADYREGISTERED, client);
+		SendCmd::sendFormattedMessage(ERR_ALREADYREGISTERED, client);
 	else {
 		if (cmd.size() < 2 || cmd[1].empty()) {
 			client->setUsername(DEFAULT_USERNAME);
-			sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
+			SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
 		} else if (cmd[1].length() > USERLEN) {
 			client->setUsername(cmd[1].substr(0, USERLEN));
 		} else
@@ -91,11 +94,11 @@ bool Server::isNicknameAlreadyUsed(const std::string &nickname) {
 
 void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
 	if (cmd[1].empty())
-		sendFormattedMessage(ERR_NONICKNAMEGIVEN, client);
+		SendCmd::sendFormattedMessage(ERR_NONICKNAMEGIVEN, client);
 	else if (isNicknameValid(cmd[1]) == false)
-		sendFormattedMessage(ERR_ERRONEUSNICKNAME, client);
+		SendCmd::sendFormattedMessage(ERR_ERRONEUSNICKNAME, client);
 	else if (isNicknameAlreadyUsed(cmd[1]))
-		sendFormattedMessage(ERR_NICKNAMEINUSE, client);
+		SendCmd::sendFormattedMessage(ERR_NICKNAMEINUSE, client);
 	else {
 		client->setNickname(cmd[1]);
 		_clientMap.updateClientNickname(client, cmd[1]);
@@ -105,35 +108,29 @@ void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
 
 void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 	(void)cmd;
-	sendFormattedMessage(PONG_MESSAGE, client);
-	_clientMap.printUserList();
+	SendCmd::sendFormattedMessage(PONG_MESSAGE, client);
 }
 
-void Server::sendJoinMessage(Channel *channel, Client *client, std::string channelName)
+void Server::sendJoinMessage(Channel *const channel, const Client *client, const std::string &channelName)
 {
 	std::string channelUserList;
-
-	printLog(client->getNickname());
-	sendPrivateMessage(JOIN_MESSAGE + channelName, client, client);
-	for (std::map<std::string, SpecifiedClient>::iterator it = channel->userMap.begin(); it != channel->userMap.end(); it++) {
-		if (it->second.client->getSocketFd() != client->getSocketFd())
-			sendPrivateMessage(JOIN_MESSAGE + channelName, client, it->second.client);
-	}
-	if (!channel->topic.empty())
-		sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic, client);
+	
+	channel->sendToChannel(client, JOIN_PREFIX + channelName, true);
+	//if (!channel->topic.empty())
+	//	SendCmd::sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic, client);
 	channelUserList = channel->getUserList();
-	sendFormattedMessage(UL_JOIN_MESSAGE + channelUserList, client);
-	sendFormattedMessage(EUL_JOIN_MESSAGE, client);
+	SendCmd::sendFormattedMessage(UL_JOIN_MESSAGE + channelUserList, client);
+	SendCmd::sendFormattedMessage(EUL_JOIN_MESSAGE, client);
 }
 
 void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 	if (!cmd[1].empty())
 	{
-		std::map<std::string, Channel *>::iterator it = _channels.find("#" + cmd[1]);
+		std::map<std::string, Channel *>::iterator it = _channels.find(CHANNEL_PREFIX + cmd[1]);
 		if (it == _channels.end())
 		{
 			Channel *channel = new Channel(cmd[1], client);
-			_channels["#" + cmd[1]] = channel; 
+			_channels[CHANNEL_PREFIX + cmd[1]] = channel; 
 			printLog("New Channel !");
 			sendJoinMessage(channel, client, cmd[1]);
 		}
@@ -151,34 +148,23 @@ void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
 	std::string senderNickname = client->getNickname();
 	std::string fullMessage = getFullMessage(cmd);
 
-	printLog("1-> Searching for :" + cmd[1] + " channel");
-	if (_channels.find("#" + cmd[1]) != _channels.end())
+	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end())
 	{
-		Channel *channel  = _channels.find("#" + cmd[1])->second;
-		printLog("2 -> Found a channel :" + channel->getName());
-		for (std::map<std::string, SpecifiedClient>::iterator it = channel->userMap.begin(); it != channel->userMap.end(); it++)
-		{
-			if (it->second.client->getSocketFd() != client->getSocketFd())
-			{
-				printLog("3 -> Sent channel message to :" + it->second.client->getNickname());
-				sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, it->second.client);
-			}
-		}
+		Channel *channel  = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
+		if (channel->userIsInChannel(client))
+			channel->sendToChannel(client, PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, false);
 	}
 	else if (_clientMap.getClient(cmd[1]) != NULL)
-		sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, _clientMap.getClient(cmd[1]));
+		SendCmd::sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, _clientMap.getClient(cmd[1]));
 	else
 		printLog("Cound not send message");
 }
 
 void Server::part(const std::vector<std::string> &cmd, Client *const client)
 {
-	std::cout << cmd[1] << std::endl;
-	if (_channels.find("#" + cmd[1]) !=	_channels.end()) {
-		Channel *channel = _channels.find("#" + cmd[1])->second;
-		for (std::map<std::string, SpecifiedClient>::iterator it = channel->userMap.begin(); it != channel->userMap.end(); it++) {
-			sendPrivateMessage(PART_MESSAGE + cmd[1], client, it->second.client);
-		}
+	if (_channels.find(CHANNEL_PREFIX + cmd[1]) !=	_channels.end()) {
+		Channel *channel = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
+		channel->sendToChannel(client, PART_PREFIX + cmd[1], true);
 		channel->removeUser(client);
 	}
 	else
@@ -188,7 +174,7 @@ void Server::part(const std::vector<std::string> &cmd, Client *const client)
 
 void Server::error(const std::string &message, Client *const client) {
 	const std::string formatErrorMessage = ERROR_PREFIX + message;
-	sendFormattedMessage(formatErrorMessage, client);
+	SendCmd::sendFormattedMessage(formatErrorMessage, client);
 	closeClient(client);
 	printLog(CLOSED_CLIENT_MESSAGE);
 }

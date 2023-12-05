@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/01 16:47:10 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 10:44:15 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,6 @@ class ClientManager {
 	// Methods to retrieve a client based on either socket or nickname
 	Client* getClient(const std::string& nickname);
 	Client* getClient(const int sockFd);
-	//debug
-	void 	printUserList();
-
    private:
 	std::map<int, Client*>		   _socketToClientMap;
 	std::map<std::string, Client*> _nicknameToClientMap;

@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 15:16:35 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 09:58:35 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,33 +26,6 @@ static std::vector<std::string> getCommandTokens(
 		tokens.push_back(token);
 	}
 	return tokens;
-}
-
-static std::string replacePatterns(std::string original,
-	const std::string &pattern, const std::string &replacement) {
-	size_t startPos = 0;
-	while ((startPos = original.find(pattern, startPos)) != std::string::npos) {
-		original.replace(startPos, pattern.length(), replacement);
-		startPos += replacement.length();
-	}
-	return original;
-}
-
-static std::string getFormattedMessage(
-	const std::string &message, const Client *const client) {
-	const std::string mapPattern[PATTERN_COUNT][2] = {
-		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
-		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},
-		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()},
-		{"<username>", client->getUsername()}, {"<hostname>", HOST_NAME}};
-
-	std::string formattedMessage = message;
-
-	for (size_t i = 0; i < PATTERN_COUNT; ++i) {
-		formattedMessage = replacePatterns(
-			formattedMessage, mapPattern[i][0], mapPattern[i][1]);
-	}
-	return formattedMessage;
 }
 
 ////////////
@@ -164,35 +137,6 @@ void Server::printLog(const std::string &logMessage) const {
 	std::cout << GREY << logMessage << NC << std::endl;
 }
 
-//	Send Methods
-
-void Server::sendMessage(const std::string &message, const int clientFd) const {
-	static const std::string domainName = DOMAIN_NAME;
-	const std::string		 formatMessage =
-		":" + domainName + " " + message + END_MESSAGE;
-
-	if (send(clientFd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
-		throw SendFailException();
-	else
-		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
-}
-
-void Server::sendPrivateMessage(const std::string &message,Client *const sender, Client *const receiver) const {
-	const std::string senderSpec = sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
-	const std::string		 formatMessage =
-		":" + senderSpec + " " + message + END_MESSAGE;
-
-	if (send(receiver->getSocketFd(), formatMessage.c_str(), formatMessage.size(), 0) < 0)
-		throw SendFailException();
-	else
-		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
-}
-
-void Server::sendFormattedMessage(
-	const std::string &message, const Client *const client) const {
-	sendMessage(getFormattedMessage(message, client), client->getSocketFd());
-}
-
 //	Poll Methods
 
 void Server::addFdToPoll(const int fd) {
@@ -260,10 +204,10 @@ void Server::handleCmd(
 		if (it != _cmdMap.end())
 			(this->*fct)(cmd, client);
 		else
-			sendFormattedMessage(ERR_UNKNOWNCOMMAND, client);
+			SendCmd::sendFormattedMessage(ERR_UNKNOWNCOMMAND, client);
 	} catch (std::string &e) {	// Catch only command exception
 		std::cout << client << ": " << e << std::endl;
-		sendFormattedMessage(e, client);
+		SendCmd::sendFormattedMessage(e, client);
 	}
 }
 
@@ -300,7 +244,7 @@ void Server::getUserLogin(
 		setClientLogAssets(cmd, client);
 	}
 	if (client->isAuthenticated()) {
-		sendFormattedMessage(RPL_WELCOME, client);
+		SendCmd::sendFormattedMessage(RPL_WELCOME, client);
 		printLog("Client is authenticated: Nickname[" + client->getNickname() +
 				 "]; Username[" + client->getUsername() + "]");
 	}
@@ -316,9 +260,6 @@ const char *Server::ReadFailException::what() const throw() {
 	return (READ_FAIL__ERROR);
 }
 
-const char *Server::SendFailException::what() const throw() {
-	return (SEND_FAIL__ERROR);
-}
 
 const char *Server::InvalidLoginCommandException::what() const throw() {
 	return (WRONG_CMD__ERROR);

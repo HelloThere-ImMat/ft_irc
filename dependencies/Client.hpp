@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:32:02 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 15:17:10 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 10:43:30 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,6 @@
 
 class Client {
    public:
-	Client(const Client &ref);
 	explicit Client(const int sockfd);
 	~Client();
 	// Getters
