@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:59 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 14:17:06 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/05 15:03:46 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 
 // Static Funcs
 
-static std::string replacePatterns(std::string &original,
+static std::string replacePatterns(const std::string &original,
 	const std::string &pattern, const std::string &replacement) {
 	size_t startPos = 0;
-	while ((startPos = original.find(pattern, startPos)) != std::string::npos) {
-		original.replace(startPos, pattern.length(), replacement);
+	std::string newStr = original;
+
+	while ((startPos = newStr.find(pattern, startPos)) != std::string::npos) {
+		newStr.replace(startPos, pattern.length(), replacement);
 		startPos += replacement.length();
 	}
-	return original;
+	return newStr;
 }
 
 static std::string getFormattedMessage(

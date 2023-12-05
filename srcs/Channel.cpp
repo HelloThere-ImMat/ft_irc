@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 14:31:36 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/05 15:02:29 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // Static
 
-std::string getSpecifiedNick(const SpecifiedClient &spClient) {
+static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 	if (spClient.isOp)
 		return (OP_PREFIX + spClient.client->getNickname());
 	return (spClient.client->getNickname());
