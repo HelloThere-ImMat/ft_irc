@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 21:46:02 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/05 11:12:57 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,8 @@
 #include <map>
 
 #include "Client.hpp"
+// debug
+#include <iostream>
 
 class ClientManager {
    public:

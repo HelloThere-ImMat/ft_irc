@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/04 12:55:22 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/05 11:14:34 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,31 +28,6 @@ static std::vector<std::string> getCommandTokens(
 	return tokens;
 }
 
-static std::string replacePatterns(std::string original,
-	const std::string &pattern, const std::string &replacement) {
-	size_t startPos = 0;
-	while ((startPos = original.find(pattern, startPos)) != std::string::npos) {
-		original.replace(startPos, pattern.length(), replacement);
-		startPos += replacement.length();
-	}
-	return original;
-}
-
-static std::string getFormattedMessage(
-	const std::string &message, const Client *const client) {
-	const std::string mapPattern[PATTERN_COUNT][2] = {
-		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
-		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},
-		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()}};
-	std::string formattedMessage = message;
-
-	for (size_t i = 0; i < PATTERN_COUNT; ++i) {
-		formattedMessage = replacePatterns(
-			formattedMessage, mapPattern[i][0], mapPattern[i][1]);
-	}
-	return formattedMessage;
-}
-
 ////////////
 // PUBLIC //
 ////////////
@@ -64,6 +39,9 @@ Server::Server(const std::string &port, const std::string &password)
 	_cmdMap["NICK"] = &Server::nick;
 	_cmdMap["CAP"] = &Server::cap;
 	_cmdMap["PING"] = &Server::ping;
+	_cmdMap["JOIN"] = &Server::join;
+	_cmdMap["PRIVMSG"] = &Server::privmsg;
+	_cmdMap["PART"] = &Server::part;
 
 	printLog("Port: " + port);
 	printLog("Password: " + password);
@@ -74,6 +52,10 @@ Server::~Server() {
 	delFdToPoll(_socket.getSocketFd());
 	if (_epollFd != 0)
 		close(_epollFd);
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
+		 it != _channels.end(); ++it) {
+		delete it->second;
+	}
 }
 
 void Server::start() {
@@ -98,7 +80,9 @@ void Server::addNewClient() {
 
 void Server::closeClient(Client *const client) {
 	const int clientFd = client->getSocketFd();
-
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
+		 it != _channels.end(); ++it)
+		it->second->removeUser(client);
 	delFdToPoll(clientFd);
 	_clientMap.eraseClient(client);
 }
@@ -153,24 +137,6 @@ void Server::readClientCommand(const int sockfd) {
 
 void Server::printLog(const std::string &logMessage) const {
 	std::cout << GREY << logMessage << NC << std::endl;
-}
-
-//	Send Methods
-
-void Server::sendMessage(const std::string &message, const int clientFd) const {
-	static const std::string domainName = DOMAIN_NAME;
-	const std::string		 formatMessage =
-		":" + domainName + " " + message + END_MESSAGE;
-
-	if (send(clientFd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
-		throw SendFailException();
-	else
-		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
-}
-
-void Server::sendFormattedMessage(
-	const std::string &message, const Client *const client) const {
-	sendMessage(getFormattedMessage(message, client), client->getSocketFd());
 }
 
 //	Poll Methods
@@ -240,10 +206,10 @@ void Server::handleCmd(
 		if (it != _cmdMap.end())
 			(this->*fct)(cmd, client);
 		else
-			sendFormattedMessage(ERR_UNKNOWNCOMMAND, client);
+			SendCmd::sendFormattedMessage(ERR_UNKNOWNCOMMAND, client);
 	} catch (std::string &e) {	// Catch only command exception
 		std::cout << client << ": " << e << std::endl;
-		sendFormattedMessage(e, client);
+		SendCmd::sendFormattedMessage(e, client);
 	}
 }
 
@@ -280,7 +246,7 @@ void Server::getUserLogin(
 		setClientLogAssets(cmd, client);
 	}
 	if (client->isAuthenticated()) {
-		sendFormattedMessage(RPL_WELCOME, client);
+		SendCmd::sendFormattedMessage(RPL_WELCOME, client);
 		printLog("Client is authenticated: Nickname[" + client->getNickname() +
 				 "]; Username[" + client->getUsername() + "]");
 	}
@@ -294,10 +260,6 @@ const char *Server::ListenFailException::what() const throw() {
 
 const char *Server::ReadFailException::what() const throw() {
 	return (READ_FAIL__ERROR);
-}
-
-const char *Server::SendFailException::what() const throw() {
-	return (SEND_FAIL__ERROR);
 }
 
 const char *Server::InvalidLoginCommandException::what() const throw() {

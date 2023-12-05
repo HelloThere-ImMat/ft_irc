@@ -59,6 +59,17 @@
 		"unordered_map": "cpp",
 		"variant": "cpp",
 		"vector": "cpp",
-		"algorithm": "cpp"
+		"algorithm": "cpp",
+		"*.tcc": "cpp",
+		"deque": "cpp",
+		"bit": "cpp",
+		"map": "cpp",
+		"functional": "cpp",
+		"iterator": "cpp",
+		"memory_resource": "cpp",
+		"numeric": "cpp",
+		"random": "cpp",
+		"utility": "cpp",
+		"numbers": "cpp"
 	}
 }
