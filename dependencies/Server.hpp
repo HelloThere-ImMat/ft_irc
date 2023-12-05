@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 11:01:22 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:13:48 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 #include "ClientManager.hpp"
 #include "Signal.hpp"
 #include "Channel.hpp"
+#include "ClientManager.hpp"
 #include "DataServ.hpp"
 
 // Count
@@ -96,7 +97,7 @@ class Server {
 	// Attributes
 	DataServ							   _socket;
 	int									   _epollFd;
-	std::map<std::string, Channel *>		_channels;
+	std::map<std::string, Channel *>	   _channels;
 	std::map<std::string, CommandFunction> _cmdMap;
 	std::string							   _password;
 	ClientManager						   _clientMap;

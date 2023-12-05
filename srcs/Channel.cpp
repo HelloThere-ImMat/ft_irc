@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 11:05:55 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:14:07 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,9 +30,7 @@ Channel::Channel(const std::string name, const Client *const client) : _name(nam
 	userMap[client->getNickname()] = spClient;
 }
 
-Channel::~Channel() {
-	userMap.clear();
-}
+Channel::~Channel() { userMap.clear(); }
 
 void Channel::addNewUser(const Client *const client)
 {

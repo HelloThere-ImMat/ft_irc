@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 10:44:15 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:12:57 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 #include <map>
 
 #include "Client.hpp"
-//debug
+// debug
 #include <iostream>
 
 class ClientManager {

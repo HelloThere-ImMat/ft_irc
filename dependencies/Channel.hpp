@@ -6,13 +6,13 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 11:06:02 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:12:26 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <map>
 #include <algorithm>
 #include "SendCmd.hpp"
+#include <map>
 
 #define OP_PREFIX	"@"
 

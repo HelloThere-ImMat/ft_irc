@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 11:01:26 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:14:56 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,9 +133,7 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 			_channels[CHANNEL_PREFIX + cmd[1]] = channel; 
 			printLog("New Channel !");
 			sendJoinMessage(channel, client, cmd[1]);
-		}
-		else
-		{
+		} else {
 			it->second->addNewUser(client);
 			printLog("Join Channel !");
 			sendJoinMessage(it->second, client, cmd[1]);
@@ -143,9 +141,8 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 	}
 }
 
-void Server::privmsg(const std::vector<std::string> &cmd, Client *const client)
-{
-	std::string senderNickname = client->getNickname();
+void Server::privmsg(
+	const std::vector<std::string> &cmd, Client *const client) {
 	std::string fullMessage = getFullMessage(cmd);
 
 	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end())
@@ -166,10 +163,8 @@ void Server::part(const std::vector<std::string> &cmd, Client *const client)
 		Channel *channel = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
 		channel->sendToChannel(client, PART_PREFIX + cmd[1], true);
 		channel->removeUser(client);
-	}
-	else
+	} else
 		printLog("Could not part channel");
-
 }
 
 void Server::error(const std::string &message, Client *const client) {

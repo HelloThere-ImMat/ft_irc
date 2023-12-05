@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 #include <unistd.h>
+
 #include <string>
 
 #define EMPTY_LOGIN 0x00
