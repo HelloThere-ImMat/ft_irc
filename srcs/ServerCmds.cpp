@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 18:25:23 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/05 18:57:10 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,25 +163,33 @@ void Server::part(const std::vector<std::string> &cmd, Client *const client) {
 		printLog("Could not part channel");
 }
 
+static void sendTopic(
+	const Channel *const channel, const Client *const client) {
+	const std::string topic = channel->getTopic();
+	SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
+}
+
 void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 	const size_t size = cmd.size();
 
-	if (size < 2)
+	if (size < 2) {
 		SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
-	else if (size >= 2) {
-		std::map<std::string, Channel *>::iterator it = _channels.find(cmd[1]);
-		if (it != _channels.end()) {
-			if (size == 2) {
-				const std::string topic = it->second->getTopic();
-				printLog(topic);
-				SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
-			} else if (it->second->isOp(client)) {
-				const std::string topic =
-					getFullMessage(cmd, TOPIC_START_INDEX);
-				it->second->setTopic(topic);
-				it->second->sendToAll(client, RPL_TOPIC + topic);
-			}
+		return;
+	}
+	const std::map<std::string, Channel *>::iterator it =
+		_channels.find(cmd[1]);
+	if (it != _channels.end()) {
+		if (it->second->isUserInChannel(client) == false)
+			SendCmd::sendFormattedMessage(ERR_NOTONCHANNEL, client);
+		else if (size == 2) {
+			sendTopic(it->second, client);
+		} else if (it->second->isOp(client)) {
+			const std::string topic = getFullMessage(cmd, TOPIC_START_INDEX);
+			it->second->setTopic(topic);
+			it->second->sendToAll(client, RPL_TOPIC + topic);
 		}
+	} else {
+		SendCmd::sendFormattedMessage(ERR_NOSUCHCHANNEL, client);
 	}
 }
 
