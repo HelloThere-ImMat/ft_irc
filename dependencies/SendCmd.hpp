@@ -10,11 +10,12 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Client.hpp"
+#include <sys/socket.h>
 
 #include <iostream>
 #include <sstream>
-#include <sys/socket.h>
+
+#include "Client.hpp"
 
 // COLORS
 
@@ -27,32 +28,33 @@
 
 // Count
 
-#define PATTERN_COUNT	 8
+#define PATTERN_COUNT 8
 
 // Server specs
 
-#define HOST_NAME			 "localhost"
-#define NETWORK_NAME		 "IRC"
-#define SERVER_NAME			 "IRCserv"
-#define DOMAIN_NAME			 "ft_irc.local"
-#define END_MESSAGE			 "\r\n"
+#define HOST_NAME	 "localhost"
+#define NETWORK_NAME "IRC"
+#define SERVER_NAME	 "IRCserv"
+#define DOMAIN_NAME	 "ft_irc.local"
+#define END_MESSAGE	 "\r\n"
 
-#define OUTMES_PREFIX		 ">> "
+#define OUTMES_PREFIX ">> "
 
-//Error
+// Error
 
-#define SEND_FAIL__ERROR   "sending failed"
+#define SEND_FAIL__ERROR "sending failed"
 
-class SendCmd
-{
-	public :
-		static void sendMessage(const std::string &message, const int clientFd);
-		static void sendPrivateMessage(const std::string &message, const Client *const sender, const Client *const receiver);
-		static void sendFormattedMessage(
-			const std::string &message, const Client *const client);
-	private :
-		class SendFailException : public std::exception {
-		public:
-			virtual const char *what() const throw();
-		};
+class SendCmd {
+   public:
+	static void sendMessage(const std::string &message, const int clientFd);
+	static void sendPrivateMessage(const std::string &message,
+		const Client *const sender, const Client *const receiver);
+	static void sendFormattedMessage(
+		const std::string &message, const Client *const client);
+
+   private:
+	class SendFailException : public std::exception {
+	   public:
+		virtual const char *what() const throw();
+	};
 };

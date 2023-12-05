@@ -12,24 +12,24 @@
 
 #pragma once
 
-#include <vector>
-#include <exception>
 #include <string.h>
 #include <sys/epoll.h>
-#include <typeinfo>
 
-#include "ClientManager.hpp"
-#include "Signal.hpp"
+#include <exception>
+#include <typeinfo>
+#include <vector>
+
 #include "Channel.hpp"
 #include "ClientManager.hpp"
 #include "DataServ.hpp"
+#include "Signal.hpp"
 
 // Count
 
-#define BUFFER_SIZE			 1024
-#define TIMEOUT				 -1
-#define MAX_CLIENT_COUNT	 3
-#define PRIVMSG_START_INDEX	 2
+#define BUFFER_SIZE			1024
+#define TIMEOUT				-1
+#define MAX_CLIENT_COUNT	3
+#define PRIVMSG_START_INDEX 2
 
 // Parameters
 
@@ -42,20 +42,19 @@
 #define SPECIAL_NICK_CHARSET "[]{}*\\|_"
 #define CHANNEL_PREFIX		 "#"
 
-
 // RPL
 
 #define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
 
 // Message
 
-#define JOIN_PREFIX			"JOIN :"
-#define PART_PREFIX			"PART "
-#define UL_JOIN_MESSAGE		"353 <nick> = <arg> :"
-#define EUL_JOIN_MESSAGE	"366 <client> <arg> :End of /NAMES list."
-#define TOPIC_JOIN_MESSAGE	"332 <client> <arg> :default"
-#define PONG_MESSAGE		"PONG <servername> :<nick>"
-#define PRIVMSG_PREFIX		"PRIVMSG "
+#define JOIN_PREFIX		   "JOIN :"
+#define PART_PREFIX		   "PART "
+#define UL_JOIN_MESSAGE	   "353 <nick> = <arg> :"
+#define EUL_JOIN_MESSAGE   "366 <client> <arg> :End of /NAMES list."
+#define TOPIC_JOIN_MESSAGE "332 <client> <arg> :default"
+#define PONG_MESSAGE	   "PONG <servername> :<nick>"
+#define PRIVMSG_PREFIX	   "PRIVMSG "
 
 // Logs
 
@@ -129,8 +128,9 @@ class Server {
 	void part(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
-	bool	isNicknameAlreadyUsed(const std::string &nickname);
-	void	sendJoinMessage(const Channel *const channel, const Client *const client, const std::string &channelName);
+	bool isNicknameAlreadyUsed(const std::string &nickname);
+	void sendJoinMessage(const Channel *const channel,
+		const Client *const client, const std::string &channelName);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:

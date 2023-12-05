@@ -34,15 +34,12 @@ static bool isNicknameValid(const std::string &nickname) {
 	return isdigit(nickname[0]) == false && areOnlyAuthorizedChar(nickname);
 }
 
-static std::string getFullMessage(const std::vector<std::string> &cmd)
-{
+static std::string getFullMessage(const std::vector<std::string> &cmd) {
 	std::string fullMessage;
-	int size = cmd.size();
-	int i = PRIVMSG_START_INDEX;
-	if (size > 2)
-	{
-		while (i < size)
-		{
+	int			size = cmd.size();
+	int			i = PRIVMSG_START_INDEX;
+	if (size > 2) {
+		while (i < size) {
 			if (i > PRIVMSG_START_INDEX)
 				fullMessage += " ";
 			fullMessage += cmd[i++];
@@ -111,26 +108,26 @@ void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 	SendCmd::sendFormattedMessage(PONG_MESSAGE, client);
 }
 
-void Server::sendJoinMessage(const Channel *const channel, const Client *client, const std::string &channelName)
-{
+void Server::sendJoinMessage(const Channel *const channel, const Client *client,
+	const std::string &channelName) {
 	std::string channelUserList;
-	
+
 	channel->sendToChannel(client, JOIN_PREFIX + channelName, true);
-	//if (!channel->topic.empty())
-	//	SendCmd::sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic, client);
+	// if (!channel->topic.empty())
+	//	SendCmd::sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic,
+	// client);
 	channelUserList = channel->getUserList();
 	SendCmd::sendFormattedMessage(UL_JOIN_MESSAGE + channelUserList, client);
 	SendCmd::sendFormattedMessage(EUL_JOIN_MESSAGE, client);
 }
 
 void Server::join(const std::vector<std::string> &cmd, Client *const client) {
-	if (!cmd[1].empty())
-	{
-		const std::map<std::string, Channel *>::iterator it = _channels.find(CHANNEL_PREFIX + cmd[1]);
-		if (it == _channels.end())
-		{
+	if (!cmd[1].empty()) {
+		const std::map<std::string, Channel *>::iterator it =
+			_channels.find(CHANNEL_PREFIX + cmd[1]);
+		if (it == _channels.end()) {
 			Channel *channel = new Channel(cmd[1], client);
-			_channels[CHANNEL_PREFIX + cmd[1]] = channel; 
+			_channels[CHANNEL_PREFIX + cmd[1]] = channel;
 			sendJoinMessage(channel, client, cmd[1]);
 		} else {
 			it->second->addNewUser(client);
@@ -143,21 +140,20 @@ void Server::privmsg(
 	const std::vector<std::string> &cmd, Client *const client) {
 	std::string fullMessage = getFullMessage(cmd);
 
-	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end())
-	{
-		Channel *channel  = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
+	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end()) {
+		Channel *channel = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
 		if (channel->userIsInChannel(client))
-			channel->sendToChannel(client, PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, false);
-	}
-	else if (_clientMap.getClient(cmd[1]) != NULL)
-		SendCmd::sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, _clientMap.getClient(cmd[1]));
+			channel->sendToChannel(
+				client, PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, false);
+	} else if (_clientMap.getClient(cmd[1]) != NULL)
+		SendCmd::sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage,
+			client, _clientMap.getClient(cmd[1]));
 	else
 		printLog("Cound not send message");
 }
 
-void Server::part(const std::vector<std::string> &cmd, Client *const client)
-{
-	if (_channels.find(CHANNEL_PREFIX + cmd[1]) !=	_channels.end()) {
+void Server::part(const std::vector<std::string> &cmd, Client *const client) {
+	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end()) {
 		Channel *channel = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
 		channel->sendToChannel(client, PART_PREFIX + cmd[1], true);
 		channel->removeUser(client);

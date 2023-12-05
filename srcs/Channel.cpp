@@ -14,8 +14,7 @@
 
 // Static
 
-std::string getSpecifiedNick(const SpecifiedClient &spClient)
-{
+std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 	if (spClient.isOp)
 		return (OP_PREFIX + spClient.client->getNickname());
 	return (spClient.client->getNickname());
@@ -23,8 +22,8 @@ std::string getSpecifiedNick(const SpecifiedClient &spClient)
 
 // Methods
 
-Channel::Channel(const std::string name, const Client *const client) : _name(name)
-{
+Channel::Channel(const std::string name, const Client *const client)
+	: _name(name) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -32,18 +31,17 @@ Channel::Channel(const std::string name, const Client *const client) : _name(nam
 
 Channel::~Channel() { userMap.clear(); }
 
-void Channel::addNewUser(const Client *const client)
-{
+void Channel::addNewUser(const Client *const client) {
 	SpecifiedClient spClient = {.client = client, .isOp = false};
 
 	userMap[client->getNickname()] = spClient;
 }
 
-const std::string Channel::getUserList() const
-{
+const std::string Channel::getUserList() const {
 	std::string userList;
-	for (std::map<std::string, SpecifiedClient>::const_iterator it = userMap.begin(); it != userMap.end(); it++)
-	{
+	for (std::map<std::string, SpecifiedClient>::const_iterator it =
+			 userMap.begin();
+		 it != userMap.end(); it++) {
 		if (it != userMap.begin())
 			userList += " ";
 		userList = getSpecifiedNick(it->second);
@@ -51,35 +49,30 @@ const std::string Channel::getUserList() const
 	return (userList);
 }
 
-void Channel::removeUser(const Client *const client)
-{
+void Channel::removeUser(const Client *const client) {
 	std::map<std::string, SpecifiedClient>::iterator it;
 	std::string nickname = client->getNickname();
 	userMap.erase(nickname);
 }
 
-const std::string &Channel::getName() const
-{
-	return _name;
-}
+const std::string &Channel::getName() const { return _name; }
 
-
-void Channel::sendToChannel(const Client *const client, std::string message, bool sendToSelf) const
-{
+void Channel::sendToChannel(
+	const Client *const client, std::string message, bool sendToSelf) const {
 	if (sendToSelf)
 		SendCmd::sendPrivateMessage(message, client, client);
-	for (std::map<std::string, SpecifiedClient>::const_iterator it = userMap.begin(); it != userMap.end(); it++)
-	{
+	for (std::map<std::string, SpecifiedClient>::const_iterator it =
+			 userMap.begin();
+		 it != userMap.end(); it++) {
 		if (it->second.client->getSocketFd() != client->getSocketFd())
 			SendCmd::sendPrivateMessage(message, client, it->second.client);
 	}
 }
 
-bool Channel::userIsInChannel(const Client *const client)
-{
+bool Channel::userIsInChannel(const Client *const client) {
 	std::string nick = client->getNickname();
-	for (std::map<std::string, SpecifiedClient>::iterator it = userMap.begin(); it != userMap.end(); it++)
-	{
+	for (std::map<std::string, SpecifiedClient>::iterator it = userMap.begin();
+		 it != userMap.end(); it++) {
 		if (it->second.client->getNickname() == nick)
 			return (true);
 	}

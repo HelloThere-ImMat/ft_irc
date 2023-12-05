@@ -30,6 +30,7 @@ class ClientManager {
 	// Methods to retrieve a client based on either socket or nickname
 	Client* getClient(const std::string& nickname);
 	Client* getClient(const int sockFd);
+
    private:
 	std::map<int, Client*>		   _socketToClientMap;
 	std::map<std::string, Client*> _nicknameToClientMap;

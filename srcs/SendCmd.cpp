@@ -54,12 +54,15 @@ void SendCmd::sendMessage(const std::string &message, const int clientFd) {
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
 }
 
-void SendCmd::sendPrivateMessage(const std::string &message,const Client *const sender, const Client *const receiver) {
-	const std::string senderSpec = sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
-	const std::string		 formatMessage =
+void SendCmd::sendPrivateMessage(const std::string &message,
+	const Client *const sender, const Client *const receiver) {
+	const std::string senderSpec =
+		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
+	const std::string formatMessage =
 		":" + senderSpec + " " + message + END_MESSAGE;
 
-	if (send(receiver->getSocketFd(), formatMessage.c_str(), formatMessage.size(), 0) < 0)
+	if (send(receiver->getSocketFd(), formatMessage.c_str(),
+			formatMessage.size(), 0) < 0)
 		throw SendFailException();
 	else
 		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;

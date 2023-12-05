@@ -262,7 +262,6 @@ const char *Server::ReadFailException::what() const throw() {
 	return (READ_FAIL__ERROR);
 }
 
-
 const char *Server::InvalidLoginCommandException::what() const throw() {
 	return (WRONG_CMD__ERROR);
 }
