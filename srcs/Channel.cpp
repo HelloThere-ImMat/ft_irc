@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 11:14:07 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:25:07 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void Channel::sendToChannel(const Client *const client, std::string message, boo
 	}
 }
 
-bool Channel::userIsInChannel(Client *const client)
+bool Channel::userIsInChannel(const Client *const client)
 {
 	std::string nick = client->getNickname();
 	for (std::map<std::string, SpecifiedClient>::iterator it = userMap.begin(); it != userMap.end(); it++)

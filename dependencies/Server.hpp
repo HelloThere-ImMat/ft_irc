@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 11:13:48 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 11:26:18 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,7 +130,7 @@ class Server {
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
 	bool	isNicknameAlreadyUsed(const std::string &nickname);
-	void	sendJoinMessage(Channel *const channel, const Client *const client, const std::string &channelName);
+	void	sendJoinMessage(const Channel *const channel, const Client *const client, const std::string &channelName);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
