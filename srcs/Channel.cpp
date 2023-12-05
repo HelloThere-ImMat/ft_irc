@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 14:29:16 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/05 14:31:36 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ const std::string Channel::getUserList() const {
 }
 
 void Channel::removeUser(const Client *const client) {
-	std::map<std::string, SpecifiedClient>::iterator it;
 	std::string nickname = client->getNickname();
 	userMap.erase(nickname);
 }
