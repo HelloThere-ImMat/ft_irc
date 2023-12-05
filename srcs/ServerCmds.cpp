@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerCmds.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 14:23:40 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/05 15:26:12 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -124,10 +124,10 @@ void Server::sendJoinMessage(const Channel *const channel, const Client *client,
 void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 	if (!cmd[1].empty()) {
 		const std::map<std::string, Channel *>::iterator it =
-			_channels.find(CHANNEL_PREFIX + cmd[1]);
+			_channels.find(cmd[1]);
 		if (it == _channels.end()) {
 			Channel *channel = new Channel(cmd[1], client);
-			_channels[CHANNEL_PREFIX + cmd[1]] = channel;
+			_channels[cmd[1]] = channel;
 			sendJoinMessage(channel, client, cmd[1]);
 		} else {
 			it->second->addNewUser(client);
@@ -140,8 +140,9 @@ void Server::privmsg(
 	const std::vector<std::string> &cmd, Client *const client) {
 	std::string fullMessage = getFullMessage(cmd);
 
-	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end()) {
-		Channel *channel = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
+	printLog(cmd[1]);
+	if (_channels.find(cmd[1]) != _channels.end()) {
+		Channel *channel = _channels.find(cmd[1])->second;
 		if (channel->userIsInChannel(client))
 			channel->sendToOthers(
 				client, PRIVMSG_PREFIX + cmd[1] + " " + fullMessage);
@@ -153,12 +154,35 @@ void Server::privmsg(
 }
 
 void Server::part(const std::vector<std::string> &cmd, Client *const client) {
-	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end()) {
-		Channel *channel = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
+	if (_channels.find(cmd[1]) != _channels.end()) {
+		Channel *channel = _channels.find(cmd[1])->second;
 		channel->sendToAll(client, PART_PREFIX + cmd[1]);
 		channel->removeUser(client);
 	} else
 		printLog("Could not part channel");
+}
+
+void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
+	const size_t size = cmd.size();
+
+	if (size < 2)
+		SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
+	else if (size >= 2) {
+		std::map<std::string, Channel *>::iterator it = _channels.find(cmd[1]);
+		if (it != _channels.end()) {
+			printLog("TOPIC!");
+
+			if (size == 2) {
+				const std::string topic = it->second->getTopic();
+				printLog(topic);
+				SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
+			} else {
+				const std::string topic = cmd[2];
+				it->second->setTopic(topic);
+				SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
+			}
+		}
+	}
 }
 
 void Server::error(const std::string &message, Client *const client) {

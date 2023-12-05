@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 15:11:41 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/05 14:56:54 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,9 @@ class Channel {
 	void			   addNewUser(const Client *const client);
 	void			   removeUser(const Client *const client);
 	const std::string  getUserList() const;
+	const std::string &getTopic() const;
 	const std::string &getName() const;
+	void			   setTopic(const std::string &topic);
 	void			   sendToOthers(
 					  const Client *const client, const std::string message) const;
 	void sendToAll(const Client *const client, const std::string message) const;
@@ -36,6 +38,6 @@ class Channel {
 
    private:
 	std::map<std::string, SpecifiedClient> userMap;
-	std::string							   topic;
+	std::string							   _topic;
 	const std::string					   _name;
 };

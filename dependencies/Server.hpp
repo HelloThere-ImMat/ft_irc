@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 14:26:43 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/05 15:28:45 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,11 +40,11 @@
 #define INMES_PREFIX		 "<< "
 #define DEFAULT_USERNAME	 "Placeholder"
 #define SPECIAL_NICK_CHARSET "[]{}*\\|_"
-#define CHANNEL_PREFIX		 "#"
 
 // RPL
 
 #define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
+#define RPL_TOPIC	"332 <client> <arg> :"
 
 // Message
 
@@ -126,6 +126,7 @@ class Server {
 	void join(const std::vector<std::string> &cmd, Client *const client);
 	void privmsg(const std::vector<std::string> &cmd, Client *const client);
 	void part(const std::vector<std::string> &cmd, Client *const client);
+	void topic(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
 	bool isNicknameAlreadyUsed(const std::string &nickname);

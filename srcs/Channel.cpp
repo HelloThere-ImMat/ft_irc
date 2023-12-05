@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 15:11:31 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/05 15:09:09 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,6 +55,10 @@ void Channel::removeUser(const Client *const client) {
 }
 
 const std::string &Channel::getName() const { return _name; }
+
+const std::string &Channel::getTopic() const { return _topic; }
+
+void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
 void Channel::sendToOthers(
 	const Client *const client, const std::string message) const {
