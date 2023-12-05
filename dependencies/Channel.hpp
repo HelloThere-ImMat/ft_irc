@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 14:56:54 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/05 18:12:56 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ class Channel {
 	void			   sendToOthers(
 					  const Client *const client, const std::string message) const;
 	void sendToAll(const Client *const client, const std::string message) const;
-	bool userIsInChannel(const Client *const client);
+	bool isUserInChannel(const Client *const client);
+	bool isOp(const Client *const client);
 
    private:
 	std::map<std::string, SpecifiedClient> userMap;

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 15:53:08 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/05 18:16:34 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,7 +79,7 @@ void Channel::sendToAll(
 	}
 }
 
-bool Channel::userIsInChannel(const Client *const client) {
+bool Channel::isUserInChannel(const Client *const client) {
 	std::string nick = client->getNickname();
 	for (std::map<std::string, SpecifiedClient>::iterator it = userMap.begin();
 		 it != userMap.end(); it++) {
@@ -87,4 +87,12 @@ bool Channel::userIsInChannel(const Client *const client) {
 			return (true);
 	}
 	return (false);
+}
+
+bool Channel::isOp(const Client *const client) {
+	if (isUserInChannel(client) == false)
+		return false;
+	const std::string nickname = client->getNickname();
+
+	return (userMap.find(nickname)->second.isOp);
 }

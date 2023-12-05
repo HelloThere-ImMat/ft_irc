@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 17:27:02 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/05 18:25:23 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,15 +139,17 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 void Server::privmsg(
 	const std::vector<std::string> &cmd, Client *const client) {
 	const std::string fullMessage = getFullMessage(cmd, PRIVMSG_START_INDEX);
+	const std::string privMessage = PRIVMSG_PREFIX + cmd[1] + " " + fullMessage;
+	const std::map<std::string, Channel *>::iterator it =
+		_channels.find(cmd[1]);
 
-	if (_channels.find(cmd[1]) != _channels.end()) {
-		Channel *channel = _channels.find(cmd[1])->second;
-		if (channel->userIsInChannel(client))
-			channel->sendToOthers(
-				client, PRIVMSG_PREFIX + cmd[1] + " " + fullMessage);
+	if (it != _channels.end()) {
+		Channel *channel = it->second;
+		if (channel->isUserInChannel(client))
+			channel->sendToOthers(client, privMessage);
 	} else if (_clientMap.getClient(cmd[1]) != NULL)
-		SendCmd::sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage,
-			client, _clientMap.getClient(cmd[1]));
+		SendCmd::sendPrivateMessage(
+			privMessage, client, _clientMap.getClient(cmd[1]));
 	else
 		printLog("Cound not send message");
 }
@@ -173,7 +175,7 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 				const std::string topic = it->second->getTopic();
 				printLog(topic);
 				SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
-			} else {
+			} else if (it->second->isOp(client)) {
 				const std::string topic =
 					getFullMessage(cmd, TOPIC_START_INDEX);
 				it->second->setTopic(topic);
