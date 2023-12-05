@@ -16,7 +16,7 @@
 
 static std::string replacePatterns(const std::string &original,
 	const std::string &pattern, const std::string &replacement) {
-	size_t startPos = 0;
+	size_t		startPos = 0;
 	std::string newStr = original;
 
 	while ((startPos = newStr.find(pattern, startPos)) != std::string::npos) {
