@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 11:25:07 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 14:29:16 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 
 // Methods
 
-Channel::Channel(const std::string name, const Client *const client)
+Channel::Channel(const std::string &name, const Client *const client)
 	: _name(name) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
@@ -57,15 +57,22 @@ void Channel::removeUser(const Client *const client) {
 
 const std::string &Channel::getName() const { return _name; }
 
-void Channel::sendToChannel(
-	const Client *const client, std::string message, bool sendToSelf) const {
-	if (sendToSelf)
-		SendCmd::sendPrivateMessage(message, client, client);
+void Channel::sendToOthers(
+	const Client *const client, std::string message) const {
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
 			 userMap.begin();
 		 it != userMap.end(); it++) {
 		if (it->second.client->getSocketFd() != client->getSocketFd())
 			SendCmd::sendPrivateMessage(message, client, it->second.client);
+	}
+}
+
+void Channel::sendToAll(
+	const Client *const client, std::string message) const {
+	for (std::map<std::string, SpecifiedClient>::const_iterator it =
+			 userMap.begin();
+		 it != userMap.end(); it++) {
+		SendCmd::sendPrivateMessage(message, client, it->second.client);
 	}
 }
 

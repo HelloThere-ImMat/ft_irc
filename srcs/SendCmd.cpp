@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   SendCmd.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:59 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 10:54:47 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/05 14:17:06 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 // Static Funcs
 
-static std::string replacePatterns(std::string original,
+static std::string replacePatterns(std::string &original,
 	const std::string &pattern, const std::string &replacement) {
 	size_t startPos = 0;
 	while ((startPos = original.find(pattern, startPos)) != std::string::npos) {
