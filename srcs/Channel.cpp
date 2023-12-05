@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 15:09:09 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/05 15:53:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ const std::string Channel::getUserList() const {
 		 it != userMap.end(); it++) {
 		if (it != userMap.begin())
 			userList += " ";
-		userList = getSpecifiedNick(it->second);
+		userList += getSpecifiedNick(it->second);
 	}
 	return (userList);
 }
