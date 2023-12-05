@@ -66,8 +66,7 @@ void Channel::sendToOthers(
 	}
 }
 
-void Channel::sendToAll(
-	const Client *const client, std::string message) const {
+void Channel::sendToAll(const Client *const client, std::string message) const {
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
 			 userMap.begin();
 		 it != userMap.end(); it++) {
