@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 15:02:29 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/05 15:11:31 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ void Channel::removeUser(const Client *const client) {
 const std::string &Channel::getName() const { return _name; }
 
 void Channel::sendToOthers(
-	const Client *const client, std::string message) const {
+	const Client *const client, const std::string message) const {
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
 			 userMap.begin();
 		 it != userMap.end(); it++) {
@@ -66,7 +66,7 @@ void Channel::sendToOthers(
 	}
 }
 
-void Channel::sendToAll(const Client *const client, std::string message) const {
+void Channel::sendToAll(const Client *const client, const std::string message) const {
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
 			 userMap.begin();
 		 it != userMap.end(); it++) {

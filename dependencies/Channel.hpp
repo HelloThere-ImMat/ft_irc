@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 15:01:16 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/05 15:11:41 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ class Channel {
 	void			   removeUser(const Client *const client);
 	const std::string  getUserList() const;
 	const std::string &getName() const;
-	void sendToOthers(const Client *const client, std::string message) const;
-	void sendToAll(const Client *const client, std::string message) const;
+	void sendToOthers(const Client *const client, const std::string message) const;
+	void sendToAll(const Client *const client, const std::string message) const;
 	bool userIsInChannel(const Client *const client);
 
    private:
