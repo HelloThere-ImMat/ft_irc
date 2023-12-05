@@ -29,10 +29,8 @@ class Channel {
 	void			   removeUser(const Client *const client);
 	const std::string  getUserList() const;
 	const std::string &getName() const;
-	void			   sendToOthers(
-					  const Client *const client, std::string message) const;
-	void			   sendToAll(
-					  const Client *const client, std::string message) const;
+	void sendToOthers(const Client *const client, std::string message) const;
+	void sendToAll(const Client *const client, std::string message) const;
 	bool userIsInChannel(const Client *const client);
 
    private:

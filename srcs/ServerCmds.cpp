@@ -35,9 +35,9 @@ static bool isNicknameValid(const std::string &nickname) {
 }
 
 static std::string getFullMessage(const std::vector<std::string> &cmd) {
-	std::string 	fullMessage;
-	const size_t	size = cmd.size();
-	size_t			i = PRIVMSG_START_INDEX;
+	std::string	 fullMessage;
+	const size_t size = cmd.size();
+	size_t		 i = PRIVMSG_START_INDEX;
 	if (size > 2) {
 		while (i < size) {
 			if (i > PRIVMSG_START_INDEX)
