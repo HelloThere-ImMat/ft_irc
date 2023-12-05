@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 15:54:37 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/05 17:27:02 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,14 @@ static bool isNicknameValid(const std::string &nickname) {
 	return isdigit(nickname[0]) == false && areOnlyAuthorizedChar(nickname);
 }
 
-static std::string getFullMessage(const std::vector<std::string> &cmd) {
+static std::string getFullMessage(
+	const std::vector<std::string> &cmd, const size_t startIndex) {
 	std::string	 fullMessage;
 	const size_t size = cmd.size();
-	size_t		 i = PRIVMSG_START_INDEX;
-	if (size > 2) {
+	size_t		 i = startIndex;
+	if (size > startIndex) {
 		while (i < size) {
-			if (i > PRIVMSG_START_INDEX)
+			if (i > startIndex)
 				fullMessage += " ";
 			fullMessage += cmd[i++];
 		}
@@ -110,12 +111,11 @@ void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 
 void Server::sendJoinMessage(const Channel *const channel, const Client *client,
 	const std::string &channelName) {
-	std::string channelUserList;
+	const std::string channelUserList = channel->getUserList();
+	const std::string topic = channel->getTopic();
 
-	// if (!channel->topic.empty())
-	//	SendCmd::sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic,
-	// client);
-	channelUserList = channel->getUserList();
+	if (!topic.empty())
+		SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
 	channel->sendToAll(client, JOIN_PREFIX + channelName);
 	SendCmd::sendFormattedMessage(UL_JOIN_MESSAGE + channelUserList, client);
 	SendCmd::sendFormattedMessage(EUL_JOIN_MESSAGE, client);
@@ -138,9 +138,8 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 
 void Server::privmsg(
 	const std::vector<std::string> &cmd, Client *const client) {
-	std::string fullMessage = getFullMessage(cmd);
+	const std::string fullMessage = getFullMessage(cmd, PRIVMSG_START_INDEX);
 
-	printLog(cmd[1]);
 	if (_channels.find(cmd[1]) != _channels.end()) {
 		Channel *channel = _channels.find(cmd[1])->second;
 		if (channel->userIsInChannel(client))
@@ -170,16 +169,15 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 	else if (size >= 2) {
 		std::map<std::string, Channel *>::iterator it = _channels.find(cmd[1]);
 		if (it != _channels.end()) {
-			printLog("TOPIC!");
-
 			if (size == 2) {
 				const std::string topic = it->second->getTopic();
 				printLog(topic);
 				SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
 			} else {
-				const std::string topic = cmd[2];
+				const std::string topic =
+					getFullMessage(cmd, TOPIC_START_INDEX);
 				it->second->setTopic(topic);
-				SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
+				it->second->sendToAll(client, RPL_TOPIC + topic);
 			}
 		}
 	}

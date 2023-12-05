@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 15:28:45 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/05 16:58:32 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,7 @@
 #define TIMEOUT				-1
 #define MAX_CLIENT_COUNT	3
 #define PRIVMSG_START_INDEX 2
+#define TOPIC_START_INDEX	2
 
 // Parameters
 
@@ -44,17 +45,16 @@
 // RPL
 
 #define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
-#define RPL_TOPIC	"332 <client> <arg> :"
+#define RPL_TOPIC	"332 <client> <arg> "
 
 // Message
 
-#define JOIN_PREFIX		   "JOIN :"
-#define PRIVMSG_PREFIX	   "PRIVMSG "
-#define PART_PREFIX		   "PART "
-#define UL_JOIN_MESSAGE	   "353 <nick> = <arg> :"
-#define EUL_JOIN_MESSAGE   "366 <client> <arg> :End of /NAMES list."
-#define TOPIC_JOIN_MESSAGE "332 <client> <arg> :default"
-#define PONG_MESSAGE	   "PONG <servername> :<nick>"
+#define JOIN_PREFIX		 "JOIN :"
+#define PRIVMSG_PREFIX	 "PRIVMSG "
+#define PART_PREFIX		 "PART "
+#define UL_JOIN_MESSAGE	 "353 <nick> = <arg> :"
+#define EUL_JOIN_MESSAGE "366 <client> <arg> :End of /NAMES list."
+#define PONG_MESSAGE	 "PONG <servername> :<nick>"
 
 // Logs
 
