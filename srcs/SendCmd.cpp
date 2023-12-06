@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:59 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:12:55 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 15:34:55 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ static std::string replacePatterns(const std::string &original,
 
 // Send Methods
 
-void SendCmd::sendMessage(const std::string &message, const int clientFd) {
+void SendCmd::sendMessage(
+	const std::string &message, const Client *const client) {
 	static const std::string domainName = DOMAIN_NAME;
+	const int				 clientFd = client->getSocketFd();
 	const std::string		 formatMessage =
 		":" + domainName + " " + message + END_MESSAGE;
 
@@ -43,8 +45,8 @@ void SendCmd::sendPrivateMessage(const std::string &message,
 	const Client *const sender, const Client *const receiver) {
 	const std::string senderSpec =
 		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
-	const std::string formatMessage = getFormattedMessage(
-		":" + senderSpec + " " + message + END_MESSAGE, sender);
+	const std::string formatMessage =
+		":" + senderSpec + " " + message + END_MESSAGE;
 
 	if (send(receiver->getSocketFd(), formatMessage.c_str(),
 			formatMessage.size(), 0) < 0)
@@ -55,7 +57,7 @@ void SendCmd::sendPrivateMessage(const std::string &message,
 
 void SendCmd::sendFormattedMessage(
 	const std::string &message, const Client *const client) {
-	sendMessage(getFormattedMessage(message, client), client->getSocketFd());
+	sendMessage(getFormattedMessage(message, client), client);
 }
 
 // Format methods
