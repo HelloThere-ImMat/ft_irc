@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 09:46:56 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 11:51:33 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,15 +34,12 @@ static bool isNicknameValid(const std::string &nickname) {
 	return isdigit(nickname[0]) == false && areOnlyAuthorizedChar(nickname);
 }
 
-static std::string getFullMessage(const std::vector<std::string> &cmd)
-{
-	std::string fullMessage;
-	int size = cmd.size();
-	int i = PRIVMSG_START_INDEX;
-	if (size > 2)
-	{
-		while (i < size)
-		{
+static std::string getFullMessage(const std::vector<std::string> &cmd) {
+	std::string	 fullMessage;
+	const size_t size = cmd.size();
+	size_t		 i = PRIVMSG_START_INDEX;
+	if (size > 2) {
+		while (i < size) {
 			if (i > PRIVMSG_START_INDEX)
 				fullMessage += " ";
 			fullMessage += cmd[i++];
@@ -115,23 +112,22 @@ void Server::privmsg(
 	const std::vector<std::string> &cmd, Client *const client) {
 	std::string fullMessage = getFullMessage(cmd);
 
-	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end())
-	{
-		Channel *channel  = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
+	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end()) {
+		Channel *channel = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
 		if (channel->userIsInChannel(client))
-			channel->sendToChannel(client, PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, false);
-	}
-	else if (_clientMap.getClient(cmd[1]) != NULL)
-		SendCmd::sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage, client, _clientMap.getClient(cmd[1]));
+			channel->sendToOthers(
+				client, PRIVMSG_PREFIX + cmd[1] + " " + fullMessage);
+	} else if (_clientMap.getClient(cmd[1]) != NULL)
+		SendCmd::sendPrivateMessage(PRIVMSG_PREFIX + cmd[1] + " " + fullMessage,
+			client, _clientMap.getClient(cmd[1]));
 	else
 		printLog("Cound not send message");
 }
 
-void Server::part(const std::vector<std::string> &cmd, Client *const client)
-{
-	if (_channels.find(CHANNEL_PREFIX + cmd[1]) !=	_channels.end()) {
+void Server::part(const std::vector<std::string> &cmd, Client *const client) {
+	if (_channels.find(CHANNEL_PREFIX + cmd[1]) != _channels.end()) {
 		Channel *channel = _channels.find(CHANNEL_PREFIX + cmd[1])->second;
-		channel->sendToChannel(client, PART_PREFIX + cmd[1], true);
+		channel->sendToAll(client, PART_PREFIX + cmd[1]);
 		channel->removeUser(client);
 	} else
 		printLog("Could not part channel");

@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 09:45:58 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 11:38:19 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 11:52:38 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,7 +53,7 @@ void Server::sendJoinMessage(const Channel *const channel, const Client *client,
 {
 	std::string channelUserList;
 	
-	channel->sendToChannel(client, JOIN_PREFIX + channelName, true);
+	channel->sendToAll(client, JOIN_PREFIX + channelName);
 	//if (!channel->topic.empty())
 	//	SendCmd::sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic, client);
 	channelUserList = channel->getUserList();

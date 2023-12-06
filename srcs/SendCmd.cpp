@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:59 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 11:46:26 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 11:51:47 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,14 +14,16 @@
 
 // Static Funcs
 
-static std::string replacePatterns(std::string original,
+static std::string replacePatterns(const std::string &original,
 	const std::string &pattern, const std::string &replacement) {
-	size_t startPos = 0;
-	while ((startPos = original.find(pattern, startPos)) != std::string::npos) {
-		original.replace(startPos, pattern.length(), replacement);
+	size_t		startPos = 0;
+	std::string newStr = original;
+
+	while ((startPos = newStr.find(pattern, startPos)) != std::string::npos) {
+		newStr.replace(startPos, pattern.length(), replacement);
 		startPos += replacement.length();
 	}
-	return original;
+	return newStr;
 }
 
 static std::string getFormattedMessage(
@@ -55,12 +57,15 @@ void SendCmd::sendMessage(const std::string &message, const int clientFd) {
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
 }
 
-void SendCmd::sendPrivateMessage(const std::string &message,const Client *const sender, const Client *const receiver) {
-	const std::string senderSpec = sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
-	const std::string		 formatMessage =
+void SendCmd::sendPrivateMessage(const std::string &message,
+	const Client *const sender, const Client *const receiver) {
+	const std::string senderSpec =
+		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
+	const std::string formatMessage =
 		":" + senderSpec + " " + message + END_MESSAGE;
 
-	if (send(receiver->getSocketFd(), formatMessage.c_str(), formatMessage.size(), 0) < 0)
+	if (send(receiver->getSocketFd(), formatMessage.c_str(),
+			formatMessage.size(), 0) < 0)
 		throw SendFailException();
 	else
 		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;

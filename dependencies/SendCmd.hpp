@@ -6,15 +6,16 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 11:43:58 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 11:50:20 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "Client.hpp"
+#include <sys/socket.h>
 
 #include <iostream>
 #include <sstream>
-#include <sys/socket.h>
+
+#include "Client.hpp"
 
 // COLORS
 
@@ -31,17 +32,17 @@
 
 // Server specs
 
-#define HOST_NAME			 "localhost"
-#define NETWORK_NAME		 "IRC"
-#define SERVER_NAME			 "IRCserv"
-#define DOMAIN_NAME			 "ft_irc.local"
-#define END_MESSAGE			 "\r\n"
+#define HOST_NAME	 "localhost"
+#define NETWORK_NAME "IRC"
+#define SERVER_NAME	 "IRCserv"
+#define DOMAIN_NAME	 "ft_irc.local"
+#define END_MESSAGE	 "\r\n"
 
-#define OUTMES_PREFIX		 ">> "
+#define OUTMES_PREFIX ">> "
 
-//Error
+// Error
 
-#define SEND_FAIL__ERROR   "sending failed"
+#define SEND_FAIL__ERROR "sending failed"
 
 class SendCmd
 {
