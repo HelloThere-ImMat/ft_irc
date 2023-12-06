@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 20:16:26 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 21:57:04 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,9 @@
 #define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
 #define ERR_TOOMANYCHANNELS	  "405 <client> <channelName> :You have joined too many channels"
 #define ERR_BADCHANNELKEY	  "475 <client> <channelName> :Cannot join channel (+k)"
+#define ERR_CANNOTSENDTOCHAN  "404 <client> <channelName> :Cannot send to channel"
+#define ERR_NOSUCHNICK		  "401 <client> <nickname> :No such nick/channel"
+#define ERR_NOTEXTTOSEND	  "412 <client> :No text to send"
 
 // Error
 

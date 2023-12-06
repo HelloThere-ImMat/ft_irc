@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:53:16 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 21:53:19 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,6 +120,15 @@ void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 
 void Server::privmsg(
 	const std::vector<std::string> &cmd, Client *const client) {
+	size_t size = cmd.size();
+	if (size < 3)
+	{
+		if (size < 2)
+			SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
+		else
+			SendCmd::sendFormattedMessage(ERR_NOTEXTTOSEND, client);
+		return;
+	}
 	const std::string fullMessage = getFullMessage(cmd, PRIVMSG_START_INDEX);
 	const std::string privMessage = PRIVMSG_PREFIX + cmd[1] + " " + fullMessage;
 	const std::map<std::string, Channel *>::iterator it =
@@ -133,18 +142,33 @@ void Server::privmsg(
 		SendCmd::sendPrivateMessage(
 			privMessage, client, _clientMap.getClient(cmd[1]));
 	else
-		printLog("Cound not send message");
+	{
+		if (cmd[1][0] == CHANNEL_PREFIX)
+			SendCmd::sendFormattedMessage(ERR_CANNOTSENDTOCHAN, client, cmd[1]);
+		else
+			SendCmd::sendFormattedMessage(ERR_NOSUCHNICK, client);
+	}
 }
 
 void Server::part(const std::vector<std::string> &cmd, Client *const client) {
+	if (cmd.size() < 2)
+	{
+		SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
+		return;
+	}
 	const std::map<std::string, Channel *>::iterator it =
 		_channels.find(cmd[1]);
 	if (it != _channels.end()) {
 		Channel *channel = it->second;
-		channel->sendToAll(client, PART_PREFIX + cmd[1]);
-		channel->removeUser(client);
+		if (!channel->isUserInChannel(client))
+			SendCmd::sendFormattedMessage(ERR_NOTONCHANNEL, client, cmd[1]);
+		else
+		{
+			channel->sendToAll(client, PART_PREFIX + cmd[1]);
+			channel->removeUser(client);
+		}
 	} else
-		printLog("Could not part channel");
+		SendCmd::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
 }
 
 void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
