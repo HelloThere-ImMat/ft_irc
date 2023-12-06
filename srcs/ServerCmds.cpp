@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 18:57:10 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 09:25:59 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,12 +163,6 @@ void Server::part(const std::vector<std::string> &cmd, Client *const client) {
 		printLog("Could not part channel");
 }
 
-static void sendTopic(
-	const Channel *const channel, const Client *const client) {
-	const std::string topic = channel->getTopic();
-	SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
-}
-
 void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 	const size_t size = cmd.size();
 
@@ -179,14 +173,17 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 	const std::map<std::string, Channel *>::iterator it =
 		_channels.find(cmd[1]);
 	if (it != _channels.end()) {
-		if (it->second->isUserInChannel(client) == false)
+		Channel *const channel = it->second;
+		if (channel->isUserInChannel(client) == false)
 			SendCmd::sendFormattedMessage(ERR_NOTONCHANNEL, client);
-		else if (size == 2) {
-			sendTopic(it->second, client);
-		} else if (it->second->isOp(client)) {
+		else if (size == 2)
+			channel->sendTopic(client);
+		else if (channel->canChangeTopic(client) == false) {
+			SendCmd::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client);
+		} else {
 			const std::string topic = getFullMessage(cmd, TOPIC_START_INDEX);
-			it->second->setTopic(topic);
-			it->second->sendToAll(client, RPL_TOPIC + topic);
+			channel->setTopic(topic);
+			channel->sendToAll(client, RPL_TOPIC + topic);
 		}
 	} else {
 		SendCmd::sendFormattedMessage(ERR_NOSUCHCHANNEL, client);
