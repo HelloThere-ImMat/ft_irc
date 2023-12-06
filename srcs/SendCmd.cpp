@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:59 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 11:51:47 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 15:11:27 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,8 +61,8 @@ void SendCmd::sendPrivateMessage(const std::string &message,
 	const Client *const sender, const Client *const receiver) {
 	const std::string senderSpec =
 		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
-	const std::string formatMessage =
-		":" + senderSpec + " " + message + END_MESSAGE;
+	const std::string formatMessage = getFormattedMessage(
+		":" + senderSpec + " " + message + END_MESSAGE, sender, "");
 
 	if (send(receiver->getSocketFd(), formatMessage.c_str(),
 			formatMessage.size(), 0) < 0)

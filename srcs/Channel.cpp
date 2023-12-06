@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 11:51:39 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 15:01:45 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name) {
+	: _name(name), _isTopicProtected(true) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -43,7 +43,7 @@ const std::string Channel::getUserList() const {
 			 userMap.begin();
 		 it != userMap.end(); it++) {
 		if (it != userMap.begin())
-			userList += " ";
+			userList += USERLIST_SEPARATOR;
 		userList += getSpecifiedNick(it->second);
 	}
 	return (userList);
@@ -54,7 +54,9 @@ void Channel::removeUser(const Client *const client) {
 	userMap.erase(nickname);
 }
 
-const std::string &Channel::getName() const { return _name; }
+const std::string &Channel::getTopic() const { return _topic; }
+
+void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
 void Channel::sendToOthers(
 	const Client *const client, const std::string message) const {
@@ -75,12 +77,37 @@ void Channel::sendToAll(
 	}
 }
 
-bool Channel::userIsInChannel(const Client *const client) {
+bool Channel::isUserInChannel(const Client *const client) const {
 	std::string nick = client->getNickname();
-	for (std::map<std::string, SpecifiedClient>::iterator it = userMap.begin();
+	for (std::map<std::string, SpecifiedClient>::const_iterator it =
+			 userMap.begin();
 		 it != userMap.end(); it++) {
 		if (it->second.client->getNickname() == nick)
 			return (true);
 	}
 	return (false);
+}
+
+bool Channel::canChangeTopic(const Client *const client) const {
+	return (_isTopicProtected == false || isOp(client));
+}
+
+void Channel::sendTopic(const Client *const client) const {
+	const std::string topic = getTopic();
+	if (topic.empty())
+		SendCmd::sendFormattedMessage(RPL_NOTOPIC, client);
+	else
+		SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
+}
+
+/////////////
+// PRIVATE //
+/////////////
+
+bool Channel::isOp(const Client *const client) const {
+	if (isUserInChannel(client) == false)
+		return false;
+	const std::string nickname = client->getNickname();
+
+	return (userMap.find(nickname)->second.isOp);
 }
