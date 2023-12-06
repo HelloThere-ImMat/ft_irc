@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 17:31:14 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 23:08:20 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,17 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 	if (spClient.isOp)
 		return (OP_PREFIX + spClient.client->getNickname());
 	return (spClient.client->getNickname());
+}
+
+static std::vector<std::string> getModArgs(
+	const std::vector<std::string> &cmd) {
+	const size_t			 size = cmd.size();
+	std::vector<std::string> modArgs;
+
+	for (size_t i = 3; i < size; ++i) {
+		modArgs.push_back(cmd[i]);
+	}
+	return modArgs;
 }
 
 // Methods
@@ -59,6 +70,15 @@ void Channel::removeUser(const Client *const client) {
 const std::string &Channel::getTopic() const { return _topic; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
+
+void Channel::setMode(
+	const std::vector<std::string> &cmd, const Client *const client) {
+	const std::string			   modString = cmd[2];
+	const std::vector<std::string> modArgs = getModArgs(cmd);
+
+	(void)client;
+	(void)modArgs;
+}
 
 void Channel::sendToOthers(
 	const Client *const client, const std::string message) const {

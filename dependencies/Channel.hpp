@@ -6,11 +6,12 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 17:29:57 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 18:27:48 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <map>
+#include <vector>
 
 #include "SendCmd.hpp"
 
@@ -37,8 +38,10 @@ class Channel {
 	const std::string  getUserList() const;
 	const std::string &getTopic() const;
 	void			   setTopic(const std::string &topic);
-	void			   sendToOthers(
-					  const Client *const client, const std::string message) const;
+	void			   setMode(
+					  const std::vector<std::string> &cmd, const Client *const client);
+	void sendToOthers(
+		const Client *const client, const std::string message) const;
 	void sendToAll(const Client *const client, const std::string message) const;
 	void sendTopic(const Client *const client) const;
 	void sendTopicToAll(const Client *const client) const;
