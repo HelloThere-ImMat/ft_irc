@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 15:11:41 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/06 10:40:09 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 #include "SendCmd.hpp"
 
-#define OP_PREFIX "@"
+#define OP_PREFIX		   "@"
+#define USERLIST_SEPARATOR " "
 
 struct SpecifiedClient {
 	const Client *client;
@@ -28,14 +29,21 @@ class Channel {
 	void			   addNewUser(const Client *const client);
 	void			   removeUser(const Client *const client);
 	const std::string  getUserList() const;
-	const std::string &getName() const;
+	const std::string &getTopic() const;
+	void			   setTopic(const std::string &topic);
 	void			   sendToOthers(
 					  const Client *const client, const std::string message) const;
 	void sendToAll(const Client *const client, const std::string message) const;
-	bool userIsInChannel(const Client *const client);
+	bool isUserInChannel(const Client *const client) const;
+	bool canChangeTopic(const Client *const client) const;
+	void sendTopic(const Client *const client) const;
 
    private:
+	// Attributes
 	std::map<std::string, SpecifiedClient> userMap;
-	std::string							   topic;
 	const std::string					   _name;
+	std::string							   _topic;
+	bool								   _isTopicProtected;
+	// Private methods
+	bool isOp(const Client *const client) const;
 };

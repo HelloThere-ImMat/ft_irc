@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 14:26:43 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/06 13:24:47 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,47 +30,26 @@
 #define TIMEOUT				-1
 #define MAX_CLIENT_COUNT	3
 #define PRIVMSG_START_INDEX 2
+#define TOPIC_START_INDEX	2
 
 // Parameters
 
 #define USERLEN 18
 
+// CHAR
+
+#define SETTER_CHAR ':'
+
 // STRINGS
 
 #define INMES_PREFIX		 "<< "
 #define DEFAULT_USERNAME	 "Placeholder"
+#define MESSAGE_SEPARATOR	 " "
 #define SPECIAL_NICK_CHARSET "[]{}*\\|_"
-#define CHANNEL_PREFIX		 "#"
-
-// RPL
-
-#define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
-
-// Message
-
-#define JOIN_PREFIX		   "JOIN :"
-#define PRIVMSG_PREFIX	   "PRIVMSG "
-#define PART_PREFIX		   "PART "
-#define UL_JOIN_MESSAGE	   "353 <nick> = <arg> :"
-#define EUL_JOIN_MESSAGE   "366 <client> <arg> :End of /NAMES list."
-#define TOPIC_JOIN_MESSAGE "332 <client> <arg> :default"
-#define PONG_MESSAGE	   "PONG <servername> :<nick>"
 
 // Logs
 
 #define CLOSED_CLIENT_MESSAGE "Client has been disconnected"
-
-// Sent Errors
-
-#define ERROR_PREFIX		  "ERROR :"
-#define ERR_CLOSECONNECTION	  "Connection closed"
-#define ERR_UNKNOWNCOMMAND	  "421 <client> <command> :Unknown command"
-#define ERR_NONICKNAMEGIVEN	  "431 <client> :No nickname given"
-#define ERR_ERRONEUSNICKNAME  "432 <client> <arg> :Erroneus nickname"
-#define ERR_NICKNAMEINUSE	  "433 *<client> <arg> :Nickname is already in use"
-#define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
-#define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
-#define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
 
 // Errors
 
@@ -85,7 +64,6 @@ class Server {
    public:
 	Server(const std::string &port, const std::string &password);
 	~Server();
-	void start();
 	void listen() const;
 	void lookForEvents();
 	void readClientCommand(const int fd);
@@ -126,6 +104,7 @@ class Server {
 	void join(const std::vector<std::string> &cmd, Client *const client);
 	void privmsg(const std::vector<std::string> &cmd, Client *const client);
 	void part(const std::vector<std::string> &cmd, Client *const client);
+	void topic(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
 	bool isNicknameAlreadyUsed(const std::string &nickname);

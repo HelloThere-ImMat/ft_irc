@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 11:14:34 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 13:23:41 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,10 +42,13 @@ Server::Server(const std::string &port, const std::string &password)
 	_cmdMap["JOIN"] = &Server::join;
 	_cmdMap["PRIVMSG"] = &Server::privmsg;
 	_cmdMap["PART"] = &Server::part;
+	_cmdMap["TOPIC"] = &Server::topic;
 
 	printLog("Port: " + port);
 	printLog("Password: " + password);
-	_epollFd = 0;
+	_socket.setup();
+	_epollFd = epoll_create1(0);
+	addFdToPoll(_socket.getSocketFd());
 }
 
 Server::~Server() {
@@ -56,12 +59,6 @@ Server::~Server() {
 		 it != _channels.end(); ++it) {
 		delete it->second;
 	}
-}
-
-void Server::start() {
-	_socket.setup();
-	_epollFd = epoll_create1(0);
-	addFdToPoll(_socket.getSocketFd());
 }
 
 void Server::listen() const {
