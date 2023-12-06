@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 10:33:14 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 15:22:12 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,10 +76,13 @@
 
 class SendCmd {
    public:
-	static void sendMessage(const std::string &message, const int clientFd);
+	static void sendMessage(
+		const std::string &message, const Client *const client);
 	static void sendPrivateMessage(const std::string &message,
 		const Client *const sender, const Client *const receiver);
 	static void sendFormattedMessage(
+		const std::string &message, const Client *const client);
+	static std::string getFormattedMessage(
 		const std::string &message, const Client *const client);
 
    private:

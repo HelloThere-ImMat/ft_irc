@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 10:40:09 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 15:12:44 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,9 +34,10 @@ class Channel {
 	void			   sendToOthers(
 					  const Client *const client, const std::string message) const;
 	void sendToAll(const Client *const client, const std::string message) const;
+	void sendTopic(const Client *const client) const;
+	void sendTopicToAll(const Client *const client) const;
 	bool isUserInChannel(const Client *const client) const;
 	bool canChangeTopic(const Client *const client) const;
-	void sendTopic(const Client *const client) const;
 
    private:
 	// Attributes
