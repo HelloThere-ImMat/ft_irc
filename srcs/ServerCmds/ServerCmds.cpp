@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 11:26:09 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 09:46:56 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,34 +109,6 @@ void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
 void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 	(void)cmd;
 	SendCmd::sendFormattedMessage(PONG_MESSAGE, client);
-}
-
-void Server::sendJoinMessage(const Channel *const channel, const Client *client, const std::string &channelName)
-{
-	std::string channelUserList;
-	
-	channel->sendToChannel(client, JOIN_PREFIX + channelName, true);
-	//if (!channel->topic.empty())
-	//	SendCmd::sendFormattedMessage(TOPIC_JOIN_MESSAGE + channel->topic, client);
-	channelUserList = channel->getUserList();
-	SendCmd::sendFormattedMessage(UL_JOIN_MESSAGE + channelUserList, client);
-	SendCmd::sendFormattedMessage(EUL_JOIN_MESSAGE, client);
-}
-
-void Server::join(const std::vector<std::string> &cmd, Client *const client) {
-	if (!cmd[1].empty())
-	{
-		const std::map<std::string, Channel *>::iterator it = _channels.find(CHANNEL_PREFIX + cmd[1]);
-		if (it == _channels.end())
-		{
-			Channel *channel = new Channel(cmd[1], client);
-			_channels[CHANNEL_PREFIX + cmd[1]] = channel; 
-			sendJoinMessage(channel, client, cmd[1]);
-		} else {
-			it->second->addNewUser(client);
-			sendJoinMessage(it->second, client, cmd[1]);
-		}
-	}
 }
 
 void Server::privmsg(

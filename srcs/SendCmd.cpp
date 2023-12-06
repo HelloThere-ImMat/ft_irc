@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:59 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 10:54:47 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 11:46:26 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,12 +25,13 @@ static std::string replacePatterns(std::string original,
 }
 
 static std::string getFormattedMessage(
-	const std::string &message, const Client *const client) {
+	const std::string &message, const Client *const client, std::string channelName) {
 	const std::string mapPattern[PATTERN_COUNT][2] = {
 		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
 		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},
 		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()},
-		{"<username>", client->getUsername()}, {"<hostname>", HOST_NAME}};
+		{"<username>", client->getUsername()}, {"<hostname>", HOST_NAME},
+		{"<channelName>", channelName}};
 
 	std::string formattedMessage = message;
 
@@ -66,8 +67,8 @@ void SendCmd::sendPrivateMessage(const std::string &message,const Client *const 
 }
 
 void SendCmd::sendFormattedMessage(
-	const std::string &message, const Client *const client) {
-	sendMessage(getFormattedMessage(message, client), client->getSocketFd());
+	const std::string &message, const Client *const client, std::string channelName) {
+	sendMessage(getFormattedMessage(message, client, channelName), client->getSocketFd());
 }
 
 const char *SendCmd::SendFailException::what() const throw() {

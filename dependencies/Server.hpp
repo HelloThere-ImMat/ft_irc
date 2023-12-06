@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 11:26:18 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 11:37:21 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,8 +51,8 @@
 
 #define JOIN_PREFIX			"JOIN :"
 #define PART_PREFIX			"PART "
-#define UL_JOIN_MESSAGE		"353 <nick> = <arg> :"
-#define EUL_JOIN_MESSAGE	"366 <client> <arg> :End of /NAMES list."
+#define UL_JOIN_MESSAGE		"353 <nick> = <channelName> :"
+#define EUL_JOIN_MESSAGE	"366 <client> <channelName> :End of /NAMES list."
 #define TOPIC_JOIN_MESSAGE	"332 <client> <arg> :default"
 #define PONG_MESSAGE		"PONG <servername> :<nick>"
 #define PRIVMSG_PREFIX		"PRIVMSG "

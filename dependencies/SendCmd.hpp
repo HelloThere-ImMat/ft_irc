@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/05 10:55:00 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 11:43:58 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 // Count
 
-#define PATTERN_COUNT	 8
+#define PATTERN_COUNT	 9
 
 // Server specs
 
@@ -49,7 +49,7 @@ class SendCmd
 		static void sendMessage(const std::string &message, const int clientFd);
 		static void sendPrivateMessage(const std::string &message, const Client *const sender, const Client *const receiver);
 		static void sendFormattedMessage(
-			const std::string &message, const Client *const client);
+			const std::string &message, const Client *const client, std::string channelName = "");
 	private :
 		class SendFailException : public std::exception {
 		public:
