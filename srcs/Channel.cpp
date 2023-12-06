@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 20:20:54 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 22:01:33 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,22 @@ void Channel::sendToAll(
 	}
 }
 
+void Channel::sendTopic(const Client *const client) const {
+	if (_topic.empty())
+		SendCmd::sendFormattedMessage(RPL_NOTOPIC, client);
+	else {
+		const std::string formatRPL =
+			SendCmd::getFormattedMessage(RPL_TOPIC, client) + _topic;
+		SendCmd::sendMessage(formatRPL, client);
+	}
+}
+
+void Channel::sendTopicToAll(const Client *const client) const {
+	const std::string formatRPL =
+		SendCmd::getFormattedMessage(RPL_TOPIC, client);
+	sendToAll(client, formatRPL + _topic);
+}
+
 bool Channel::isUserInChannel(const Client *const client) const {
 	std::string nick = client->getNickname();
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
@@ -96,14 +112,6 @@ bool Channel::isUserInChannel(const Client *const client) const {
 
 bool Channel::canChangeTopic(const Client *const client) const {
 	return (_isTopicProtected == false || isOp(client));
-}
-
-void Channel::sendTopic(const Client *const client) const {
-	const std::string topic = getTopic();
-	if (topic.empty())
-		SendCmd::sendFormattedMessage(RPL_NOTOPIC, client);
-	else
-		SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
 }
 
 /////////////

@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 21:53:19 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 22:08:14 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -192,7 +192,7 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 			const std::string topic =
 				removeSetterChar(getFullMessage(cmd, TOPIC_START_INDEX));
 			channel->setTopic(topic);
-			channel->sendToAll(client, RPL_TOPIC + topic);
+			channel->sendTopicToAll(client);
 		}
 	} else {
 		SendCmd::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);

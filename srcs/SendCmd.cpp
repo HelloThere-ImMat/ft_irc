@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:59 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:35:40 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 22:07:29 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,44 @@ static std::string replacePatterns(const std::string &original,
 	return newStr;
 }
 
-static std::string getFormattedMessage(
-	const std::string &message, const Client *const client, std::string channelName = "") {
+// Send Methods
+
+void SendCmd::sendMessage(
+	const std::string &message, const Client *const client) {
+	static const std::string domainName = DOMAIN_NAME;
+	const int				 clientFd = client->getSocketFd();
+	const std::string		 formatMessage =
+		":" + domainName + " " + message + END_MESSAGE;
+
+	if (send(clientFd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
+		throw SendFailException();
+	else
+		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
+}
+
+void SendCmd::sendPrivateMessage(const std::string &message,
+	const Client *const sender, const Client *const receiver) {
+	const std::string senderSpec =
+		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
+	const std::string formatMessage =
+		":" + senderSpec + " " + message + END_MESSAGE;
+
+	if (send(receiver->getSocketFd(), formatMessage.c_str(),
+			formatMessage.size(), 0) < 0)
+		throw SendFailException();
+	else
+		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
+}
+
+void SendCmd::sendFormattedMessage(
+	const std::string &message, const Client *const client, std::string channelName) {
+	sendMessage(getFormattedMessage(message, client, channelName), client);
+}
+
+// Format methods
+
+std::string SendCmd::getFormattedMessage(
+	const std::string &message, const Client *const client, std::string channelName) {
 	const std::string mapPattern[PATTERN_COUNT][2] = {
 		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
 		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},
@@ -44,37 +80,7 @@ static std::string getFormattedMessage(
 	return formattedMessage;
 }
 
-// Send Methods
-
-void SendCmd::sendMessage(const std::string &message, const int clientFd) {
-	static const std::string domainName = DOMAIN_NAME;
-	const std::string		 formatMessage =
-		":" + domainName + " " + message + END_MESSAGE;
-
-	if (send(clientFd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
-		throw SendFailException();
-	else
-		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
-}
-
-void SendCmd::sendPrivateMessage(const std::string &message,
-	const Client *const sender, const Client *const receiver) {
-	const std::string senderSpec =
-		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
-	const std::string formatMessage = getFormattedMessage(
-		":" + senderSpec + " " + message + END_MESSAGE, sender);
-
-	if (send(receiver->getSocketFd(), formatMessage.c_str(),
-			formatMessage.size(), 0) < 0)
-		throw SendFailException();
-	else
-		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
-}
-
-void SendCmd::sendFormattedMessage(
-	const std::string &message, const Client *const client, std::string channelName) {
-	sendMessage(getFormattedMessage(message, client, channelName), client->getSocketFd());
-}
+// Exceptions
 
 const char *SendCmd::SendFailException::what() const throw() {
 	return (SEND_FAIL__ERROR);

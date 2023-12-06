@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 21:57:04 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 22:07:44 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,10 +82,13 @@
 
 class SendCmd {
    public:
-	static void sendMessage(const std::string &message, const int clientFd);
+	static void sendMessage(
+		const std::string &message, const Client *const client);
 	static void sendPrivateMessage(const std::string &message,
 		const Client *const sender, const Client *const receiver);
 	static void sendFormattedMessage(
+		const std::string &message, const Client *const client, std::string channelName = "");
+	static std::string getFormattedMessage(
 		const std::string &message, const Client *const client, std::string channelName = "");
 
    private:
