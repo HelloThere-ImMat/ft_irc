@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:09:28 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 09:55:14 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 09:42:00 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static int startServer(const std::string &port, const std::string &password) {
 	try {
 		Server serv(port, password);
 
-		serv.start();
 		serv.listen();
 		while (true) {
 			serv.lookForEvents();

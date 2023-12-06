@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/06 09:28:06 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 09:41:55 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,7 +59,6 @@ class Server {
    public:
 	Server(const std::string &port, const std::string &password);
 	~Server();
-	void start();
 	void listen() const;
 	void lookForEvents();
 	void readClientCommand(const int fd);
