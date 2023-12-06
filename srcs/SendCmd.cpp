@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:59 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:11:27 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 15:35:40 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ static std::string replacePatterns(const std::string &original,
 }
 
 static std::string getFormattedMessage(
-	const std::string &message, const Client *const client, std::string channelName) {
+	const std::string &message, const Client *const client, std::string channelName = "") {
 	const std::string mapPattern[PATTERN_COUNT][2] = {
 		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
 		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},
@@ -62,7 +62,7 @@ void SendCmd::sendPrivateMessage(const std::string &message,
 	const std::string senderSpec =
 		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
 	const std::string formatMessage = getFormattedMessage(
-		":" + senderSpec + " " + message + END_MESSAGE, sender, "");
+		":" + senderSpec + " " + message + END_MESSAGE, sender);
 
 	if (send(receiver->getSocketFd(), formatMessage.c_str(),
 			formatMessage.size(), 0) < 0)

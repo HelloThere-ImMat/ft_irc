@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/06 15:31:56 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 19:39:36 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,6 @@
 
 #include <exception>
 #include <typeinfo>
-#include <vector>
 
 #include "Channel.hpp"
 #include "ClientManager.hpp"
@@ -31,6 +30,7 @@
 #define MAX_CLIENT_COUNT	3
 #define PRIVMSG_START_INDEX 2
 #define TOPIC_START_INDEX	2
+#define MAX_CHANNEL_NB		100
 
 // Parameters
 
@@ -43,7 +43,7 @@
 // STRINGS
 
 #define INMES_PREFIX		 "<< "
-#define CHANNEL_PREFIX		 "#"
+#define CHANNEL_PREFIX		 '#'
 #define DEFAULT_USERNAME	 "Placeholder"
 #define MESSAGE_SEPARATOR	 " "
 #define SPECIAL_NICK_CHARSET "[]{}*\\|_"

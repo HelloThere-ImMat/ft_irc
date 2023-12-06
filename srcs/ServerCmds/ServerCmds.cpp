@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:05:43 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 15:53:16 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -159,11 +159,11 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 	if (it != _channels.end()) {
 		Channel *const channel = it->second;
 		if (channel->isUserInChannel(client) == false)
-			SendCmd::sendFormattedMessage(ERR_NOTONCHANNEL, client);
+			SendCmd::sendFormattedMessage(ERR_NOTONCHANNEL, client, cmd[1]);
 		else if (size == 2)
 			channel->sendTopic(client);
 		else if (channel->canChangeTopic(client) == false) {
-			SendCmd::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client);
+			SendCmd::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client, cmd[1]);
 		} else {
 			const std::string topic =
 				removeSetterChar(getFullMessage(cmd, TOPIC_START_INDEX));
@@ -171,7 +171,7 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 			channel->sendToAll(client, RPL_TOPIC + topic);
 		}
 	} else {
-		SendCmd::sendFormattedMessage(ERR_NOSUCHCHANNEL, client);
+		SendCmd::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
 	}
 }
 

@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:01:45 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 20:20:54 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name), _isTopicProtected(true) {
+	: _name(name), _isTopicProtected(true), _isPasswordProtected(false) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -31,10 +31,16 @@ Channel::Channel(const std::string &name, const Client *const client)
 
 Channel::~Channel() { userMap.clear(); }
 
-void Channel::addNewUser(const Client *const client) {
+int Channel::addNewUser(const Client *const client, std::vector<std::string> &keys, size_t keyIndex) {
 	SpecifiedClient spClient = {.client = client, .isOp = false};
 
+	if (_isPasswordProtected && keys.empty())
+		return (EXIT_FAILURE);
+	else if (_isPasswordProtected && keys[keyIndex] != _password)
+		return (EXIT_FAILURE);
+	
 	userMap[client->getNickname()] = spClient;
+	return (EXIT_SUCESS);
 }
 
 const std::string Channel::getUserList() const {

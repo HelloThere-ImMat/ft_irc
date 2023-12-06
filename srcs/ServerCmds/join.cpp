@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 09:45:58 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:31:32 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 20:18:06 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,6 @@ std::vector<std::string> getSubArgs(std::string list)
 	int i = 0;
 	int startPos = 0;
 	
-	std::cout << "hola" << std::endl;
 	while (i < subArgNb)
 	{
 		int sepPos = list.find(',', startPos);
@@ -65,24 +64,36 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 	
 	std::vector<std::string> channelSubArgs;
 	std::vector<std::string> keySubArgs;
-	if (!cmd[1].empty())
-	{
+	size_t					 sizeCmd = cmd.size();
+	if (sizeCmd < 2) {
+		SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
+		return;
+	}
+	else {
 		channelSubArgs = getSubArgs(cmd[1]);
-		//if (!cmd[2].empty())
-		//	keySubArgs = getSubArgs(cmd[2]);
-		for (std::vector<std::string>::iterator it1 = channelSubArgs.begin(); it1 != channelSubArgs.end(); it1++)
+		size_t channelNb = channelSubArgs.size();
+		for (size_t i = 0; i < channelNb; i++)
 		{
-			const std::map<std::string, Channel *>::iterator it2 = _channels.find(CHANNEL_PREFIX + *it1);
+			std::string channelName = channelSubArgs[i];
+			const std::map<std::string, Channel *>::iterator it2 = _channels.find(channelName);
 			if (it2 == _channels.end())
 			{
-				printLog("adding : " + *it1);
-				Channel *channel = new Channel(*it1, client);
-				_channels[CHANNEL_PREFIX + *it1] = channel; 
-				sendJoinMessage(channel, client, *it1);
+				if ((channelName)[0] != CHANNEL_PREFIX)
+					SendCmd::sendFormattedMessage(ERR_BADCHANMASK, client, channelName);
+				else if (_channels.size() >= MAX_CHANNEL_NB)
+					SendCmd::sendFormattedMessage(ERR_TOOMANYCHANNELS, client, channelName);
+				else {
+					Channel *channel = new Channel(channelName, client);
+					_channels[channelName] = channel; 
+					sendJoinMessage(channel, client, channelName);
+				}
 			} else {
-				printLog("joining : " + *it1);
-				it2->second->addNewUser(client);
-				sendJoinMessage(it2->second, client, *it1);
+				if (sizeCmd > 2)
+					keySubArgs = getSubArgs(cmd[2]);
+				if (it2->second->addNewUser(client, keySubArgs, i) == EXIT_SUCCESS)
+					sendJoinMessage(it2->second, client, channelName);
+				else
+					SendCmd::sendFormattedMessage(ERR_BADCHANNELKEY, client, channelName);	
 			}
 		}
 	}

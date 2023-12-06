@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:06:55 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/06 20:16:26 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,16 +59,19 @@
 
 #define ERROR_PREFIX		  "ERROR :"
 #define ERR_CLOSECONNECTION	  "Connection closed"
-#define ERR_NOSUCHCHANNEL	  "403 <client> <arg> :No such channel"
+#define ERR_NOSUCHCHANNEL	  "403 <client> <channelName> :No such channel"
 #define ERR_UNKNOWNCOMMAND	  "421 <client> <command> :Unknown command"
 #define ERR_NONICKNAMEGIVEN	  "431 <client> :No nickname given"
 #define ERR_ERRONEUSNICKNAME  "432 <client> <arg> :Erroneus nickname"
 #define ERR_NICKNAMEINUSE	  "433 *<client> <arg> :Nickname is already in use"
-#define ERR_NOTONCHANNEL	  "442 <client> <arg> :You're not on that channel"
+#define ERR_NOTONCHANNEL	  "442 <client> <channelName> :You're not on that channel"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
-#define ERR_CHANOPRIVSNEEDED  "482 <client> <arg> :You're not channel operator"
+#define ERR_CHANOPRIVSNEEDED  "482 <client> <channelName> :You're not channel operator"
+#define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
+#define ERR_TOOMANYCHANNELS	  "405 <client> <channelName> :You have joined too many channels"
+#define ERR_BADCHANNELKEY	  "475 <client> <channelName> :Cannot join channel (+k)"
 
 // Error
 
