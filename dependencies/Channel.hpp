@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 10:21:06 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 10:40:09 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,8 @@
 
 #include "SendCmd.hpp"
 
-#define OP_PREFIX "@"
+#define OP_PREFIX		   "@"
+#define USERLIST_SEPARATOR " "
 
 struct SpecifiedClient {
 	const Client *client;
