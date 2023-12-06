@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/06 13:24:47 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 17:34:02 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,8 @@
 
 // CHAR
 
-#define SETTER_CHAR ':'
+#define SETTER_CHAR	   ':'
+#define CHANNEL_PREFIX '#'
 
 // STRINGS
 
@@ -105,6 +106,7 @@ class Server {
 	void privmsg(const std::vector<std::string> &cmd, Client *const client);
 	void part(const std::vector<std::string> &cmd, Client *const client);
 	void topic(const std::vector<std::string> &cmd, Client *const client);
+	void mode(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
 	bool isNicknameAlreadyUsed(const std::string &nickname);

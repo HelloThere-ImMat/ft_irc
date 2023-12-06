@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:34:54 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 17:33:15 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -196,6 +196,26 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 				removeSetterChar(getFullMessage(cmd, TOPIC_START_INDEX));
 			channel->setTopic(topic);
 			channel->sendTopicToAll(client);
+		}
+	} else {
+		SendCmd::sendFormattedMessage(ERR_NOSUCHCHANNEL, client);
+	}
+}
+
+void Server::mode(const std::vector<std::string> &cmd, Client *const client) {
+	const size_t size = cmd.size();
+
+	if (size < 2) {
+		SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
+		return;
+	} else if (cmd[1][0] != CHANNEL_PREFIX)
+		return;
+	const std::map<std::string, Channel *>::iterator it =
+		_channels.find(cmd[1]);
+	if (it != _channels.end()) {
+		Channel *const channel = it->second;
+		if (size == 2) {
+			channel->sendMode(client);
 		}
 	} else {
 		SendCmd::sendFormattedMessage(ERR_NOSUCHCHANNEL, client);

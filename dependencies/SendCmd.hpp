@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:22:12 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 18:01:07 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,12 @@
 
 // RPL
 
-#define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
-#define RPL_NOTOPIC "331 <client> <arg> :No topic is set"
-#define RPL_TOPIC	"332 <client> <arg> :"
+#define RPL_WELCOME		  "001 <client> :Welcome to the <networkname> Network, <nick>"
+#define RPL_CHANNELMODEIS "324 <client> <arg> "
+#define RPL_NOTOPIC		  "331 <client> <arg> :No topic is set"
+#define RPL_TOPIC		  "332 <client> <arg> :"
 
-// Message
+// Messag
 
 #define JOIN_PREFIX		 "JOIN :"
 #define PRIVMSG_PREFIX	 "PRIVMSG "

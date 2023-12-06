@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/06 13:23:41 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 16:21:10 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ Server::Server(const std::string &port, const std::string &password)
 	_cmdMap["JOIN"] = &Server::join;
 	_cmdMap["PRIVMSG"] = &Server::privmsg;
 	_cmdMap["PART"] = &Server::part;
+	_cmdMap["MODE"] = &Server::mode;
 	_cmdMap["TOPIC"] = &Server::topic;
 
 	printLog("Port: " + port);

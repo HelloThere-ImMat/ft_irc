@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:12:44 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 17:29:57 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,12 @@
 
 #define OP_PREFIX		   "@"
 #define USERLIST_SEPARATOR " "
+
+#define NO_MOD			  0x00
+#define INVITE_ONLY		  0x01
+#define TOPIC_RESTRICTION 0x02
+#define PASS_ONLY		  0x04
+#define USERLIMIT		  0x08
 
 struct SpecifiedClient {
 	const Client *client;
@@ -36,6 +42,7 @@ class Channel {
 	void sendToAll(const Client *const client, const std::string message) const;
 	void sendTopic(const Client *const client) const;
 	void sendTopicToAll(const Client *const client) const;
+	void sendMode(const Client *const client) const;
 	bool isUserInChannel(const Client *const client) const;
 	bool canChangeTopic(const Client *const client) const;
 
@@ -45,6 +52,8 @@ class Channel {
 	const std::string					   _name;
 	std::string							   _topic;
 	bool								   _isTopicProtected;
+	uint8_t								   _modMask;
 	// Private methods
-	bool isOp(const Client *const client) const;
+	std::string getModeMessage() const;
+	bool		isOp(const Client *const client) const;
 };

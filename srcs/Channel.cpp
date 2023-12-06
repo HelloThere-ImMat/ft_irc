@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:34:55 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 17:31:14 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,9 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name), _isTopicProtected(true) {
+	: _name(name),
+	  _isTopicProtected(true),
+	  _modMask(INVITE_ONLY | TOPIC_RESTRICTION) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -93,6 +95,13 @@ void Channel::sendTopicToAll(const Client *const client) const {
 	sendToAll(client, formatRPL + _topic);
 }
 
+void Channel::sendMode(const Client *const client) const {
+	const std::string rplMessage =
+		SendCmd::getFormattedMessage(RPL_CHANNELMODEIS, client);
+	const std::string modeMessage = rplMessage + getModeMessage();
+	SendCmd::sendMessage(modeMessage, client);
+}
+
 bool Channel::isUserInChannel(const Client *const client) const {
 	std::string nick = client->getNickname();
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
@@ -111,6 +120,20 @@ bool Channel::canChangeTopic(const Client *const client) const {
 /////////////
 // PRIVATE //
 /////////////
+
+std::string Channel::getModeMessage() const {
+	std::string modeMessage = "+";
+
+	if (_modMask & INVITE_ONLY)
+		modeMessage += "i";
+	if (_modMask & TOPIC_RESTRICTION)
+		modeMessage += "t";
+	if (_modMask & PASS_ONLY)
+		modeMessage += "k";
+	if (_modMask & USERLIMIT)
+		modeMessage += "l";
+	return modeMessage;
+}
 
 bool Channel::isOp(const Client *const client) const {
 	if (isUserInChannel(client) == false)
