@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 09:27:59 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 10:00:44 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@
 
 #define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
 #define RPL_NOTOPIC "331 <client> <arg> :No topic is set"
-#define RPL_TOPIC	"332 <client> <arg> "
+#define RPL_TOPIC	"332 <client> <arg> :"
 
 // Message
 

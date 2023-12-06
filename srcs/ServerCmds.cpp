@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 09:25:59 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 10:21:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,6 +163,15 @@ void Server::part(const std::vector<std::string> &cmd, Client *const client) {
 		printLog("Could not part channel");
 }
 
+static std::string getTopic(const std::string &message) {
+	std::string topic;
+
+	topic = message;
+	if (message.empty() == false && message[0] == ':')
+		topic.erase(0, 1);
+	return topic;
+}
+
 void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 	const size_t size = cmd.size();
 
@@ -181,7 +190,8 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 		else if (channel->canChangeTopic(client) == false) {
 			SendCmd::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client);
 		} else {
-			const std::string topic = getFullMessage(cmd, TOPIC_START_INDEX);
+			const std::string topic =
+				getTopic(getFullMessage(cmd, TOPIC_START_INDEX));
 			channel->setTopic(topic);
 			channel->sendToAll(client, RPL_TOPIC + topic);
 		}

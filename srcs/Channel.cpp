@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 09:25:27 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 10:21:07 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name), _topicPermission(true) {
+	: _name(name), _isTopicProtected(false) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -54,11 +54,7 @@ void Channel::removeUser(const Client *const client) {
 	userMap.erase(nickname);
 }
 
-const std::string &Channel::getName() const { return _name; }
-
 const std::string &Channel::getTopic() const { return _topic; }
-
-bool Channel::getTopicPermission() const { return _topicPermission; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
@@ -92,16 +88,8 @@ bool Channel::isUserInChannel(const Client *const client) const {
 	return (false);
 }
 
-bool Channel::isOp(const Client *const client) const {
-	if (isUserInChannel(client) == false)
-		return false;
-	const std::string nickname = client->getNickname();
-
-	return (userMap.find(nickname)->second.isOp);
-}
-
 bool Channel::canChangeTopic(const Client *const client) const {
-	return (_topicPermission == true || isOp(client));
+	return (_isTopicProtected == true || isOp(client));
 }
 
 void Channel::sendTopic(const Client *const client) const {
@@ -110,4 +98,16 @@ void Channel::sendTopic(const Client *const client) const {
 		SendCmd::sendFormattedMessage(RPL_NOTOPIC, client);
 	else
 		SendCmd::sendFormattedMessage(RPL_TOPIC + topic, client);
+}
+
+/////////////
+// PRIVATE //
+/////////////
+
+bool Channel::isOp(const Client *const client) const {
+	if (isUserInChannel(client) == false)
+		return false;
+	const std::string nickname = client->getNickname();
+
+	return (userMap.find(nickname)->second.isOp);
 }
