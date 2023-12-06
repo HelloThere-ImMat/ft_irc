@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/06 10:52:14 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 13:24:47 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,7 @@
 
 #define INMES_PREFIX		 "<< "
 #define DEFAULT_USERNAME	 "Placeholder"
+#define MESSAGE_SEPARATOR	 " "
 #define SPECIAL_NICK_CHARSET "[]{}*\\|_"
 
 // Logs

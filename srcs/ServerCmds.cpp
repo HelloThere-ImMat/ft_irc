@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 10:51:25 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 13:27:53 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ static std::string getFullMessage(
 	if (size > startIndex) {
 		while (i < size) {
 			if (i > startIndex)
-				fullMessage += " ";
+				fullMessage += MESSAGE_SEPARATOR;
 			fullMessage += cmd[i++];
 		}
 	}
@@ -144,7 +144,7 @@ void Server::privmsg(
 		_channels.find(cmd[1]);
 
 	if (it != _channels.end()) {
-		Channel *channel = it->second;
+		Channel *const channel = it->second;
 		if (channel->isUserInChannel(client))
 			channel->sendToOthers(client, privMessage);
 	} else if (_clientMap.getClient(cmd[1]) != NULL)
@@ -155,21 +155,23 @@ void Server::privmsg(
 }
 
 void Server::part(const std::vector<std::string> &cmd, Client *const client) {
-	if (_channels.find(cmd[1]) != _channels.end()) {
-		Channel *channel = _channels.find(cmd[1])->second;
+	const std::map<std::string, Channel *>::iterator it =
+		_channels.find(cmd[1]);
+	if (it != _channels.end()) {
+		Channel *channel = it->second;
 		channel->sendToAll(client, PART_PREFIX + cmd[1]);
 		channel->removeUser(client);
 	} else
 		printLog("Could not part channel");
 }
 
-static std::string getTopic(const std::string &message) {
-	std::string topic;
+static std::string removeSetterChar(const std::string &message) {
+	std::string newMessage;
 
-	topic = message;
+	newMessage = message;
 	if (message.empty() == false && message[0] == SETTER_CHAR)
-		topic.erase(0, 1);
-	return topic;
+		newMessage.erase(0, 1);
+	return newMessage;
 }
 
 void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
@@ -191,7 +193,7 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 			SendCmd::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client);
 		} else {
 			const std::string topic =
-				getTopic(getFullMessage(cmd, TOPIC_START_INDEX));
+				removeSetterChar(getFullMessage(cmd, TOPIC_START_INDEX));
 			channel->setTopic(topic);
 			channel->sendToAll(client, RPL_TOPIC + topic);
 		}

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 10:39:56 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 13:21:44 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name), _isTopicProtected(false) {
+	: _name(name), _isTopicProtected(true) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -89,7 +89,7 @@ bool Channel::isUserInChannel(const Client *const client) const {
 }
 
 bool Channel::canChangeTopic(const Client *const client) const {
-	return (_isTopicProtected == true || isOp(client));
+	return (_isTopicProtected == false || isOp(client));
 }
 
 void Channel::sendTopic(const Client *const client) const {
