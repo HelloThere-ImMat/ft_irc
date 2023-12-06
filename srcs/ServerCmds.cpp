@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 10:21:08 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 10:51:25 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ static std::string getTopic(const std::string &message) {
 	std::string topic;
 
 	topic = message;
-	if (message.empty() == false && message[0] == ':')
+	if (message.empty() == false && message[0] == SETTER_CHAR)
 		topic.erase(0, 1);
 	return topic;
 }

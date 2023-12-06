@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/06 10:21:07 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 10:52:14 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,10 @@
 // Parameters
 
 #define USERLEN 18
+
+// CHAR
+
+#define SETTER_CHAR ':'
 
 // STRINGS
 
