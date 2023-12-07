@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/07 09:47:18 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 10:35:52 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 
 #include <stdint.h>
 
+#include <map>
 #include <string>
 #include <vector>
 
@@ -22,8 +23,14 @@
 #define TOPIC_RESTRICTION 0x02
 #define PASS_ONLY		  0x04
 #define USERLIMIT		  0x08
+#define OP_CHANGE		  0x10
+#define FLAG_COUNT		  5
 
 typedef enum e_modSetter { ADD, RM } t_modSetter;
+typedef struct s_flag {
+	char	FlagChar;
+	uint8_t FlagMask;
+} Flag;
 
 class Mode {
    public:
