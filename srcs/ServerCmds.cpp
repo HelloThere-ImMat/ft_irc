@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 10:09:34 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 21:48:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -163,12 +163,17 @@ void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 		const std::map<std::string, Channel *>::iterator it =
 			_channels.find(cmd[1]);
 		if (it == _channels.end()) {
-			Channel *channel = new Channel(cmd[1], client);
+			Channel *const channel = new Channel(cmd[1], client);
 			_channels[cmd[1]] = channel;
 			sendJoinMessage(channel, client, cmd[1]);
 		} else {
-			it->second->addNewUser(client);
-			sendJoinMessage(it->second, client, cmd[1]);
+			Channel *const channel = it->second;
+			if (channel->isAbleToJoin(cmd) == false) {
+				SendCmd::sendFormattedMessage(ERR_BADCHANNELKEY, client);
+			} else {
+				it->second->addNewUser(client);
+				sendJoinMessage(it->second, client, cmd[1]);
+			}
 		}
 	}
 }

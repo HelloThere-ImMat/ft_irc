@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 10:09:17 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 21:48:45 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,19 +73,35 @@ void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
 bool Channel::processMode(const std::vector<std::string> &cmd) {
 	const std::string		 modString = cmd[2];
-	std::vector<std::string> modArgs = getModArgs(cmd);
+	std::vector<std::string> modeArgs = getModArgs(cmd);
 	t_modSetter				 setter = ADD;
-	bool					 hasChanged = false;
+	modeStatus status = {.hasChanged = false, .doesUseArg = false};
+	bool	   hasChanged = false;
 
 	for (std::string::const_iterator it = modString.begin();
 		 it != modString.end(); ++it) {
-		if (*it == '+')
-			setter = ADD;
-		else if (*it == '-')
-			setter = RM;
-		hasChanged |= _mode.setMode(setter, *it, modArgs);
+		if (*it == '+' || *it == '-') {
+			setter = (*it == '+') ? ADD : RM;
+		} else {
+			status = _mode.setMode(setter, *it, modeArgs);
+			hasChanged |= status.hasChanged;
+			if (status.doesUseArg) {
+				applyMode(*it, modeArgs[0]);
+				modeArgs.erase(modeArgs.begin());
+			}
+		}
 	}
-	return hasChanged;
+	return status.hasChanged;
+}
+
+bool Channel::isAbleToJoin(const std::vector<std::string> &cmd) const {
+	return !(_mode.getModeMask() & PASS_ONLY) ||
+		   (cmd.size() > 2 && cmd[2] == _password);
+}
+
+void Channel::applyMode(const char c, const std::string &arg) {
+	if (c == 'k')
+		_password = arg;
 }
 
 void Channel::sendToOthers(

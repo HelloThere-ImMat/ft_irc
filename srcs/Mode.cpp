@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/07 16:15:43 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 21:18:57 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,13 +32,15 @@ Mode::Mode(const uint8_t initialMask) : _mask(initialMask) {}
 
 Mode::~Mode() {}
 
-bool Mode::setMode(const t_modSetter setter, const char c,
+modeStatus Mode::setMode(const t_modSetter setter, const char c,
 	std::vector<std::string> &modeArgs) {
-	uint8_t flags;
+	const uint8_t oldMask = _mask;
+	uint8_t		  flags = NO_MOD;
+	modeStatus	  status = {.hasChanged = false, .doesUseArg = false};
 
 	if (c == 'k' || c == 'o' || c == 'l') {
 		if (setter == ADD && modeArgs.empty() == false) {
-			modeArgs.erase(modeArgs.begin());
+			status.doesUseArg = true;
 		}
 		if (setter == RM || modeArgs.empty() == false)
 			flags = searchFlags(c);
@@ -46,7 +48,8 @@ bool Mode::setMode(const t_modSetter setter, const char c,
 		flags = searchFlags(c);
 	if (flags)
 		setFlags(flags, setter);
-	return flags != NO_MOD;
+	status.hasChanged = (oldMask != _mask);
+	return status;
 }
 
 uint8_t Mode::getModeMask() const { return _mask; }

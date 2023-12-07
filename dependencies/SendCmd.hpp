@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 10:32:05 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 21:24:46 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
+#define ERR_BADCHANNELKEY	  "475 <client> <arg> :Cannot join channel (+k)"
 #define ERR_CHANOPRIVSNEEDED  "482 <client> <arg> :You're not channel operator"
 
 // Error

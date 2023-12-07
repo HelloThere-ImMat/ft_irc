@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 10:31:54 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 21:49:00 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ class Channel {
 	bool isUserInChannel(const Client *const client) const;
 	bool canChangeTopic(const Client *const client) const;
 	bool isOp(const Client *const client) const;
+	void applyMode(const char c, const std::string &arg);
+	bool isAbleToJoin(const std::vector<std::string> &cmd) const;
 
    private:
 	// Attributes
@@ -53,5 +55,6 @@ class Channel {
 	const std::string					   _name;
 	std::string							   _topic;
 	bool								   _isTopicProtected;
+	std::string							   _password;
 	Mode								   _mode;
 };

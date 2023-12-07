@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/07 10:35:52 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 21:05:12 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,10 @@ typedef struct s_flag {
 	char	FlagChar;
 	uint8_t FlagMask;
 } Flag;
+typedef struct s_modeStatus {
+	bool hasChanged;
+	bool doesUseArg;
+} modeStatus;
 
 class Mode {
    public:
@@ -38,8 +42,8 @@ class Mode {
 	Mode(const uint8_t initialMask);
 	~Mode();
 	uint8_t		getModeMask() const;
-	bool		setMode(const t_modSetter setter, const char c,
-			   std::vector<std::string> &modArgs);
+	modeStatus	setMode(const t_modSetter setter, const char c,
+		 std::vector<std::string> &modArgs);
 	std::string getModeMessage() const;
 
    private:
