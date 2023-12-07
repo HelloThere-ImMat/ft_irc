@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 09:28:19 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 10:09:17 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,8 +71,7 @@ const std::string &Channel::getTopic() const { return _topic; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
-bool Channel::processMode(
-	const std::vector<std::string> &cmd, const Client *const client) {
+bool Channel::processMode(const std::vector<std::string> &cmd) {
 	const std::string		 modString = cmd[2];
 	std::vector<std::string> modArgs = getModArgs(cmd);
 	t_modSetter				 setter = ADD;
@@ -86,7 +85,6 @@ bool Channel::processMode(
 			setter = RM;
 		hasChanged |= _mode.setMode(setter, *it, modArgs);
 	}
-	(void)client;
 	return hasChanged;
 }
 
@@ -128,7 +126,7 @@ void Channel::sendTopicToAll(const Client *const client) const {
 void Channel::sendMode(const Client *const client) const {
 	const std::string rplMessage =
 		SendCmd::getFormattedMessage(RPL_CHANNELMODEIS, client);
-	const std::string modeMessage = rplMessage + getModeMessage();
+	const std::string modeMessage = rplMessage + _mode.getModeMessage();
 	SendCmd::sendMessage(modeMessage, client);
 }
 
@@ -145,25 +143,6 @@ bool Channel::isUserInChannel(const Client *const client) const {
 
 bool Channel::canChangeTopic(const Client *const client) const {
 	return (_isTopicProtected == false || isOp(client));
-}
-
-/////////////
-// PRIVATE //
-/////////////
-
-std::string Channel::getModeMessage() const {
-	const uint8_t modMask = _mode.getModeMask();
-	std::string	  modeMessage = "+";
-
-	if (modMask & INVITE_ONLY)
-		modeMessage += "i";
-	if (modMask & TOPIC_RESTRICTION)
-		modeMessage += "t";
-	if (modMask & PASS_ONLY)
-		modeMessage += "k";
-	if (modMask & USERLIMIT)
-		modeMessage += "l";
-	return modeMessage;
 }
 
 bool Channel::isOp(const Client *const client) const {

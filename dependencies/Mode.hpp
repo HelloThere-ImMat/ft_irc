@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/07 09:34:48 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 09:47:18 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,12 +30,14 @@ class Mode {
 	Mode();
 	Mode(const uint8_t initialMask);
 	~Mode();
-	uint8_t getModeMask() const;
-	void	setFlags(const uint8_t flags, const t_modSetter setter);
-	bool	setMode(const t_modSetter setter, const char c,
-		   std::vector<std::string> &modArgs);
+	uint8_t		getModeMask() const;
+	bool		setMode(const t_modSetter setter, const char c,
+			   std::vector<std::string> &modArgs);
+	std::string getModeMessage() const;
 
    private:
 	// Attributes
-	uint8_t _modeMask;
+	uint8_t _mask;
+	// Private Methods
+	void setFlags(const uint8_t flags, const t_modSetter setter);
 };

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 09:22:45 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 10:09:25 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,9 @@ class Channel {
 	const std::string  getUserList() const;
 	const std::string &getTopic() const;
 	void			   setTopic(const std::string &topic);
-	bool			   processMode(
-					  const std::vector<std::string> &cmd, const Client *const client);
-	void sendToOthers(
-		const Client *const client, const std::string message) const;
+	bool			   processMode(const std::vector<std::string> &cmd);
+	void			   sendToOthers(
+					  const Client *const client, const std::string message) const;
 	void sendToAll(const Client *const client, const std::string message) const;
 	void sendTopic(const Client *const client) const;
 	void sendTopicToAll(const Client *const client) const;
@@ -44,6 +43,7 @@ class Channel {
 	void sendModeToAll(const Client *const client) const;
 	bool isUserInChannel(const Client *const client) const;
 	bool canChangeTopic(const Client *const client) const;
+	bool isOp(const Client *const client) const;
 
    private:
 	// Attributes
@@ -52,7 +52,4 @@ class Channel {
 	std::string							   _topic;
 	bool								   _isTopicProtected;
 	Mode								   _mode;
-	// Private methods
-	std::string getModeMessage() const;
-	bool		isOp(const Client *const client) const;
 };
