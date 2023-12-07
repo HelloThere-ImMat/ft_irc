@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/06 19:39:36 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/07 15:15:56 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,6 @@
 #define INMES_PREFIX		 "<< "
 #define CHANNEL_PREFIX		 '#'
 #define DEFAULT_USERNAME	 "Placeholder"
-#define MESSAGE_SEPARATOR	 " "
 #define SPECIAL_NICK_CHARSET "[]{}*\\|_"
 
 // Logs
@@ -111,6 +110,8 @@ class Server {
 	bool isNicknameAlreadyUsed(const std::string &nickname);
 	void sendJoinMessage(const Channel *const channel,
 		const Client *const client, const std::string &channelName);
+	void createChannel(const Client *const client, const std::string &channelName);
+	void joinChannel(const std::vector<std::string> &cmd, const Client *const client, Channel *channel, size_t keyIndex);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SendCmd.hpp                                        :+:      :+:    :+:   */
+/*   Utils.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 01:00:43 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 11:15:33 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 #include "Client.hpp"
 
@@ -41,6 +42,7 @@
 #define END_MESSAGE	 "\r\n"
 
 #define OUTMES_PREFIX ">> "
+#define CMD_ARG_SEPARATOR  ','
 
 // RPL
 
@@ -50,18 +52,25 @@
 
 // Message
 
-#define JOIN_PREFIX		 "JOIN :"
-#define PRIVMSG_PREFIX	 "PRIVMSG "
-#define PART_PREFIX		 "PART "
-#define UL_JOIN_MESSAGE	 "353 <nick> = <arg> :"
-#define EUL_JOIN_MESSAGE "366 <client> <arg> :End of /NAMES list."
-#define PONG_MESSAGE	 "PONG <servername> :<nick>"
+#define MESSAGE_SEPARATOR	 " "
+#define JOIN_PREFIX			 "JOIN :"
+#define PRIVMSG_PREFIX		 "PRIVMSG "
+#define PART_PREFIX			 "PART "
+#define UL_JOIN_MESSAGE		 "353 <nick> = <channelName> :"
+#define EUL_JOIN_MESSAGE	 "366 <client> <channelName> :End of /NAMES list."
+#define PONG_MESSAGE		 "PONG <servername> :<nick>"
 
 // Sent Errors
 
 #define ERROR_PREFIX		 "ERROR :"
 #define ERR_CLOSECONNECTION	 "Connection closed"
+#define ERR_NOSUCHNICK		 "401 <client> <nickname> :No such nick/channel"
 #define ERR_NOSUCHCHANNEL	 "403 <client> <channelName> :No such channel"
+#define ERR_CANNOTSENDTOCHAN \
+	"404 <client> <channelName> :Cannot send to channel"
+#define ERR_TOOMANYCHANNELS \
+	"405 <client> <channelName> :You have joined too many channels"
+#define ERR_NOTEXTTOSEND	 "412 <client> :No text to send"
 #define ERR_UNKNOWNCOMMAND	 "421 <client> <command> :Unknown command"
 #define ERR_NONICKNAMEGIVEN	 "431 <client> :No nickname given"
 #define ERR_ERRONEUSNICKNAME "432 <client> <arg> :Erroneus nickname"
@@ -71,22 +80,16 @@
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
+#define ERR_BADCHANNELKEY	  "475 <client> <channelName> :Cannot join channel (+k)"
+#define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
 #define ERR_CHANOPRIVSNEEDED \
 	"482 <client> <channelName> :You're not channel operator"
-#define ERR_BADCHANMASK "476 <channelName> :Bad Channel Mask"
-#define ERR_TOOMANYCHANNELS \
-	"405 <client> <channelName> :You have joined too many channels"
-#define ERR_BADCHANNELKEY "475 <client> <channelName> :Cannot join channel (+k)"
-#define ERR_CANNOTSENDTOCHAN \
-	"404 <client> <channelName> :Cannot send to channel"
-#define ERR_NOSUCHNICK	 "401 <client> <nickname> :No such nick/channel"
-#define ERR_NOTEXTTOSEND "412 <client> :No text to send"
 
 // Error
 
 #define SEND_FAIL__ERROR "sending failed"
 
-class SendCmd {
+class Utils {
    public:
 	static void sendMessage(
 		const std::string &message, const Client *const client);
@@ -96,7 +99,10 @@ class SendCmd {
 			   const Client *const client, std::string channelName = "");
 	static std::string getFormattedMessage(const std::string &message,
 		const Client *const client, std::string channelName = "");
-
+	static std::vector<std::string> splitString(const std::string &list,
+			   const char delimiter);	
+	static std::string getFullMessage(
+	const std::vector<std::string> &cmd, const size_t startIndex);
    private:
 	class SendFailException : public std::exception {
 	   public:

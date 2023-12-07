@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 22:01:33 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/07 15:14:14 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name), _isTopicProtected(true), _isPasswordProtected(false) {
+	: _name(name), _password("p"), _isTopicProtected(true), _isPasswordProtected(true) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -31,17 +31,14 @@ Channel::Channel(const std::string &name, const Client *const client)
 
 Channel::~Channel() { userMap.clear(); }
 
-int Channel::addNewUser(const Client *const client,
-	std::vector<std::string> &keys, size_t keyIndex) {
+void Channel::addNewUser(const Client *const client,
+	const std::vector<std::string> &keys, const size_t keyIndex) {
+	const size_t keysMaxIndex = keys.size() - 1;
+	if (_isPasswordProtected && (keys.empty() ||keysMaxIndex < keyIndex || keys[keyIndex] != _password))
+		throw WrongChannelKey();
+
 	SpecifiedClient spClient = {.client = client, .isOp = false};
-
-	if (_isPasswordProtected && keys.empty())
-		return (EXIT_FAILURE);
-	else if (_isPasswordProtected && keys[keyIndex] != _password)
-		return (EXIT_FAILURE);
-
 	userMap[client->getNickname()] = spClient;
-	return (EXIT_SUCESS);
 }
 
 const std::string Channel::getUserList() const {
@@ -63,6 +60,8 @@ void Channel::removeUser(const Client *const client) {
 
 const std::string &Channel::getTopic() const { return _topic; }
 
+const std::string &Channel::getName() const { return _name; }
+
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
 void Channel::sendToOthers(
@@ -71,7 +70,7 @@ void Channel::sendToOthers(
 			 userMap.begin();
 		 it != userMap.end(); it++) {
 		if (it->second.client->getSocketFd() != client->getSocketFd())
-			SendCmd::sendPrivateMessage(message, client, it->second.client);
+			Utils::sendPrivateMessage(message, client, it->second.client);
 	}
 }
 
@@ -80,23 +79,23 @@ void Channel::sendToAll(
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
 			 userMap.begin();
 		 it != userMap.end(); it++) {
-		SendCmd::sendPrivateMessage(message, client, it->second.client);
+		Utils::sendPrivateMessage(message, client, it->second.client);
 	}
 }
 
 void Channel::sendTopic(const Client *const client) const {
 	if (_topic.empty())
-		SendCmd::sendFormattedMessage(RPL_NOTOPIC, client);
+		Utils::sendFormattedMessage(RPL_NOTOPIC, client);
 	else {
 		const std::string formatRPL =
-			SendCmd::getFormattedMessage(RPL_TOPIC, client) + _topic;
-		SendCmd::sendMessage(formatRPL, client);
+			Utils::getFormattedMessage(RPL_TOPIC, client) + _topic;
+		Utils::sendMessage(formatRPL, client);
 	}
 }
 
 void Channel::sendTopicToAll(const Client *const client) const {
 	const std::string formatRPL =
-		SendCmd::getFormattedMessage(RPL_TOPIC, client);
+		Utils::getFormattedMessage(RPL_TOPIC, client);
 	sendToAll(client, formatRPL + _topic);
 }
 
@@ -126,3 +125,10 @@ bool Channel::isOp(const Client *const client) const {
 
 	return (userMap.find(nickname)->second.isOp);
 }
+
+////////////////
+// EXCEPTIONS //
+////////////////
+
+const char *Channel::WrongChannelKey::what() const throw() {
+	return (INVALID_CHANNEL_PASS);}

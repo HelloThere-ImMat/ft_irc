@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/06 15:03:27 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/07 14:39:09 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -203,10 +203,10 @@ void Server::handleCmd(
 		if (it != _cmdMap.end())
 			(this->*fct)(cmd, client);
 		else
-			SendCmd::sendFormattedMessage(ERR_UNKNOWNCOMMAND, client);
+			Utils::sendFormattedMessage(ERR_UNKNOWNCOMMAND, client);
 	} catch (std::string &e) {	// Catch only command exception
 		std::cout << client << ": " << e << std::endl;
-		SendCmd::sendFormattedMessage(e, client);
+		Utils::sendFormattedMessage(e, client);
 	}
 }
 
@@ -243,7 +243,7 @@ void Server::getUserLogin(
 		setClientLogAssets(cmd, client);
 	}
 	if (client->isAuthenticated()) {
-		SendCmd::sendFormattedMessage(RPL_WELCOME, client);
+		Utils::sendFormattedMessage(RPL_WELCOME, client);
 		printLog("Client is authenticated: Nickname[" + client->getNickname() +
 				 "]; Username[" + client->getUsername() + "]");
 	}
