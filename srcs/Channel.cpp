@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 21:48:45 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 22:44:13 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,7 +100,7 @@ bool Channel::isAbleToJoin(const std::vector<std::string> &cmd) const {
 }
 
 void Channel::applyMode(const char c, const std::string &arg) {
-	if (c == 'k')
+	if (c == KEY_CHAR)
 		_password = arg;
 }
 

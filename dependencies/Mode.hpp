@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/07 21:05:12 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 22:42:58 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,14 @@
 #define USERLIMIT		  0x08
 #define OP_CHANGE		  0x10
 #define FLAG_COUNT		  5
+
+#define INVITE_CHAR	   'i'
+#define TOPIC_CHAR	   't'
+#define KEY_CHAR	   'k'
+#define USRLIMIT_CHAR  'l'
+#define OP_CHANGE_CHAR 'o'
+
+#define INVALID_CHARSET_KEY ",: \b\t\n\v\f\r"
 
 typedef enum e_modSetter { ADD, RM } t_modSetter;
 typedef struct s_flag {

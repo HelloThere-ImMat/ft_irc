@@ -6,15 +6,15 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/07 21:18:57 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 22:43:51 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Mode.hpp"
 
-static Flag flagArray[FLAG_COUNT] = {{'i', INVITE_ONLY},
-	{'t', TOPIC_RESTRICTION}, {'l', USERLIMIT}, {'k', PASS_ONLY},
-	{'o', OP_CHANGE}};
+static Flag flagArray[FLAG_COUNT] = {{INVITE_CHAR, INVITE_ONLY},
+	{TOPIC_CHAR, TOPIC_RESTRICTION}, {USRLIMIT_CHAR, USERLIMIT},
+	{KEY_CHAR, PASS_ONLY}, {OP_CHANGE_CHAR, OP_CHANGE}};
 
 static uint8_t searchFlags(const char c) {
 	for (size_t i = 0; i < FLAG_COUNT; ++i) {
@@ -22,6 +22,21 @@ static uint8_t searchFlags(const char c) {
 			return flagArray[i].FlagMask;
 	}
 	return NO_MOD;
+}
+
+static bool isThereInvalidChar(
+	const std::string &str, const std::string &invalidCharset) {
+	for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
+		if (invalidCharset.find(*it) != std::string::npos)
+			return true;
+	}
+	return false;
+}
+
+static bool isModeArgValid(const char c, const std::string &modeArg) {
+	if (c == KEY_CHAR)
+		return isThereInvalidChar(modeArg, INVALID_CHARSET_KEY) == false;
+	return false;
 }
 
 // Public methods
@@ -38,17 +53,20 @@ modeStatus Mode::setMode(const t_modSetter setter, const char c,
 	uint8_t		  flags = NO_MOD;
 	modeStatus	  status = {.hasChanged = false, .doesUseArg = false};
 
-	if (c == 'k' || c == 'o' || c == 'l') {
+	if (c == KEY_CHAR || c == OP_CHANGE_CHAR || c == USRLIMIT_CHAR) {
 		if (setter == ADD && modeArgs.empty() == false) {
+			if (isModeArgValid(c, modeArgs[0])) {
+				flags = searchFlags(c);
+				status.hasChanged = true;
+			}
 			status.doesUseArg = true;
-		}
-		if (setter == RM || modeArgs.empty() == false)
+		} else if (setter == RM)
 			flags = searchFlags(c);
 	} else
 		flags = searchFlags(c);
 	if (flags)
 		setFlags(flags, setter);
-	status.hasChanged = (oldMask != _mask);
+	status.hasChanged |= (oldMask != _mask);
 	return status;
 }
 
