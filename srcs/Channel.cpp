@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 23:08:20 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 00:21:11 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,13 +71,46 @@ const std::string &Channel::getTopic() const { return _topic; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
-void Channel::setMode(
-	const std::vector<std::string> &cmd, const Client *const client) {
-	const std::string			   modString = cmd[2];
-	const std::vector<std::string> modArgs = getModArgs(cmd);
+void Channel::setFlags(const uint8_t flags, const t_modSetter setter) {
+	if (setter == ADD)
+		_modMask |= flags;
+	else if (setter == RM)
+		_modMask &= ~flags;
+}
 
-	(void)client;
+bool Channel::setMode(
+	const t_modSetter setter, const char c, std::vector<std::string> &modArgs) {
+	// if (c == 'k' || c == 'o' || c == 'l')
+	// {
+	// 	if (c == 'l')
+
+	// 	modArgs.erase(0, 1);
 	(void)modArgs;
+	if (c == 'i' || c == 't') {
+		const uint8_t flags = (c == 'i') ? INVITE_ONLY : TOPIC_RESTRICTION;
+		setFlags(flags, setter);
+		return true;
+	}
+	return false;
+}
+
+bool Channel::processMode(
+	const std::vector<std::string> &cmd, const Client *const client) {
+	const std::string		 modString = cmd[2];
+	std::vector<std::string> modArgs = getModArgs(cmd);
+	t_modSetter				 setter = ADD;
+	bool					 hasChanged = false;
+
+	for (std::string::const_iterator it = modString.begin();
+		 it != modString.end(); ++it) {
+		if (*it == '+')
+			setter = ADD;
+		else if (*it == '-')
+			setter = RM;
+		hasChanged |= setMode(setter, *it, modArgs);
+	}
+	(void)client;
+	return hasChanged;
 }
 
 void Channel::sendToOthers(

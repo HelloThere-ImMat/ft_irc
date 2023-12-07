@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 18:27:48 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 00:05:00 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,8 @@
 #define PASS_ONLY		  0x04
 #define USERLIMIT		  0x08
 
+typedef enum e_modSetter { ADD, RM } t_modSetter;
+
 struct SpecifiedClient {
 	const Client *client;
 	bool		  isOp;
@@ -38,7 +40,10 @@ class Channel {
 	const std::string  getUserList() const;
 	const std::string &getTopic() const;
 	void			   setTopic(const std::string &topic);
-	void			   setMode(
+	void			   setFlags(const uint8_t flags, const t_modSetter setter);
+	bool			   setMode(const t_modSetter setter, const char c,
+					  std::vector<std::string> &modArgs);
+	bool			   processMode(
 					  const std::vector<std::string> &cmd, const Client *const client);
 	void sendToOthers(
 		const Client *const client, const std::string message) const;
@@ -46,6 +51,7 @@ class Channel {
 	void sendTopic(const Client *const client) const;
 	void sendTopicToAll(const Client *const client) const;
 	void sendMode(const Client *const client) const;
+	void sendModeToAll(const Client *const client) const;
 	bool isUserInChannel(const Client *const client) const;
 	bool canChangeTopic(const Client *const client) const;
 

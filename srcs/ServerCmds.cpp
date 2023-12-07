@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 18:10:19 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 00:21:30 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -216,9 +216,8 @@ void Server::mode(const std::vector<std::string> &cmd, Client *const client) {
 		Channel *const channel = it->second;
 		if (size == 2) {
 			channel->sendMode(client);
-		} else {
-			channel->setMode(cmd, client);
-		}
+		} else if (channel->processMode(cmd, client))
+			channel->sendToAll(client, getFullMessage(cmd, 0));
 	} else {
 		SendCmd::sendFormattedMessage(ERR_NOSUCHCHANNEL, client);
 	}
