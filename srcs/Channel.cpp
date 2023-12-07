@@ -31,14 +31,15 @@ Channel::Channel(const std::string &name, const Client *const client)
 
 Channel::~Channel() { userMap.clear(); }
 
-int Channel::addNewUser(const Client *const client, std::vector<std::string> &keys, size_t keyIndex) {
+int Channel::addNewUser(const Client *const client,
+	std::vector<std::string> &keys, size_t keyIndex) {
 	SpecifiedClient spClient = {.client = client, .isOp = false};
 
 	if (_isPasswordProtected && keys.empty())
 		return (EXIT_FAILURE);
 	else if (_isPasswordProtected && keys[keyIndex] != _password)
 		return (EXIT_FAILURE);
-	
+
 	userMap[client->getNickname()] = spClient;
 	return (EXIT_SUCESS);
 }

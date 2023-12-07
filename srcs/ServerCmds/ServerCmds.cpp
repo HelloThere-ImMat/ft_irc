@@ -121,8 +121,7 @@ void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 void Server::privmsg(
 	const std::vector<std::string> &cmd, Client *const client) {
 	size_t size = cmd.size();
-	if (size < 3)
-	{
+	if (size < 3) {
 		if (size < 2)
 			SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
 		else
@@ -141,8 +140,7 @@ void Server::privmsg(
 	} else if (_clientMap.getClient(cmd[1]) != NULL)
 		SendCmd::sendPrivateMessage(
 			privMessage, client, _clientMap.getClient(cmd[1]));
-	else
-	{
+	else {
 		if (cmd[1][0] == CHANNEL_PREFIX)
 			SendCmd::sendFormattedMessage(ERR_CANNOTSENDTOCHAN, client, cmd[1]);
 		else
@@ -151,8 +149,7 @@ void Server::privmsg(
 }
 
 void Server::part(const std::vector<std::string> &cmd, Client *const client) {
-	if (cmd.size() < 2)
-	{
+	if (cmd.size() < 2) {
 		SendCmd::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
 		return;
 	}
@@ -162,8 +159,7 @@ void Server::part(const std::vector<std::string> &cmd, Client *const client) {
 		Channel *channel = it->second;
 		if (!channel->isUserInChannel(client))
 			SendCmd::sendFormattedMessage(ERR_NOTONCHANNEL, client, cmd[1]);
-		else
-		{
+		else {
 			channel->sendToAll(client, PART_PREFIX + cmd[1]);
 			channel->removeUser(client);
 		}
