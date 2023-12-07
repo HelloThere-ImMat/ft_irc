@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 00:21:11 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 09:28:19 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static std::vector<std::string> getModArgs(
 Channel::Channel(const std::string &name, const Client *const client)
 	: _name(name),
 	  _isTopicProtected(true),
-	  _modMask(INVITE_ONLY | TOPIC_RESTRICTION) {
+	  _mode(INVITE_ONLY | TOPIC_RESTRICTION) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -71,29 +71,6 @@ const std::string &Channel::getTopic() const { return _topic; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
-void Channel::setFlags(const uint8_t flags, const t_modSetter setter) {
-	if (setter == ADD)
-		_modMask |= flags;
-	else if (setter == RM)
-		_modMask &= ~flags;
-}
-
-bool Channel::setMode(
-	const t_modSetter setter, const char c, std::vector<std::string> &modArgs) {
-	// if (c == 'k' || c == 'o' || c == 'l')
-	// {
-	// 	if (c == 'l')
-
-	// 	modArgs.erase(0, 1);
-	(void)modArgs;
-	if (c == 'i' || c == 't') {
-		const uint8_t flags = (c == 'i') ? INVITE_ONLY : TOPIC_RESTRICTION;
-		setFlags(flags, setter);
-		return true;
-	}
-	return false;
-}
-
 bool Channel::processMode(
 	const std::vector<std::string> &cmd, const Client *const client) {
 	const std::string		 modString = cmd[2];
@@ -107,7 +84,7 @@ bool Channel::processMode(
 			setter = ADD;
 		else if (*it == '-')
 			setter = RM;
-		hasChanged |= setMode(setter, *it, modArgs);
+		hasChanged |= _mode.setMode(setter, *it, modArgs);
 	}
 	(void)client;
 	return hasChanged;
@@ -175,15 +152,16 @@ bool Channel::canChangeTopic(const Client *const client) const {
 /////////////
 
 std::string Channel::getModeMessage() const {
-	std::string modeMessage = "+";
+	const uint8_t modMask = _mode.getModeMask();
+	std::string	  modeMessage = "+";
 
-	if (_modMask & INVITE_ONLY)
+	if (modMask & INVITE_ONLY)
 		modeMessage += "i";
-	if (_modMask & TOPIC_RESTRICTION)
+	if (modMask & TOPIC_RESTRICTION)
 		modeMessage += "t";
-	if (_modMask & PASS_ONLY)
+	if (modMask & PASS_ONLY)
 		modeMessage += "k";
-	if (_modMask & USERLIMIT)
+	if (modMask & USERLIMIT)
 		modeMessage += "l";
 	return modeMessage;
 }
