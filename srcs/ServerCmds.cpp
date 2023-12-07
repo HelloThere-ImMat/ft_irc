@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 00:38:08 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/07 00:41:49 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,13 +62,23 @@ static void removeDuplicateChars(std::string &str) {
 			str[currentIndex++] = currentChar;
 		}
 	}
-
 	str.resize(currentIndex);
 }
 
-static void setModeStr(std::string &str) {
-	removeDuplicateChars(str);
+static void keepOnlySpecificChars(
+	std::string &str, const std::string &allowedChars) {
+	for (std::string::iterator it = str.begin(); it != str.end();) {
+		if (allowedChars.find(*it) == std::string::npos) {
+			it = str.erase(it);
+		} else {
+			++it;
+		}
+	}
+}
 
+static void setModeStr(std::string &str) {
+	keepOnlySpecificChars(str, "itklo+-");
+	removeDuplicateChars(str);
 	if (str.empty() == false) {
 		char last = str[str.length() - 1];
 		if (last == '-' || last == '+')
