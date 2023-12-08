@@ -110,8 +110,10 @@ class Server {
 	bool isNicknameAlreadyUsed(const std::string &nickname);
 	void sendJoinMessage(const Channel *const channel,
 		const Client *const client, const std::string &channelName);
-	void createChannel(const Client *const client, const std::string &channelName);
-	void joinChannel(const std::vector<std::string> &cmd, const Client *const client, Channel *channel, size_t keyIndex);
+	void createChannel(
+		const Client *const client, const std::string &channelName);
+	void joinChannel(const std::vector<std::string> &cmd,
+		const Client *const client, Channel *channel, size_t keyIndex);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:

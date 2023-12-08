@@ -14,13 +14,12 @@
 
 // Join Methods
 
-void Server::createChannel(const Client *const client, const std::string &channelName) {
+void Server::createChannel(
+	const Client *const client, const std::string &channelName) {
 	if ((channelName)[0] != CHANNEL_PREFIX)
-		Utils::sendFormattedMessage(
-			ERR_BADCHANMASK, client, channelName);
+		Utils::sendFormattedMessage(ERR_BADCHANMASK, client, channelName);
 	else if (_channels.size() >= MAX_CHANNEL_NB)
-		Utils::sendFormattedMessage(
-			ERR_TOOMANYCHANNELS, client, channelName);
+		Utils::sendFormattedMessage(ERR_TOOMANYCHANNELS, client, channelName);
 	else {
 		Channel *channel = new Channel(channelName, client);
 		_channels[channelName] = channel;
@@ -28,23 +27,23 @@ void Server::createChannel(const Client *const client, const std::string &channe
 	}
 }
 
-void Server::joinChannel(const std::vector<std::string> &cmd, const Client *const client, Channel *channel, size_t keyIndex)
-{
+void Server::joinChannel(const std::vector<std::string> &cmd,
+	const Client *const client, Channel *channel, size_t keyIndex) {
 	std::vector<std::string> keySubArgs;
-	std::string channelName = channel->getName();
-	size_t sizeCmd = cmd.size();
+	std::string				 channelName = channel->getName();
+	size_t					 sizeCmd = cmd.size();
 
 	if (sizeCmd > 2)
 		keySubArgs = Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
 	try {
-			channel->addNewUser(client, keySubArgs, keyIndex);
-			sendJoinMessage(channel, client, channel->getName());}
-	catch (std::exception &e){
-		std::cout << Utils::getFormattedMessage(e.what(), client, channelName) << std::endl;
-		Utils::sendFormattedMessage(
-			ERR_BADCHANNELKEY, client, channelName);}
+		channel->addNewUser(client, keySubArgs, keyIndex);
+		sendJoinMessage(channel, client, channel->getName());
+	} catch (std::exception &e) {
+		std::cout << Utils::getFormattedMessage(e.what(), client, channelName)
+				  << std::endl;
+		Utils::sendFormattedMessage(ERR_BADCHANNELKEY, client, channelName);
+	}
 }
-
 
 void Server::sendJoinMessage(const Channel *const channel, const Client *client,
 	const std::string &channelName) {
@@ -56,7 +55,6 @@ void Server::sendJoinMessage(const Channel *const channel, const Client *client,
 		UL_JOIN_MESSAGE + channelUserList, client, channelName);
 	Utils::sendFormattedMessage(EUL_JOIN_MESSAGE, client, channelName);
 }
-
 
 void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 	std::vector<std::string> channelSubArgs;

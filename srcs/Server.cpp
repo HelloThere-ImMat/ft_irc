@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/07 14:39:09 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 09:41:52 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,19 @@ static std::vector<std::string> getCommandTokens(
 	std::vector<std::string> tokens;
 	std::istringstream		 iss(ircMessage);
 	std::string				 token;
+	char					 restChar;
 
-	while (iss >> token) {
+	while (iss >> token && token[0] != SETTER_CHAR) {
 		tokens.push_back(token);
 	}
+	if (iss.eof() == false) {  // found a separator
+		while (iss.get(
+			restChar))	// concatenate the separator with the end of the line
+			token += restChar;
+		tokens.push_back(token);
+	} else if (token[0] ==
+			   SETTER_CHAR)	 // the final token is beginning with a separator
+		tokens.push_back(token);
 	return tokens;
 }
 

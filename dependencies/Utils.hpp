@@ -41,8 +41,8 @@
 #define DOMAIN_NAME	 "ft_irc.local"
 #define END_MESSAGE	 "\r\n"
 
-#define OUTMES_PREFIX ">> "
-#define CMD_ARG_SEPARATOR  ','
+#define OUTMES_PREFIX	  ">> "
+#define CMD_ARG_SEPARATOR ','
 
 // RPL
 
@@ -52,20 +52,20 @@
 
 // Message
 
-#define MESSAGE_SEPARATOR	 " "
-#define JOIN_PREFIX			 "JOIN :"
-#define PRIVMSG_PREFIX		 "PRIVMSG "
-#define PART_PREFIX			 "PART "
-#define UL_JOIN_MESSAGE		 "353 <nick> = <channelName> :"
-#define EUL_JOIN_MESSAGE	 "366 <client> <channelName> :End of /NAMES list."
-#define PONG_MESSAGE		 "PONG <servername> :<nick>"
+#define MESSAGE_SEPARATOR " "
+#define JOIN_PREFIX		  "JOIN :"
+#define PRIVMSG_PREFIX	  "PRIVMSG "
+#define PART_PREFIX		  "PART "
+#define UL_JOIN_MESSAGE	  "353 <nick> = <channelName> :"
+#define EUL_JOIN_MESSAGE  "366 <client> <channelName> :End of /NAMES list."
+#define PONG_MESSAGE	  "PONG <servername> :<nick>"
 
 // Sent Errors
 
-#define ERROR_PREFIX		 "ERROR :"
-#define ERR_CLOSECONNECTION	 "Connection closed"
-#define ERR_NOSUCHNICK		 "401 <client> <nickname> :No such nick/channel"
-#define ERR_NOSUCHCHANNEL	 "403 <client> <channelName> :No such channel"
+#define ERROR_PREFIX		"ERROR :"
+#define ERR_CLOSECONNECTION "Connection closed"
+#define ERR_NOSUCHNICK		"401 <client> <nickname> :No such nick/channel"
+#define ERR_NOSUCHCHANNEL	"403 <client> <channelName> :No such channel"
 #define ERR_CANNOTSENDTOCHAN \
 	"404 <client> <channelName> :Cannot send to channel"
 #define ERR_TOOMANYCHANNELS \
@@ -99,10 +99,11 @@ class Utils {
 			   const Client *const client, std::string channelName = "");
 	static std::string getFormattedMessage(const std::string &message,
 		const Client *const client, std::string channelName = "");
-	static std::vector<std::string> splitString(const std::string &list,
-			   const char delimiter);	
+	static std::vector<std::string> splitString(
+		const std::string &list, const char delimiter);
 	static std::string getFullMessage(
-	const std::vector<std::string> &cmd, const size_t startIndex);
+		const std::vector<std::string> &cmd, const size_t startIndex);
+
    private:
 	class SendFailException : public std::exception {
 	   public:

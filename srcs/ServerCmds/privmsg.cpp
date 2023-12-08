@@ -23,19 +23,21 @@ void Server::privmsg(
 		return;
 	}
 
-	const std::string fullMessage = Utils::getFullMessage(cmd, PRIVMSG_START_INDEX);
-	std::vector<std::string> receiverList = Utils::splitString(cmd[1], CMD_ARG_SEPARATOR);
-	for (std::vector<std::string>::iterator itV = receiverList.begin(); itV != receiverList.end(); itV++) {
-		const std::string privMessage = PRIVMSG_PREFIX + *itV + " " + fullMessage;
+	const std::string fullMessage =
+		Utils::getFullMessage(cmd, PRIVMSG_START_INDEX);
+	std::vector<std::string> receiverList =
+		Utils::splitString(cmd[1], CMD_ARG_SEPARATOR);
+	for (std::vector<std::string>::iterator itV = receiverList.begin();
+		 itV != receiverList.end(); itV++) {
+		const std::string privMessage =
+			PRIVMSG_PREFIX + *itV + " " + fullMessage;
 
-		if ((*itV)[0] == CHANNEL_PREFIX)
-		{
+		if ((*itV)[0] == CHANNEL_PREFIX) {
 			const std::map<std::string, Channel *>::iterator itM =
 				_channels.find(*itV);
 			if (itM == _channels.end())
 				Utils::sendFormattedMessage(ERR_CANNOTSENDTOCHAN, client, *itV);
-			else
-			{
+			else {
 				Channel *const channel = itM->second;
 				if (!channel->isUserInChannel(client))
 					Utils::sendFormattedMessage(ERR_NOTONCHANNEL, client, *itV);

@@ -23,7 +23,10 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name), _password("p"), _isTopicProtected(true), _isPasswordProtected(true) {
+	: _name(name),
+	  _password("p"),
+	  _isTopicProtected(true),
+	  _isPasswordProtected(true) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -34,7 +37,8 @@ Channel::~Channel() { userMap.clear(); }
 void Channel::addNewUser(const Client *const client,
 	const std::vector<std::string> &keys, const size_t keyIndex) {
 	const size_t keysMaxIndex = keys.size() - 1;
-	if (_isPasswordProtected && (keys.empty() ||keysMaxIndex < keyIndex || keys[keyIndex] != _password))
+	if (_isPasswordProtected && (keys.empty() || keysMaxIndex < keyIndex ||
+									keys[keyIndex] != _password))
 		throw WrongChannelKey();
 
 	SpecifiedClient spClient = {.client = client, .isOp = false};
@@ -94,8 +98,7 @@ void Channel::sendTopic(const Client *const client) const {
 }
 
 void Channel::sendTopicToAll(const Client *const client) const {
-	const std::string formatRPL =
-		Utils::getFormattedMessage(RPL_TOPIC, client);
+	const std::string formatRPL = Utils::getFormattedMessage(RPL_TOPIC, client);
 	sendToAll(client, formatRPL + _topic);
 }
 
@@ -131,4 +134,5 @@ bool Channel::isOp(const Client *const client) const {
 ////////////////
 
 const char *Channel::WrongChannelKey::what() const throw() {
-	return (INVALID_CHANNEL_PASS);}
+	return (INVALID_CHANNEL_PASS);
+}

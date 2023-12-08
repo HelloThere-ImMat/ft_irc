@@ -15,14 +15,15 @@
 #include <map>
 
 #define EXIT_FAILURE 1
-#define EXIT_SUCCESS	 0
+#define EXIT_SUCCESS 0
 
 #include "Utils.hpp"
 
 #define OP_PREFIX		   "@"
 #define USERLIST_SEPARATOR " "
 
-#define INVALID_CHANNEL_PASS "<client> failed to join <channelName> : Wrong Password"
+#define INVALID_CHANNEL_PASS \
+	"<client> failed to join <channelName> : Wrong Password"
 
 struct SpecifiedClient {
 	const Client *client;
@@ -33,9 +34,9 @@ class Channel {
    public:
 	Channel(const std::string &name, const Client *const client);
 	~Channel();
-	void addNewUser(const Client *const client, const std::vector<std::string> &keys,
-		 const size_t keyIndex);
-	void removeUser(const Client *const client);
+	void			   addNewUser(const Client *const client,
+					  const std::vector<std::string> &keys, const size_t keyIndex);
+	void			   removeUser(const Client *const client);
 	const std::string  getUserList() const;
 	const std::string &getTopic() const;
 	const std::string &getName() const;

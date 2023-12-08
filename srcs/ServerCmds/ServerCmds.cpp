@@ -34,7 +34,6 @@ static bool isNicknameValid(const std::string &nickname) {
 	return isdigit(nickname[0]) == false && areOnlyAuthorizedChar(nickname);
 }
 
-
 static std::string removeSetterChar(const std::string &message) {
 	std::string newMessage;
 

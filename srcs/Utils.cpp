@@ -28,10 +28,11 @@ static std::string replacePatterns(const std::string &original,
 
 // String Methods
 
-std::vector<std::string> Utils::splitString(const std::string &list, const char delimiter) {
+std::vector<std::string> Utils::splitString(
+	const std::string &list, const char delimiter) {
 	std::vector<std::string> strings;
-	std::string string;
-	std::istringstream	tokenStream(list);
+	std::string				 string;
+	std::istringstream		 tokenStream(list);
 
 	while (std::getline(tokenStream, string, delimiter))
 		strings.push_back(string);
