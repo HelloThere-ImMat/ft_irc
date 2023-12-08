@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 09:45:58 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 17:32:47 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 20:52:10 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ void Server::createChannel(
 
 void Server::joinChannel(const std::vector<std::string> &cmd,
 	const Client *const client, Channel *const channel, const size_t keyIndex) {
-	std::vector<std::string> keySubArgs;
-	std::string				 channelName = channel->getName();
+	const std::string		 channelName = channel->getName();
 	const size_t			 sizeCmd = cmd.size();
+	std::vector<std::string> keySubArgs;
 
 	if (sizeCmd > 2)
 		keySubArgs = Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);

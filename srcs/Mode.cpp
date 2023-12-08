@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 18:21:40 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 20:54:29 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,8 @@ std::string Mode::getModeMessage() const {
 bool Mode::isTopicProtected() const { return _mask & TOPIC_RESTRICTION; }
 
 bool Mode::isKeyProtected() const { return _mask & PASS_ONLY; }
+
+bool Mode::hasUserLimit() const { return _mask & USERLIMIT; }
 
 // Private methods
 

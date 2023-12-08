@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 18:22:51 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 20:54:12 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ class Mode {
 	~Mode();
 	bool		isKeyProtected() const;
 	bool		isTopicProtected() const;
+	bool		hasUserLimit() const;
 	modeStatus	setMode(const t_modSetter setter, const char c,
 		 const std::vector<std::string> &modArg, const size_t modeArgIndex);
 	std::string getModeMessage() const;

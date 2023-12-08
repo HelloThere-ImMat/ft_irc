@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 17:48:55 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 20:54:51 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -184,4 +184,6 @@ bool Channel::canModeBeApplied(const char c, std::string &arg,
 	return true;
 }
 
-bool Channel::isFull() const { return userMap.size() >= _userlimit; }
+bool Channel::isFull() const {
+	return _mode.hasUserLimit() && userMap.size() >= _userlimit;
+}
