@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 15:39:25 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:25:53 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,9 +23,7 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name),
-	  _isTopicProtected(true),
-	  _mode(INVITE_ONLY | TOPIC_RESTRICTION) {
+	: _name(name), _mode(INVITE_ONLY | TOPIC_RESTRICTION) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -33,9 +31,14 @@ Channel::Channel(const std::string &name, const Client *const client)
 
 Channel::~Channel() { userMap.clear(); }
 
-void Channel::addNewUser(const Client *const client) {
+void Channel::addNewUser(const Client *const client,
+	const std::vector<std::string> &keys, const size_t keyIndex) {
+	const size_t keysSize = keys.size();
+	// penser a faire le check de channel limit
+	if (_mode.isKeyProtected() &&
+		(keyIndex >= keysSize || keys[keyIndex] != _password))
+		throw WrongChannelKeyException();
 	SpecifiedClient spClient = {.client = client, .isOp = false};
-
 	userMap[client->getNickname()] = spClient;
 }
 
@@ -57,6 +60,8 @@ void Channel::removeUser(const Client *const client) {
 }
 
 const std::string &Channel::getTopic() const { return _topic; }
+
+const std::string &Channel::getName() const { return _name; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
@@ -86,7 +91,7 @@ bool Channel::processMode(
 }
 
 bool Channel::isAbleToJoin(const std::vector<std::string> &cmd) const {
-	return !(_mode.getModeMask() & PASS_ONLY) ||
+	return (_mode.isKeyProtected() == false) ||
 		   (cmd.size() > 2 && cmd[2] == _password);
 }
 
@@ -96,7 +101,7 @@ void Channel::sendToOthers(
 			 userMap.begin();
 		 it != userMap.end(); it++) {
 		if (it->second.client->getSocketFd() != client->getSocketFd())
-			SendCmd::sendPrivateMessage(message, client, it->second.client);
+			Utils::sendPrivateMessage(message, client, it->second.client);
 	}
 }
 
@@ -105,31 +110,30 @@ void Channel::sendToAll(
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
 			 userMap.begin();
 		 it != userMap.end(); it++) {
-		SendCmd::sendPrivateMessage(message, client, it->second.client);
+		Utils::sendPrivateMessage(message, client, it->second.client);
 	}
 }
 
 void Channel::sendTopic(const Client *const client) const {
 	if (_topic.empty())
-		SendCmd::sendFormattedMessage(RPL_NOTOPIC, client);
+		Utils::sendFormattedMessage(RPL_NOTOPIC, client);
 	else {
 		const std::string formatRPL =
-			SendCmd::getFormattedMessage(RPL_TOPIC, client) + _topic;
-		SendCmd::sendMessage(formatRPL, client);
+			Utils::getFormattedMessage(RPL_TOPIC, client) + _topic;
+		Utils::sendMessage(formatRPL, client);
 	}
 }
 
 void Channel::sendTopicToAll(const Client *const client) const {
-	const std::string formatRPL =
-		SendCmd::getFormattedMessage(RPL_TOPIC, client);
+	const std::string formatRPL = Utils::getFormattedMessage(RPL_TOPIC, client);
 	sendToAll(client, formatRPL + _topic);
 }
 
 void Channel::sendMode(const Client *const client) const {
 	const std::string rplMessage =
-		SendCmd::getFormattedMessage(RPL_CHANNELMODEIS, client);
+		Utils::getFormattedMessage(RPL_CHANNELMODEIS, client, _name);
 	const std::string modeMessage = rplMessage + _mode.getModeMessage();
-	SendCmd::sendMessage(modeMessage, client);
+	Utils::sendMessage(modeMessage, client);
 }
 
 bool Channel::isUserInChannel(const Client *const client) const {
@@ -144,7 +148,7 @@ bool Channel::isUserInChannel(const Client *const client) const {
 }
 
 bool Channel::canChangeTopic(const Client *const client) const {
-	return (_isTopicProtected == false || isOp(client));
+	return (_mode.isTopicProtected() == false || isOp(client));
 }
 
 bool Channel::isOp(const Client *const client) const {
@@ -171,7 +175,7 @@ bool Channel::canModeBeApplied(const char c, std::string &arg,
 	} else if (c == OP_CHANGE_CHAR) {
 		std::map<std::string, SpecifiedClient>::iterator it = userMap.find(arg);
 		if (it == userMap.end()) {
-			SendCmd::sendFormattedMessage(ERR_USERNOTINCHANNEL, client);
+			Utils::sendFormattedMessage(ERR_USERNOTINCHANNEL, client);
 			return false;
 		} else
 			it->second.isOp = (setter == ADD);

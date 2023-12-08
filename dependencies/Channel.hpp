@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 15:40:51 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:24:22 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,10 +16,12 @@
 #include <vector>
 
 #include "Mode.hpp"
-#include "SendCmd.hpp"
+#include "Utils.hpp"
 
 #define OP_PREFIX		   "@"
 #define USERLIST_SEPARATOR " "
+
+#define MAX_USER_PER_CHANNEL 15
 
 struct SpecifiedClient {
 	const Client *client;
@@ -30,10 +32,12 @@ class Channel {
    public:
 	Channel(const std::string &name, const Client *const client);
 	~Channel();
-	void			   addNewUser(const Client *const client);
+	void			   addNewUser(const Client *const client,
+					  const std::vector<std::string> &keys, const size_t keyIndex);
 	void			   removeUser(const Client *const client);
 	const std::string  getUserList() const;
 	const std::string &getTopic() const;
+	const std::string &getName() const;
 	void			   setTopic(const std::string &topic);
 	bool processMode(std::vector<std::string> &cmd, const Client *const client);
 	void sendToOthers(
@@ -46,13 +50,14 @@ class Channel {
 	bool canChangeTopic(const Client *const client) const;
 	bool isOp(const Client *const client) const;
 	bool isAbleToJoin(const std::vector<std::string> &cmd) const;
+	class WrongChannelKeyException : public std::exception {};
+	class TooManyUserException : public std::exception {};
 
    private:
 	// Attributes
 	std::map<std::string, SpecifiedClient> userMap;
 	const std::string					   _name;
 	std::string							   _topic;
-	bool								   _isTopicProtected;
 	std::string							   _password;
 	uint								   _userlimit;
 	Mode								   _mode;

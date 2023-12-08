@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 15:16:12 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:27:20 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,8 +77,6 @@ modeStatus Mode::setMode(const t_modSetter setter, const char c,
 	return status;
 }
 
-uint8_t Mode::getModeMask() const { return _mask; }
-
 std::string Mode::getModeMessage() const {
 	std::string modeMessage = "+";
 
@@ -88,6 +86,10 @@ std::string Mode::getModeMessage() const {
 	}
 	return modeMessage;
 }
+
+bool Mode::isTopicProtected() const { return _mask & TOPIC_RESTRICTION; }
+
+bool Mode::isKeyProtected() const { return _mask & PASS_ONLY; }
 
 // Private methods
 
