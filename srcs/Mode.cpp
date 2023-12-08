@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 12:54:23 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 15:16:12 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,7 +36,7 @@ static bool isThereInvalidChar(
 static bool isModeArgValid(const char c, const std::string &modeArg) {
 	if (c == KEY_CHAR)
 		return isThereInvalidChar(modeArg, INVALID_CHARSET_KEY) == false;
-	if (c == USRLIMIT_CHAR) {
+	else if (c == USRLIMIT_CHAR) {
 		std::istringstream iss(modeArg);
 		uint			   newLimit;
 		if (iss >> newLimit)

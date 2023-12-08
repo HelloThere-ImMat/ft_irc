@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 11:03:46 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 15:39:25 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,8 @@ const std::string &Channel::getTopic() const { return _topic; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
-bool Channel::processMode(std::vector<std::string> &cmd) {
+bool Channel::processMode(
+	std::vector<std::string> &cmd, const Client *const client) {
 	const std::string modeString = cmd[2];
 	t_modSetter		  setter = ADD;
 	modeStatus		  status = {.hasChanged = false, .doesUseArg = false};
@@ -73,11 +74,12 @@ bool Channel::processMode(std::vector<std::string> &cmd) {
 			setter = (*it == '+') ? ADD : RM;
 		} else {
 			status = _mode.setMode(setter, *it, cmd, argsIndex);
-			hasChanged |= status.hasChanged;
 			if (status.doesUseArg) {
-				applyMode(*it, cmd[argsIndex], setter);
+				status.hasChanged =
+					canModeBeApplied(*it, cmd[argsIndex], setter, client);
 				++argsIndex;
 			}
+			hasChanged |= status.hasChanged;
 		}
 	}
 	return status.hasChanged;
@@ -157,8 +159,8 @@ bool Channel::isOp(const Client *const client) const {
 // Private Methods //
 /////////////////////
 
-void Channel::applyMode(
-	const char c, std::string &arg, const t_modSetter setter) {
+bool Channel::canModeBeApplied(const char c, std::string &arg,
+	const t_modSetter setter, const Client *const client) {
 	if (c == KEY_CHAR)
 		_password = arg;
 	else if (c == USRLIMIT_CHAR) {
@@ -168,6 +170,11 @@ void Channel::applyMode(
 		arg = ss.str();
 	} else if (c == OP_CHANGE_CHAR) {
 		std::map<std::string, SpecifiedClient>::iterator it = userMap.find(arg);
-		it->second.isOp = (setter == ADD);
+		if (it == userMap.end()) {
+			SendCmd::sendFormattedMessage(ERR_USERNOTINCHANNEL, client);
+			return false;
+		} else
+			it->second.isOp = (setter == ADD);
 	}
+	return true;
 }

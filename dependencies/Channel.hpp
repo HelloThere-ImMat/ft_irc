@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 11:03:22 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 15:40:51 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,9 +35,9 @@ class Channel {
 	const std::string  getUserList() const;
 	const std::string &getTopic() const;
 	void			   setTopic(const std::string &topic);
-	bool			   processMode(std::vector<std::string> &cmd);
-	void			   sendToOthers(
-					  const Client *const client, const std::string message) const;
+	bool processMode(std::vector<std::string> &cmd, const Client *const client);
+	void sendToOthers(
+		const Client *const client, const std::string message) const;
 	void sendToAll(const Client *const client, const std::string message) const;
 	void sendTopic(const Client *const client) const;
 	void sendTopicToAll(const Client *const client) const;
@@ -57,5 +57,6 @@ class Channel {
 	uint								   _userlimit;
 	Mode								   _mode;
 	// Private methods
-	void applyMode(const char c, std::string &arg, const t_modSetter setter);
+	bool canModeBeApplied(const char c, std::string &arg,
+		const t_modSetter setter, const Client *const client);
 };

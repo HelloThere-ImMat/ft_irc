@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 21:48:08 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 15:26:16 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -264,7 +264,7 @@ void Server::mode(
 			SendCmd::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client);
 		} else {
 			setModeStr(cmd[2]);
-			if (channel->processMode(cmd))
+			if (channel->processMode(cmd, client))
 				channel->sendToAll(client, getFullMessage(cmd, 0));
 		}
 	} else {
