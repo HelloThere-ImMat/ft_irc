@@ -51,8 +51,7 @@ void Server::privmsg(
 		Utils::getFullMessage(cmd, PRIVMSG_START_INDEX);
 	const std::vector<std::string> targetList =
 		Utils::splitString(cmd[1], CMD_ARG_SEPARATOR);
-	for (std::vector<std::string>::const_iterator itTarget =
-			 targetList.begin();
+	for (std::vector<std::string>::const_iterator itTarget = targetList.begin();
 		 itTarget != targetList.end(); itTarget++) {
 		const std::string privMessage =
 			PRIVMSG_PREFIX + *itTarget + " " + fullMessage;
