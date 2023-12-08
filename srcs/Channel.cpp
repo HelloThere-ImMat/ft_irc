@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 15:39:57 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 14:55:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,16 +127,4 @@ bool Channel::isOp(const Client *const client) const {
 	const std::string nickname = client->getNickname();
 
 	return (userMap.find(nickname)->second.isOp);
-}
-
-////////////////
-// EXCEPTIONS //
-////////////////
-
-const char *Channel::WrongChannelKeyException::what() const throw() {
-	return (INVALID_CHANNEL_PASS);
-}
-
-const char *Channel::TooManyUserException::what() const throw() {
-	return (TOO_MANY_USER_ON_CHAN);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   join.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 09:45:58 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 13:57:03 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 14:55:39 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,6 @@ void Server::joinChannel(const std::vector<std::string> &cmd,
 		channel->addNewUser(client, keySubArgs, keyIndex);
 		sendJoinMessage(channel, client, channelName);
 	} catch (Channel::WrongChannelKeyException &e) {
-		printLog(Utils::getFormattedMessage(e.what(), client, channelName));
 		Utils::sendFormattedMessage(ERR_BADCHANNELKEY, client, channelName);
 	}
 }

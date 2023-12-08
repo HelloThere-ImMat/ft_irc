@@ -87,11 +87,7 @@
 
 // Error
 
-#define INVALID_CHANNEL_PASS \
-	"<client> failed to join <channelName> : Wrong Password"
 #define SEND_FAIL_ERROR "sending failed"
-#define TOO_MANY_USER_ON_CHAN \
-	"<client> failed to join <channelName> : Wrong Password"
 
 class Utils {
    public:
