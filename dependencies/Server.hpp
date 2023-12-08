@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 12:07:50 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 12:17:03 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,6 +112,8 @@ class Server {
 		const Client *const client, const std::string &channelName);
 	void createChannel(const Client *const client, const std::string &channelName);
 	void joinChannel(const std::vector<std::string> &cmd, const Client *const client, Channel *const channel, const size_t keyIndex);
+	void sendPrivmsgToChannel(const Client *const client, const std::string &channelName, const std::string &privMessage);
+	void sendPrivmsgToUser(const Client *const client, const std::string &targetName, const std::string &privMessage);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
