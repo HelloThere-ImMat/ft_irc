@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 12:07:13 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 14:02:27 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ Channel::~Channel() { userMap.clear(); }
 void Channel::addNewUser(const Client *const client,
 	const std::vector<std::string> &keys, const size_t keyIndex) {
 	const size_t keysSize = keys.size();
+	//penser a faire le check de channel limit 
 	if (_isPasswordProtected && (keyIndex >= keysSize || keys[keyIndex] != _password))
 		throw WrongChannelKeyException();
 	SpecifiedClient spClient = {.client = client, .isOp = false};
@@ -132,4 +133,7 @@ bool Channel::isOp(const Client *const client) const {
 ////////////////
 
 const char *Channel::WrongChannelKeyException::what() const throw() {
+	return (INVALID_CHANNEL_PASS);}
+
+const char *Channel::TooManyUserException::what() const throw() {
 	return (INVALID_CHANNEL_PASS);}
