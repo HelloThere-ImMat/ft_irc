@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 19:12:03 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 10:03:31 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,12 @@ void Server::privmsg(
 	const std::string fullMessage = Utils::getFullMessage(cmd, PRIVMSG_START_INDEX);
 	std::vector<std::string> receiverList = Utils::splitString(cmd[1], CMD_ARG_SEPARATOR);
 	for (std::vector<std::string>::iterator itV = receiverList.begin(); itV != receiverList.end(); itV++) {
-		const std::string privMessage = PRIVMSG_PREFIX + cmd[1] + " " + fullMessage;
+		const std::string privMessage = PRIVMSG_PREFIX + *itV + " " + fullMessage;
 
 		if ((*itV)[0] == CHANNEL_PREFIX)
 		{
 			const std::map<std::string, Channel *>::iterator itM =
-				_channels.find(cmd[1]);
+				_channels.find(*itV);
 			if (itM == _channels.end())
 				Utils::sendFormattedMessage(ERR_CANNOTSENDTOCHAN, client, *itV);
 			else
