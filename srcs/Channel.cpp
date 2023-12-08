@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 00:53:29 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 11:03:46 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ bool Channel::processMode(std::vector<std::string> &cmd) {
 			status = _mode.setMode(setter, *it, cmd, argsIndex);
 			hasChanged |= status.hasChanged;
 			if (status.doesUseArg) {
-				applyMode(*it, cmd[argsIndex]);
+				applyMode(*it, cmd[argsIndex], setter);
 				++argsIndex;
 			}
 		}
@@ -157,7 +157,8 @@ bool Channel::isOp(const Client *const client) const {
 // Private Methods //
 /////////////////////
 
-void Channel::applyMode(const char c, std::string &arg) {
+void Channel::applyMode(
+	const char c, std::string &arg, const t_modSetter setter) {
 	if (c == KEY_CHAR)
 		_password = arg;
 	else if (c == USRLIMIT_CHAR) {
@@ -165,5 +166,8 @@ void Channel::applyMode(const char c, std::string &arg) {
 		std::stringstream ss;
 		ss << _userlimit;
 		arg = ss.str();
+	} else if (c == OP_CHANGE_CHAR) {
+		std::map<std::string, SpecifiedClient>::iterator it = userMap.find(arg);
+		it->second.isOp = (setter == ADD);
 	}
 }

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 00:51:02 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 11:03:22 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,5 +57,5 @@ class Channel {
 	uint								   _userlimit;
 	Mode								   _mode;
 	// Private methods
-	void applyMode(const char c, std::string &arg);
+	void applyMode(const char c, std::string &arg, const t_modSetter setter);
 };

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 00:58:57 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 12:54:23 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,8 @@ static bool isModeArgValid(const char c, const std::string &modeArg) {
 		uint			   newLimit;
 		if (iss >> newLimit)
 			return newLimit > 0 && newLimit <= CHANNEL_USERLIMIT;
+	} else if (c == OP_CHANGE_CHAR) {
+		return true;
 	}
 	return false;
 }
@@ -59,13 +61,14 @@ modeStatus Mode::setMode(const t_modSetter setter, const char c,
 	uint8_t		  flags = NO_MOD;
 	modeStatus	  status = {.hasChanged = false, .doesUseArg = false};
 
-	if ((c == KEY_CHAR || c == OP_CHANGE_CHAR || c == USRLIMIT_CHAR) &&
-		(setter == ADD && modeArgIndex < modeArg.size())) {
-		if (isModeArgValid(c, modeArg[modeArgIndex])) {
-			flags = searchFlags(c);
-			status.hasChanged = true;
+	if ((c == KEY_CHAR || c == OP_CHANGE_CHAR || c == USRLIMIT_CHAR)) {
+		if (modeArgIndex < modeArg.size()) {
+			if (isModeArgValid(c, modeArg[modeArgIndex])) {
+				flags = searchFlags(c);
+				status.hasChanged = true;
+			}
+			status.doesUseArg = true;
 		}
-		status.doesUseArg = true;
 	} else
 		flags = searchFlags(c);
 	if (flags)
