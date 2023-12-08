@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 16:04:59 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 18:26:04 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,11 @@
 
 // STRINGS
 
-#define INMES_PREFIX		 "<< "
-#define CHANNEL_PREFIX		 '#'
-#define DEFAULT_USERNAME	 "Placeholder"
-#define SPECIAL_NICK_CHARSET "[]{}*\\|_"
+#define INMES_PREFIX			 "<< "
+#define CHANNEL_PREFIX			 '#'
+#define DEFAULT_USERNAME		 "Placeholder"
+#define SPECIAL_NICK_CHARSET	 "[]{}*\\|_"
+#define INVALID_PASSWORD_CHARSET " \b\t\n\v\f\r,"
 
 // Logs
 
@@ -54,9 +55,10 @@
 
 // Errors
 
-#define LISTEN_FAIL__ERROR "listening failed"
-#define READ_FAIL__ERROR   "reading failed"
-#define WRONG_CMD__ERROR   "Invalid Login Command!"
+#define LISTEN_FAIL__ERROR			"listening failed"
+#define READ_FAIL__ERROR			"reading failed"
+#define WRONG_CMD__ERROR			"Invalid Login Command!"
+#define INVALID_SET_PASSWORD__ERROR "Invalid set password"
 
 class Server {
 	typedef void (Server::*CommandFunction)(
@@ -80,6 +82,9 @@ class Server {
 	std::string							   _password;
 	ClientManager						   _clientMap;
 	// Private Methods
+	//    Initialisation methods
+	void initializeCmdMap();
+	//    Print methods
 	void printLog(const std::string &logMessage) const;
 	//    Poll Methods
 	void addFdToPoll(const int fd);
@@ -131,6 +136,10 @@ class Server {
 		virtual const char *what() const throw();
 	};
 	class InvalidLoginCommandException : public std::exception {
+	   public:
+		virtual const char *what() const throw();
+	};
+	class InvalidSetPasswordException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};

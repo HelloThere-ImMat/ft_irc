@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 17:25:53 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:48:55 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,8 @@ Channel::~Channel() { userMap.clear(); }
 void Channel::addNewUser(const Client *const client,
 	const std::vector<std::string> &keys, const size_t keyIndex) {
 	const size_t keysSize = keys.size();
-	// penser a faire le check de channel limit
+	if (this->isFull())
+		throw TooManyUserException();
 	if (_mode.isKeyProtected() &&
 		(keyIndex >= keysSize || keys[keyIndex] != _password))
 		throw WrongChannelKeyException();
@@ -182,3 +183,5 @@ bool Channel::canModeBeApplied(const char c, std::string &arg,
 	}
 	return true;
 }
+
+bool Channel::isFull() const { return userMap.size() >= _userlimit; }

@@ -18,13 +18,12 @@
 //////////////////////
 
 static bool isPortValid(const std::string &port) {
-	for (std::string::const_iterator it = port.begin(); it != port.end();
-		 ++it) {
-		if (!isdigit(*it)) {
-			return false;
-		}
-	}
-	return true;
+	if (port.empty())
+		return false;
+	std::istringstream iss(port);
+	uint			   portCount;
+	iss >> portCount;
+	return portCount <= MAX_PORT_VALUE;
 }
 
 ////////////

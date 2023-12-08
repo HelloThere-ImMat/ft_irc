@@ -6,19 +6,15 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 17:26:32 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 18:22:51 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <stdint.h>
-
 #include <cstdlib>
-#include <map>
-#include <sstream>
-#include <string>
-#include <vector>
+
+#include "Utils.hpp"
 
 #define NO_MOD			  0x00
 #define INVITE_ONLY		  0x01

@@ -83,6 +83,7 @@
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
+#define ERR_CHANNELISFULL	  "471 <client> <channelName> :Cannot join channel (+l)"
 #define ERR_BADCHANNELKEY	  "475 <client> <channelName> :Cannot join channel (+k)"
 #define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
 #define ERR_CHANOPRIVSNEEDED \
@@ -106,6 +107,8 @@ class Utils {
 		const std::string &listStr, const char delimiter);
 	static std::string getFullMessage(
 		const std::vector<std::string> &cmd, const size_t startIndex);
+	static bool isThereInvalidChar(
+		const std::string &str, const std::string &invalidCharset);
 
    private:
 	class SendFailException : public std::exception {

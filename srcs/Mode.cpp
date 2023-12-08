@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 17:27:20 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 18:21:40 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,18 +24,9 @@ static uint8_t searchFlags(const char c) {
 	return NO_MOD;
 }
 
-static bool isThereInvalidChar(
-	const std::string &str, const std::string &invalidCharset) {
-	for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
-		if (invalidCharset.find(*it) != std::string::npos)
-			return true;
-	}
-	return false;
-}
-
 static bool isModeArgValid(const char c, const std::string &modeArg) {
 	if (c == KEY_CHAR)
-		return isThereInvalidChar(modeArg, INVALID_CHARSET_KEY) == false;
+		return Utils::isThereInvalidChar(modeArg, INVALID_CHARSET_KEY) == false;
 	else if (c == USRLIMIT_CHAR) {
 		std::istringstream iss(modeArg);
 		uint			   newLimit;

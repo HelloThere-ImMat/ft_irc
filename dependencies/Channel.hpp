@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 17:24:22 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:34:28 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,4 +64,5 @@ class Channel {
 	// Private methods
 	bool canModeBeApplied(const char c, std::string &arg,
 		const t_modSetter setter, const Client *const client);
+	bool isFull() const;
 };

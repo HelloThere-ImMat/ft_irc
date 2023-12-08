@@ -108,6 +108,15 @@ std::string Utils::getFormattedMessage(const std::string &message,
 	return formattedMessage;
 }
 
+bool Utils::isThereInvalidChar(
+	const std::string &str, const std::string &invalidCharset) {
+	for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
+		if (invalidCharset.find(*it) != std::string::npos)
+			return true;
+	}
+	return false;
+}
+
 // Exceptions
 
 const char *Utils::SendFailException::what() const throw() {

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 16:05:24 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 18:26:17 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,28 +37,26 @@ static std::vector<std::string> getCommandTokens(
 	return tokens;
 }
 
+static bool isPasswordValid(const std::string &password) {
+	return password.empty() == false && Utils::isThereInvalidChar(password,
+											INVALID_PASSWORD_CHARSET) == false;
+}
+
 ////////////
 // PUBLIC //
 ////////////
 
 Server::Server(const std::string &port, const std::string &password)
-	: _socket(port), _password(password) {
-	_cmdMap["PASS"] = &Server::pass;
-	_cmdMap["USER"] = &Server::user;
-	_cmdMap["NICK"] = &Server::nick;
-	_cmdMap["CAP"] = &Server::cap;
-	_cmdMap["PING"] = &Server::ping;
-	_cmdMap["JOIN"] = &Server::join;
-	_cmdMap["PRIVMSG"] = &Server::privmsg;
-	_cmdMap["PART"] = &Server::part;
-	_cmdMap["MODE"] = &Server::mode;
-	_cmdMap["TOPIC"] = &Server::topic;
-
-	printLog("Port: " + port);
-	printLog("Password: " + password);
+	: _socket(port) {
+	if (isPasswordValid(password) == false)
+		throw InvalidSetPasswordException();
+	_password = password;
+	initializeCmdMap();
 	_socket.setup();
 	_epollFd = epoll_create1(0);
 	addFdToPoll(_socket.getSocketFd());
+	printLog("Port: " + port);
+	printLog("Password: " + password);
 }
 
 Server::~Server() {
@@ -141,6 +139,23 @@ void Server::readClientCommand(const int sockfd) {
 /////////////
 // PRIVATE //
 /////////////
+
+// Initialisation methods
+
+void Server::initializeCmdMap() {
+	_cmdMap["PASS"] = &Server::pass;
+	_cmdMap["USER"] = &Server::user;
+	_cmdMap["NICK"] = &Server::nick;
+	_cmdMap["CAP"] = &Server::cap;
+	_cmdMap["PING"] = &Server::ping;
+	_cmdMap["JOIN"] = &Server::join;
+	_cmdMap["PRIVMSG"] = &Server::privmsg;
+	_cmdMap["PART"] = &Server::part;
+	_cmdMap["MODE"] = &Server::mode;
+	_cmdMap["TOPIC"] = &Server::topic;
+}
+
+// Print methods
 
 void Server::printLog(const std::string &logMessage) const {
 	std::cout << GREY << logMessage << NC << std::endl;
@@ -271,4 +286,8 @@ const char *Server::ReadFailException::what() const throw() {
 
 const char *Server::InvalidLoginCommandException::what() const throw() {
 	return (WRONG_CMD__ERROR);
+}
+
+const char *Server::InvalidSetPasswordException::what() const throw() {
+	return (INVALID_SET_PASSWORD__ERROR);
 }
