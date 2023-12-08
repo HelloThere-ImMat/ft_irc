@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   SendCmd.cpp                                        :+:      :+:    :+:   */
+/*   Utils.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/05 09:55:59 by mat               #+#    #+#             */
-/*   Updated: 2023/12/06 15:34:55 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/06 22:07:29 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "SendCmd.hpp"
+#include "Utils.hpp"
 
 // Static Funcs
 
@@ -26,9 +26,37 @@ static std::string replacePatterns(const std::string &original,
 	return newStr;
 }
 
+// String Methods
+
+std::vector<std::string> Utils::splitString(
+	const std::string &listStr, const char delimiter) {
+	std::vector<std::string> strings;
+	std::string				 string;
+	std::istringstream		 tokenStream(listStr);
+
+	while (std::getline(tokenStream, string, delimiter))
+		strings.push_back(string);
+	return (strings);
+}
+
+std::string Utils::getFullMessage(
+	const std::vector<std::string> &cmd, const size_t startIndex) {
+	std::string	 fullMessage;
+	const size_t size = cmd.size();
+	size_t		 i = startIndex;
+	if (size > startIndex) {
+		while (i < size) {
+			if (i > startIndex)
+				fullMessage += MESSAGE_SEPARATOR;
+			fullMessage += cmd[i++];
+		}
+	}
+	return (fullMessage);
+}
+
 // Send Methods
 
-void SendCmd::sendMessage(
+void Utils::sendMessage(
 	const std::string &message, const Client *const client) {
 	static const std::string domainName = DOMAIN_NAME;
 	const int				 clientFd = client->getSocketFd();
@@ -41,7 +69,7 @@ void SendCmd::sendMessage(
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
 }
 
-void SendCmd::sendPrivateMessage(const std::string &message,
+void Utils::sendPrivateMessage(const std::string &message,
 	const Client *const sender, const Client *const receiver) {
 	const std::string senderSpec =
 		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
@@ -55,20 +83,21 @@ void SendCmd::sendPrivateMessage(const std::string &message,
 		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
 }
 
-void SendCmd::sendFormattedMessage(
-	const std::string &message, const Client *const client) {
-	sendMessage(getFormattedMessage(message, client), client);
+void Utils::sendFormattedMessage(const std::string &message,
+	const Client *const client, std::string channelName) {
+	sendMessage(getFormattedMessage(message, client, channelName), client);
 }
 
 // Format methods
 
-std::string SendCmd::getFormattedMessage(
-	const std::string &message, const Client *const client) {
+std::string Utils::getFormattedMessage(const std::string &message,
+	const Client *const client, std::string channelName) {
 	const std::string mapPattern[PATTERN_COUNT][2] = {
 		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
 		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},
 		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()},
-		{"<username>", client->getUsername()}, {"<hostname>", HOST_NAME}};
+		{"<username>", client->getUsername()}, {"<hostname>", HOST_NAME},
+		{"<channelName>", channelName}};
 
 	std::string formattedMessage = message;
 
@@ -81,6 +110,6 @@ std::string SendCmd::getFormattedMessage(
 
 // Exceptions
 
-const char *SendCmd::SendFailException::what() const throw() {
-	return (SEND_FAIL__ERROR);
+const char *Utils::SendFailException::what() const throw() {
+	return (SEND_FAIL_ERROR);
 }
