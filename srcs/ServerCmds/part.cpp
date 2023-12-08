@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:33 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 12:09:20 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 15:40:59 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,10 +22,10 @@ void Server::part(const std::vector<std::string> &cmd, Client *const client) {
 	for (std::vector<std::string>::const_iterator itCurrChanName =
 			 channels.begin();
 		 itCurrChanName != channels.end(); itCurrChanName++) {
-		const std::map<std::string, Channel *>::iterator itM =
+		const std::map<std::string, Channel *>::iterator itMap =
 			_channels.find(*itCurrChanName);
-		if (itM != _channels.end()) {
-			Channel *const channel = itM->second;
+		if (itMap != _channels.end()) {
+			Channel *const channel = itMap->second;
 			if (channel->isUserInChannel(client)) {
 				channel->sendToAll(client, PART_PREFIX + *itCurrChanName);
 				channel->removeUser(client);

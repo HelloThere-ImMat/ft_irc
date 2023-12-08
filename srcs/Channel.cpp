@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 14:02:27 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 15:39:57 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -138,5 +138,5 @@ const char *Channel::WrongChannelKeyException::what() const throw() {
 }
 
 const char *Channel::TooManyUserException::what() const throw() {
-	return (INVALID_CHANNEL_PASS);
+	return (TOO_MANY_USER_ON_CHAN);
 }

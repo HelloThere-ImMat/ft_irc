@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 12:42:40 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 15:40:24 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,11 +49,11 @@ void Server::privmsg(
 
 	const std::string fullMessage =
 		Utils::getFullMessage(cmd, PRIVMSG_START_INDEX);
-	const std::vector<std::string> receiverList =
+	const std::vector<std::string> targetList =
 		Utils::splitString(cmd[1], CMD_ARG_SEPARATOR);
 	for (std::vector<std::string>::const_iterator itTarget =
-			 receiverList.begin();
-		 itTarget != receiverList.end(); itTarget++) {
+			 targetList.begin();
+		 itTarget != targetList.end(); itTarget++) {
 		const std::string privMessage =
 			PRIVMSG_PREFIX + *itTarget + " " + fullMessage;
 
