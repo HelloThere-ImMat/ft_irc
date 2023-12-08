@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/07 22:43:51 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 00:58:57 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,12 @@ static bool isThereInvalidChar(
 static bool isModeArgValid(const char c, const std::string &modeArg) {
 	if (c == KEY_CHAR)
 		return isThereInvalidChar(modeArg, INVALID_CHARSET_KEY) == false;
+	if (c == USRLIMIT_CHAR) {
+		std::istringstream iss(modeArg);
+		uint			   newLimit;
+		if (iss >> newLimit)
+			return newLimit > 0 && newLimit <= CHANNEL_USERLIMIT;
+	}
 	return false;
 }
 
@@ -48,20 +54,18 @@ Mode::Mode(const uint8_t initialMask) : _mask(initialMask) {}
 Mode::~Mode() {}
 
 modeStatus Mode::setMode(const t_modSetter setter, const char c,
-	std::vector<std::string> &modeArgs) {
+	const std::vector<std::string> &modeArg, const size_t modeArgIndex) {
 	const uint8_t oldMask = _mask;
 	uint8_t		  flags = NO_MOD;
 	modeStatus	  status = {.hasChanged = false, .doesUseArg = false};
 
-	if (c == KEY_CHAR || c == OP_CHANGE_CHAR || c == USRLIMIT_CHAR) {
-		if (setter == ADD && modeArgs.empty() == false) {
-			if (isModeArgValid(c, modeArgs[0])) {
-				flags = searchFlags(c);
-				status.hasChanged = true;
-			}
-			status.doesUseArg = true;
-		} else if (setter == RM)
+	if ((c == KEY_CHAR || c == OP_CHANGE_CHAR || c == USRLIMIT_CHAR) &&
+		(setter == ADD && modeArgIndex < modeArg.size())) {
+		if (isModeArgValid(c, modeArg[modeArgIndex])) {
 			flags = searchFlags(c);
+			status.hasChanged = true;
+		}
+		status.doesUseArg = true;
 	} else
 		flags = searchFlags(c);
 	if (flags)

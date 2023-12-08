@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 22:44:13 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 00:53:29 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,17 +18,6 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 	if (spClient.isOp)
 		return (OP_PREFIX + spClient.client->getNickname());
 	return (spClient.client->getNickname());
-}
-
-static std::vector<std::string> getModArgs(
-	const std::vector<std::string> &cmd) {
-	const size_t			 size = cmd.size();
-	std::vector<std::string> modArgs;
-
-	for (size_t i = 3; i < size; ++i) {
-		modArgs.push_back(cmd[i]);
-	}
-	return modArgs;
 }
 
 // Methods
@@ -71,23 +60,23 @@ const std::string &Channel::getTopic() const { return _topic; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
-bool Channel::processMode(const std::vector<std::string> &cmd) {
-	const std::string		 modString = cmd[2];
-	std::vector<std::string> modeArgs = getModArgs(cmd);
-	t_modSetter				 setter = ADD;
-	modeStatus status = {.hasChanged = false, .doesUseArg = false};
-	bool	   hasChanged = false;
+bool Channel::processMode(std::vector<std::string> &cmd) {
+	const std::string modeString = cmd[2];
+	t_modSetter		  setter = ADD;
+	modeStatus		  status = {.hasChanged = false, .doesUseArg = false};
+	size_t			  argsIndex = 3;
+	bool			  hasChanged = false;
 
-	for (std::string::const_iterator it = modString.begin();
-		 it != modString.end(); ++it) {
+	for (std::string::const_iterator it = modeString.begin();
+		 it != modeString.end(); ++it) {
 		if (*it == '+' || *it == '-') {
 			setter = (*it == '+') ? ADD : RM;
 		} else {
-			status = _mode.setMode(setter, *it, modeArgs);
+			status = _mode.setMode(setter, *it, cmd, argsIndex);
 			hasChanged |= status.hasChanged;
 			if (status.doesUseArg) {
-				applyMode(*it, modeArgs[0]);
-				modeArgs.erase(modeArgs.begin());
+				applyMode(*it, cmd[argsIndex]);
+				++argsIndex;
 			}
 		}
 	}
@@ -97,11 +86,6 @@ bool Channel::processMode(const std::vector<std::string> &cmd) {
 bool Channel::isAbleToJoin(const std::vector<std::string> &cmd) const {
 	return !(_mode.getModeMask() & PASS_ONLY) ||
 		   (cmd.size() > 2 && cmd[2] == _password);
-}
-
-void Channel::applyMode(const char c, const std::string &arg) {
-	if (c == KEY_CHAR)
-		_password = arg;
 }
 
 void Channel::sendToOthers(
@@ -167,4 +151,19 @@ bool Channel::isOp(const Client *const client) const {
 	const std::string nickname = client->getNickname();
 
 	return (userMap.find(nickname)->second.isOp);
+}
+
+/////////////////////
+// Private Methods //
+/////////////////////
+
+void Channel::applyMode(const char c, std::string &arg) {
+	if (c == KEY_CHAR)
+		_password = arg;
+	else if (c == USRLIMIT_CHAR) {
+		_userlimit = atoi(arg.c_str());
+		std::stringstream ss;
+		ss << _userlimit;
+		arg = ss.str();
+	}
 }

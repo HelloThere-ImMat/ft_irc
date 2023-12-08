@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/07 22:42:58 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 00:54:47 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 #include <stdint.h>
 
+#include <cstdlib>
 #include <map>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -25,6 +27,8 @@
 #define USERLIMIT		  0x08
 #define OP_CHANGE		  0x10
 #define FLAG_COUNT		  5
+
+#define CHANNEL_USERLIMIT 100
 
 #define INVITE_CHAR	   'i'
 #define TOPIC_CHAR	   't'
@@ -51,7 +55,7 @@ class Mode {
 	~Mode();
 	uint8_t		getModeMask() const;
 	modeStatus	setMode(const t_modSetter setter, const char c,
-		 std::vector<std::string> &modArgs);
+		 const std::vector<std::string> &modArg, const size_t modeArgIndex);
 	std::string getModeMessage() const;
 
    private:
