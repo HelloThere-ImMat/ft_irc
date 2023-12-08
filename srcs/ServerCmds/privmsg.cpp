@@ -12,8 +12,8 @@
 
 #include "Server.hpp"
 
-void Server::sendPrivmsgToChannel(const Client *const client, const std::string &channelName, const std::string &privMessage)
-{
+void Server::sendPrivmsgToChannel(const Client *const client,
+	const std::string &channelName, const std::string &privMessage) {
 	const std::map<std::string, Channel *>::iterator itMap =
 		_channels.find(channelName);
 	if (itMap == _channels.end())
@@ -27,8 +27,8 @@ void Server::sendPrivmsgToChannel(const Client *const client, const std::string 
 	}
 }
 
-void Server::sendPrivmsgToUser(const Client *const client, const std::string &targetName, const std::string &privMessage)
-{
+void Server::sendPrivmsgToUser(const Client *const client,
+	const std::string &targetName, const std::string &privMessage) {
 	const Client *const receiver = _clientMap.getClient(targetName);
 	if (receiver == NULL)
 		Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
@@ -51,14 +51,15 @@ void Server::privmsg(
 		Utils::getFullMessage(cmd, PRIVMSG_START_INDEX);
 	const std::vector<std::string> receiverList =
 		Utils::splitString(cmd[1], CMD_ARG_SEPARATOR);
-	for (std::vector<std::string>::const_iterator itTarget = receiverList.begin();
+	for (std::vector<std::string>::const_iterator itTarget =
+			 receiverList.begin();
 		 itTarget != receiverList.end(); itTarget++) {
 		const std::string privMessage =
 			PRIVMSG_PREFIX + *itTarget + " " + fullMessage;
 
 		if ((*itTarget)[0] == CHANNEL_PREFIX)
 			sendPrivmsgToChannel(client, *itTarget, privMessage);
-		else 
+		else
 			sendPrivmsgToUser(client, *itTarget, privMessage);
 	}
 }

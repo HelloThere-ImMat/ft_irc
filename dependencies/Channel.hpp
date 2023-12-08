@@ -19,8 +19,7 @@
 #define OP_PREFIX		   "@"
 #define USERLIST_SEPARATOR " "
 
-#define MAX_USER_PER_CHANNEL	15
-
+#define MAX_USER_PER_CHANNEL 15
 
 struct SpecifiedClient {
 	const Client *client;
@@ -50,7 +49,7 @@ class Channel {
 		virtual const char *what() const throw();
 	};
 	class TooManyUserException : public std::exception {
-		public:
+	   public:
 		virtual const char *what() const throw();
 	};
 

@@ -37,8 +37,9 @@ Channel::~Channel() { userMap.clear(); }
 void Channel::addNewUser(const Client *const client,
 	const std::vector<std::string> &keys, const size_t keyIndex) {
 	const size_t keysSize = keys.size();
-	//penser a faire le check de channel limit 
-	if (_isPasswordProtected && (keyIndex >= keysSize || keys[keyIndex] != _password))
+	// penser a faire le check de channel limit
+	if (_isPasswordProtected &&
+		(keyIndex >= keysSize || keys[keyIndex] != _password))
 		throw WrongChannelKeyException();
 	SpecifiedClient spClient = {.client = client, .isOp = false};
 	userMap[client->getNickname()] = spClient;
@@ -133,7 +134,9 @@ bool Channel::isOp(const Client *const client) const {
 ////////////////
 
 const char *Channel::WrongChannelKeyException::what() const throw() {
-	return (INVALID_CHANNEL_PASS);}
+	return (INVALID_CHANNEL_PASS);
+}
 
 const char *Channel::TooManyUserException::what() const throw() {
-	return (INVALID_CHANNEL_PASS);}
+	return (INVALID_CHANNEL_PASS);
+}

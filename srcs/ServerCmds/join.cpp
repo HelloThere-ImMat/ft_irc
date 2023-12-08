@@ -14,10 +14,10 @@
 
 // Join Methods
 
-void Server::createChannel(const Client *const client, const std::string &channelName) {
+void Server::createChannel(
+	const Client *const client, const std::string &channelName) {
 	if (channelName[0] != CHANNEL_PREFIX)
-		Utils::sendFormattedMessage(
-			ERR_BADCHANMASK, client, channelName);
+		Utils::sendFormattedMessage(ERR_BADCHANMASK, client, channelName);
 	else if (_channels.size() >= MAX_CHANNEL_NB)
 		Utils::sendFormattedMessage(ERR_TOOMANYCHANNELS, client, channelName);
 	else {
@@ -27,21 +27,21 @@ void Server::createChannel(const Client *const client, const std::string &channe
 	}
 }
 
-void Server::joinChannel(const std::vector<std::string> &cmd, const Client *const client, Channel *const channel, const size_t keyIndex)
-{
+void Server::joinChannel(const std::vector<std::string> &cmd,
+	const Client *const client, Channel *const channel, const size_t keyIndex) {
 	std::vector<std::string> keySubArgs;
-	std::string channelName = channel->getName();
-	const size_t sizeCmd = cmd.size();
+	std::string				 channelName = channel->getName();
+	const size_t			 sizeCmd = cmd.size();
 
 	if (sizeCmd > 2)
 		keySubArgs = Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
 	try {
-			channel->addNewUser(client, keySubArgs, keyIndex);
-			sendJoinMessage(channel, client, channelName);}
-	catch (Channel::WrongChannelKeyException &e) {
+		channel->addNewUser(client, keySubArgs, keyIndex);
+		sendJoinMessage(channel, client, channelName);
+	} catch (Channel::WrongChannelKeyException &e) {
 		printLog(Utils::getFormattedMessage(e.what(), client, channelName));
-		Utils::sendFormattedMessage(
-			ERR_BADCHANNELKEY, client, channelName);}
+		Utils::sendFormattedMessage(ERR_BADCHANNELKEY, client, channelName);
+	}
 }
 
 void Server::sendJoinMessage(const Channel *const channel, const Client *client,
@@ -57,7 +57,7 @@ void Server::sendJoinMessage(const Channel *const channel, const Client *client,
 
 void Server::join(const std::vector<std::string> &cmd, Client *const client) {
 	std::vector<std::string> channelSubArgs;
-	const size_t					 sizeCmd = cmd.size();
+	const size_t			 sizeCmd = cmd.size();
 	if (sizeCmd < 2) {
 		Utils::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
 		return;
