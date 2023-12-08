@@ -87,7 +87,8 @@
 
 // Error
 
-#define SEND_FAIL__ERROR "sending failed"
+#define INVALID_CHANNEL_PASS "<client> failed to join <channelName> : Wrong Password"
+#define SEND_FAIL_ERROR		 "sending failed"
 
 class Utils {
    public:
@@ -99,8 +100,8 @@ class Utils {
 			   const Client *const client, std::string channelName = "");
 	static std::string getFormattedMessage(const std::string &message,
 		const Client *const client, std::string channelName = "");
-	static std::vector<std::string> splitString(
-		const std::string &list, const char delimiter);
+	static std::vector<std::string> splitString(const std::string &listStr,
+			   const char delimiter);	
 	static std::string getFullMessage(
 		const std::vector<std::string> &cmd, const size_t startIndex);
 

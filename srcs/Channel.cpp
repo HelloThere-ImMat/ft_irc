@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 15:14:14 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/08 12:07:13 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,11 +36,9 @@ Channel::~Channel() { userMap.clear(); }
 
 void Channel::addNewUser(const Client *const client,
 	const std::vector<std::string> &keys, const size_t keyIndex) {
-	const size_t keysMaxIndex = keys.size() - 1;
-	if (_isPasswordProtected && (keys.empty() || keysMaxIndex < keyIndex ||
-									keys[keyIndex] != _password))
-		throw WrongChannelKey();
-
+	const size_t keysSize = keys.size();
+	if (_isPasswordProtected && (keyIndex >= keysSize || keys[keyIndex] != _password))
+		throw WrongChannelKeyException();
 	SpecifiedClient spClient = {.client = client, .isOp = false};
 	userMap[client->getNickname()] = spClient;
 }
@@ -133,6 +131,5 @@ bool Channel::isOp(const Client *const client) const {
 // EXCEPTIONS //
 ////////////////
 
-const char *Channel::WrongChannelKey::what() const throw() {
-	return (INVALID_CHANNEL_PASS);
-}
+const char *Channel::WrongChannelKeyException::what() const throw() {
+	return (INVALID_CHANNEL_PASS);}
