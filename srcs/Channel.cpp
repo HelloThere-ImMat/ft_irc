@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 20:54:51 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/09 22:53:55 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,16 +117,17 @@ void Channel::sendToAll(
 
 void Channel::sendTopic(const Client *const client) const {
 	if (_topic.empty())
-		Utils::sendFormattedMessage(RPL_NOTOPIC, client);
+		Utils::sendFormattedMessage(RPL_NOTOPIC, client, _name);
 	else {
 		const std::string formatRPL =
-			Utils::getFormattedMessage(RPL_TOPIC, client) + _topic;
+			Utils::getFormattedMessage(RPL_TOPIC, client, _name) + _topic;
 		Utils::sendMessage(formatRPL, client);
 	}
 }
 
 void Channel::sendTopicToAll(const Client *const client) const {
-	const std::string formatRPL = Utils::getFormattedMessage(RPL_TOPIC, client);
+	const std::string formatRPL =
+		Utils::getFormattedMessage(RPL_TOPIC, client, _name);
 	sendToAll(client, formatRPL + _topic);
 }
 

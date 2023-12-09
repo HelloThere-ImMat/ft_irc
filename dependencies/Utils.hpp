@@ -48,8 +48,8 @@
 
 #define RPL_WELCOME		  "001 <client> :Welcome to the <networkname> Network, <nick>"
 #define RPL_CHANNELMODEIS "324 <client> <channelName> "
-#define RPL_NOTOPIC		  "331 <client> <arg> :No topic is set"
-#define RPL_TOPIC		  "332 <client> <arg> :"
+#define RPL_NOTOPIC		  "331 <client> <channelName> :No topic is set"
+#define RPL_TOPIC		  "332 <client> <channelName> :"
 
 // Message
 
