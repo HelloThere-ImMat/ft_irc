@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 09:41:52 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:18:21 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,6 +52,7 @@ Server::Server(const std::string &port, const std::string &password)
 	_cmdMap["PRIVMSG"] = &Server::privmsg;
 	_cmdMap["PART"] = &Server::part;
 	_cmdMap["TOPIC"] = &Server::topic;
+	_cmdMap["INVITE"] = &Server::invite;
 
 	printLog("Port: " + port);
 	printLog("Password: " + password);

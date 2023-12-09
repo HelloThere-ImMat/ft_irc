@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Channel.hpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 14:55:02 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/09 02:40:43 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ class Channel {
 	bool canChangeTopic(const Client *const client) const;
 	class WrongChannelKeyException : public std::exception {};
 	class TooManyUserException : public std::exception {};
+	bool isOp(const Client *const client) const;
 
    private:
 	// Attributes
@@ -55,6 +56,4 @@ class Channel {
 	std::string							   _password;
 	bool								   _isTopicProtected;
 	bool								   _isPasswordProtected;
-	// Private methods
-	bool isOp(const Client *const client) const;
 };

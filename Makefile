@@ -29,6 +29,8 @@ SRCS += Utils.cpp
 SRCS += join.cpp
 SRCS += privmsg.cpp
 SRCS += part.cpp
+SRCS += invite.cpp
+SRCS += kick.cpp
 
 vpath %.cpp $(SRCS_PATH)
 

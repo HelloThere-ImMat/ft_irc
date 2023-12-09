@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 15:40:24 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/09 02:24:50 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,11 +27,14 @@ void Server::sendPrivmsgToChannel(const Client *const client,
 	}
 }
 
-void Server::sendPrivmsgToUser(const Client *const client,
+void Server::sendPrivmsgToUser(Client *const client,
 	const std::string &targetName, const std::string &privMessage) {
 	const Client *const receiver = _clientMap.getClient(targetName);
 	if (receiver == NULL)
+	{
+		client->setLastArg(targetName);
 		Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
+	}
 	else
 		Utils::sendPrivateMessage(privMessage, client, receiver);
 }

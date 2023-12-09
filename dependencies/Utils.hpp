@@ -49,6 +49,7 @@
 #define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
 #define RPL_NOTOPIC "331 <client> <arg> :No topic is set"
 #define RPL_TOPIC	"332 <client> <arg> :"
+#define RPL_INVITING	"341 <client> <arg> <channelName>"
 
 // Message
 
@@ -56,6 +57,8 @@
 #define JOIN_PREFIX		  "JOIN :"
 #define PRIVMSG_PREFIX	  "PRIVMSG "
 #define PART_PREFIX		  "PART "
+#define INVITATION		  "INVITE <nick> <channelName>"
+#define KICK			  "KICK <channelName> <arg> :<client>"
 #define UL_JOIN_MESSAGE	  "353 <nick> = <channelName> :"
 #define EUL_JOIN_MESSAGE  "366 <client> <channelName> :End of /NAMES list."
 #define PONG_MESSAGE	  "PONG <servername> :<nick>"
@@ -64,7 +67,7 @@
 
 #define ERROR_PREFIX		"ERROR :"
 #define ERR_CLOSECONNECTION "Connection closed"
-#define ERR_NOSUCHNICK		"401 <client> <nickname> :No such nick/channel"
+#define ERR_NOSUCHNICK		"401 <client> <arg> :No such nick/channel"
 #define ERR_NOSUCHCHANNEL	"403 <client> <channelName> :No such channel"
 #define ERR_CANNOTSENDTOCHAN \
 	"404 <client> <channelName> :Cannot send to channel"
@@ -75,8 +78,11 @@
 #define ERR_NONICKNAMEGIVEN	 "431 <client> :No nickname given"
 #define ERR_ERRONEUSNICKNAME "432 <client> <arg> :Erroneus nickname"
 #define ERR_NICKNAMEINUSE	 "433 *<client> <arg> :Nickname is already in use"
+#define ERR_USERNOTINCHANNEL "441 <client> <arg> <channel> :They aren't on that channel"
 #define ERR_NOTONCHANNEL \
 	"442 <client> <channelName> :You're not on that channel"
+#define ERR_USERONCHANNEL \
+	"443 <client> <nick> <channel> :is already on channel"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
@@ -84,6 +90,7 @@
 #define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
 #define ERR_CHANOPRIVSNEEDED \
 	"482 <client> <channelName> :You're not channel operator"
+
 
 // Error
 
