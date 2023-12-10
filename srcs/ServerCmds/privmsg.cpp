@@ -30,12 +30,10 @@ void Server::sendPrivmsgToChannel(const Client *const client,
 void Server::sendPrivmsgToUser(Client *const client,
 	const std::string &targetName, const std::string &privMessage) {
 	const Client *const receiver = _clientMap.getClient(targetName);
-	if (receiver == NULL)
-	{
+	if (receiver == NULL) {
 		client->setLastArg(targetName);
 		Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
-	}
-	else
+	} else
 		Utils::sendPrivateMessage(privMessage, client, receiver);
 }
 

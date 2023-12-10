@@ -46,10 +46,10 @@
 
 // RPL
 
-#define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
-#define RPL_NOTOPIC "331 <client> <arg> :No topic is set"
-#define RPL_TOPIC	"332 <client> <arg> :"
-#define RPL_INVITING	"341 <client> <arg> <channelName>"
+#define RPL_WELCOME	 "001 <client> :Welcome to the <networkname> Network, <nick>"
+#define RPL_NOTOPIC	 "331 <client> <arg> :No topic is set"
+#define RPL_TOPIC	 "332 <client> <arg> :"
+#define RPL_INVITING "341 <client> <arg> <channelName>"
 
 // Message
 
@@ -78,11 +78,11 @@
 #define ERR_NONICKNAMEGIVEN	 "431 <client> :No nickname given"
 #define ERR_ERRONEUSNICKNAME "432 <client> <arg> :Erroneus nickname"
 #define ERR_NICKNAMEINUSE	 "433 *<client> <arg> :Nickname is already in use"
-#define ERR_USERNOTINCHANNEL "441 <client> <arg> <channel> :They aren't on that channel"
+#define ERR_USERNOTINCHANNEL \
+	"441 <client> <arg> <channel> :They aren't on that channel"
 #define ERR_NOTONCHANNEL \
 	"442 <client> <channelName> :You're not on that channel"
-#define ERR_USERONCHANNEL \
-	"443 <client> <nick> <channel> :is already on channel"
+#define ERR_USERONCHANNEL	  "443 <client> <nick> <channel> :is already on channel"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
@@ -90,7 +90,6 @@
 #define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
 #define ERR_CHANOPRIVSNEEDED \
 	"482 <client> <channelName> :You're not channel operator"
-
 
 // Error
 

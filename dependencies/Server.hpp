@@ -119,8 +119,8 @@ class Server {
 		const size_t keyIndex);
 	void sendPrivmsgToChannel(const Client *const client,
 		const std::string &channelName, const std::string &privMessage);
-	void sendPrivmsgToUser(Client *const client,
-		const std::string &targetName, const std::string &privMessage);
+	void sendPrivmsgToUser(Client *const client, const std::string &targetName,
+		const std::string &privMessage);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
@@ -135,10 +135,11 @@ class Server {
 		virtual const char *what() const throw();
 	};
 	class InviteErrors : public std::exception {
-		public:
-			InviteErrors(const int errorCode) : _errorCode(errorCode) {}
-			int getCode() const { return (_errorCode); }
-		private:
-			const int 		  _errorCode;
+	   public:
+		InviteErrors(const int errorCode) : _errorCode(errorCode) {}
+		int getCode() const { return (_errorCode); }
+
+	   private:
+		const int _errorCode;
 	};
 };
