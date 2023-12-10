@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 18:26:04 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/09 23:53:03 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <string.h>
 #include <sys/epoll.h>
 
-#include <exception>
 #include <typeinfo>
 
 #include "Channel.hpp"
@@ -27,7 +26,6 @@
 
 #define BUFFER_SIZE			1024
 #define TIMEOUT				-1
-#define MAX_CLIENT_COUNT	3
 #define PRIVMSG_START_INDEX 2
 #define TOPIC_START_INDEX	2
 #define MAX_CHANNEL_NB		100
