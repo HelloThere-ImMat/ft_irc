@@ -58,7 +58,7 @@
 #define PRIVMSG_PREFIX	  "PRIVMSG "
 #define PART_PREFIX		  "PART "
 #define INVITATION		  "INVITE <nick> <channelName>"
-#define KICK			  "KICK <channelName> <arg> :<client>"
+#define KICK			  "KICK <channelName> <arg> :"
 #define UL_JOIN_MESSAGE	  "353 <nick> = <channelName> :"
 #define EUL_JOIN_MESSAGE  "366 <client> <channelName> :End of /NAMES list."
 #define PONG_MESSAGE	  "PONG <servername> :<nick>"

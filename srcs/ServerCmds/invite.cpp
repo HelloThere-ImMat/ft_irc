@@ -6,11 +6,19 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 16:20:55 by mat               #+#    #+#             */
-/*   Updated: 2023/12/10 01:28:25 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/10 16:32:33 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+enum inviteError
+{
+	WRONG_USER_NAME,
+	WRONG_CHAN_NAME,
+	USER_NOT_IN_CHAN,
+	TARGET_IN_CHAN
+};
 
 static void handleError(
 	const int errorCode, Client *const client, std::string args[2]) {
@@ -40,17 +48,17 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 	const Client *const target = _clientMap.getClient(cmd[1]);
 	try {
 		if (target == NULL)
-			throw(InviteErrors(1));
+			throw(OpCmdsErrors(WRONG_USER_NAME));
 		const std::map<std::string, Channel *>::iterator it =
 			_channels.find(cmd[2]);
 		if (it == _channels.end())
-			throw(InviteErrors(2));
+			throw(OpCmdsErrors(WRONG_CHAN_NAME));
 		const Channel *const channel = it->second;
 		const std::string	 channelName = cmd[2];
 		if (channel->isUserInChannel(client) == false)
-			throw(InviteErrors(3));
+			throw(OpCmdsErrors(USER_NOT_IN_CHAN));
 		if (channel->isUserInChannel(target) == false)
-			throw(InviteErrors(4));
+			throw(OpCmdsErrors(TARGET_IN_CHAN));
 		// SHOULD reject it when the channel has invite-only
 		// mode set, and the user is not a channel operator.
 		client->setLastArg(cmd[1]);
@@ -58,7 +66,7 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 		const std::string invitation =
 			Utils::getFormattedMessage(INVITATION, target, channelName);
 		Utils::sendPrivateMessage(invitation, client, target);
-	} catch (InviteErrors &e) {
+	} catch (Server::OpCmdsErrors &e) {
 		const int	errorType = e.getCode();
 		std::string args[2] = {cmd[1], cmd[2]};
 		handleError(errorType, client, args);

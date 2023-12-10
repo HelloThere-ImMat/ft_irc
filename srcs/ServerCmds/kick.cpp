@@ -6,11 +6,20 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:09:20 by mat               #+#    #+#             */
-/*   Updated: 2023/12/10 01:31:31 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/10 16:20:46 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+enum kickError
+{
+	WRONG_CHAN_NAME,
+	WRONG_USER_NAME,
+	USER_NOT_IN_CHAN,
+	USER_NOT_OP,
+	TARGET_NOT_IN_CHAN
+};
 
 void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 	const size_t cmdSize = cmd.size();
@@ -19,39 +28,57 @@ void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 		return;
 	};
 	std::map<std::string, Channel *>::iterator itMap = _channels.find(cmd[1]);
-	if (itMap != _channels.end()) {
-		Channel					   *channel = itMap->second;
-		const std::vector<std::string> users =
+	try 
+	{
+		if (itMap != _channels.end())
+			throw (OpCmdsErrors(WRONG_CHAN_NAME));
+		Channel							*channel = itMap->second;
+		const std::vector<std::string>	users =
 			Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
 		for (std::vector<std::string>::const_iterator itUser = users.begin();
-			 itUser != users.end(); itUser++) {
+			itUser != users.end(); itUser++) 
+		{
 			Client *kickedUser = _clientMap.getClient(*itUser);
-			if (kickedUser != NULL) {
-				if (channel->isUserInChannel(client)) {
-					if (channel->isOp(client)) {
-						if (channel->isUserInChannel(kickedUser)) {
-							client->setLastArg(*itUser);
-							const std::string kickMessage =
-								Utils::getFormattedMessage(
-									KICK, client, cmd[1]);
-							Utils::sendPrivateMessage(
-								kickMessage, client, kickedUser);
-						} else {
-							client->setLastArg(*itUser);
-							Utils::sendFormattedMessage(
-								ERR_USERNOTINCHANNEL, client, cmd[1]);
-						}
-					} else
-						Utils::sendFormattedMessage(
-							ERR_CHANOPRIVSNEEDED, client, cmd[1]);
-				} else
-					Utils::sendFormattedMessage(
-						ERR_NOTONCHANNEL, client, cmd[1]);
-			} else {
-				client->setLastArg((*itUser));
-				Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
-			}
+			client->setLastArg((*itUser));
+			if (kickedUser != NULL)
+				throw (OpCmdsErrors(WRONG_USER_NAME));
+			if (channel->isUserInChannel(client))
+				throw(OpCmdsErrors(USER_NOT_IN_CHAN));
+			if (channel->isOp(client))
+				throw(OpCmdsErrors(USER_NOT_OP));
+			if (channel->isUserInChannel(kickedUser))
+				throw(OpCmdsErrors(TARGET_NOT_IN_CHAN));
+			std::string kickMessage = Utils::getFormattedMessage(
+					KICK, client, cmd[1]);
+			if (cmdSize > 3)
+				kickMessage += Utils::getFullMessage(cmd, 3);
+			else 
+				kickMessage += client->getNickname();
+			channel->sendToAll(client, kickMessage);
 		}
-	} else
-		Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
+	}
+	catch (Server::OpCmdsErrors &e)
+	{
+		kickError errorCode = static_cast<kickError>(e.getCode()); 
+		switch (errorCode)
+		{
+			case	WRONG_CHAN_NAME:
+				Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
+				break;
+			case	WRONG_USER_NAME:
+				Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
+				break;
+			case	USER_NOT_IN_CHAN:
+				Utils::sendFormattedMessage(ERR_NOTONCHANNEL, client, cmd[1]);
+				break;
+			case	USER_NOT_OP:
+
+				Utils::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client, cmd[1]);
+				break;
+			case	TARGET_NOT_IN_CHAN:
+				Utils::sendFormattedMessage(ERR_USERNOTINCHANNEL, client, cmd[1]);
+				break;
+		}
+
+	}
 }
