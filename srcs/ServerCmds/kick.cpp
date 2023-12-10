@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:09:20 by mat               #+#    #+#             */
-/*   Updated: 2023/12/09 02:53:19 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/10 01:31:31 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 void	Server::kick(const std::vector<std::string> &cmd, Client *const client)
 {
-	(void)cmd;
-	(void)client;
 	const size_t cmdSize = cmd.size();
 	if (cmdSize < 3)
 	{

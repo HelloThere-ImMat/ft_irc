@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/09 02:25:03 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/10 01:23:47 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -133,5 +133,12 @@ class Server {
 	class InvalidLoginCommandException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
+	};
+	class InviteErrors : public std::exception {
+		public:
+			InviteErrors(const int errorCode) : _errorCode(errorCode) {}
+			int getCode() const { return (_errorCode); }
+		private:
+			const int 		  _errorCode;
 	};
 };
