@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/10 15:39:57 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 08:59:32 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,7 +71,7 @@ static void keepOnlySpecificChars(
 }
 
 static void setModeStr(std::string &str) {
-	keepOnlySpecificChars(str, "itklo+-");
+	keepOnlySpecificChars(str, MODE_SETCHAR);
 	removeDuplicateChars(str);
 	if (str.empty() == false) {
 		char last = str[str.length() - 1];
@@ -193,7 +193,7 @@ void Server::mode(
 				channel->sendToAll(client, Utils::getFullMessage(cmd, 0));
 		}
 	} else {
-		Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client);
+		Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
 	}
 }
 

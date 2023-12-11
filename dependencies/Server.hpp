@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/09 23:53:03 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 08:59:51 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,7 @@
 #define CHANNEL_PREFIX			 '#'
 #define DEFAULT_USERNAME		 "Placeholder"
 #define SPECIAL_NICK_CHARSET	 "[]{}*\\|_"
+#define MODE_SETCHAR			 "itklo+-"
 #define INVALID_PASSWORD_CHARSET " \b\t\n\v\f\r,"
 
 // Logs
