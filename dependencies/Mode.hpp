@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 13:45:05 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 15:39:16 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,25 +44,39 @@ typedef struct s_modeStatus {
 	bool hasChanged;
 	bool doesUseArg;
 } modeStatus;
+typedef struct s_modeConfig {
+	uint8_t		mask;
+	uint		userlimit;
+	std::string password;
+} modeConfig;
 
 class Mode {
    public:
 	Mode();
 	Mode(const uint8_t initialMask);
 	~Mode();
+	// Setters
+	void	   setUserlimit(const uint userlimit);
+	void	   setPassword(const std::string &password);
+	modeStatus setMode(const t_modSetter setter, const char cflag,
+		const std::vector<std::string> &cmd, const size_t argsIndex);
+	// Getters
+	uint		getUserLimit() const;
+	std::string getPassword() const;
 	bool		isKeyProtected() const;
 	bool		isTopicProtected() const;
 	bool		hasUserLimit() const;
 	bool		isInviteOnly() const;
-	bool		isSimpleFlag(const char cflag);
-	bool		isArgFlag(const char cflag);
-	modeStatus	setMode(const t_modSetter setter, const char cflag,
-		 const std::vector<std::string> &cmd, const size_t argsIndex);
+	bool		isSimpleFlag(const char cflag) const;
+	bool		isArgFlag(const char cflag) const;
+	bool		hasChanged() const;
 	std::string getModeMessage() const;
 
    private:
 	// Attributes
-	uint8_t _mask;
+	uint8_t		_mask;
+	uint		_userlimit;
+	std::string _password;
 	// Private Methods
 	modeStatus setSimpleMode(const t_modSetter setter, const char c);
 	modeStatus setArgMode(const t_modSetter setter, const char c,

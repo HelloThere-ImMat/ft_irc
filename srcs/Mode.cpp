@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 13:47:47 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 16:06:41 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,20 +40,17 @@ static bool isModeArgValid(const char c, const std::string &modeArg) {
 
 // Public methods
 
-Mode::Mode() : _mask(NO_MOD) {}
+Mode::Mode() : _mask(NO_MOD), _userlimit(0) {}
 
-Mode::Mode(const uint8_t initialMask) : _mask(initialMask) {}
+Mode::Mode(const uint8_t initialMask) : _mask(initialMask), _userlimit(0) {}
 
 Mode::~Mode() {}
 
-bool Mode::isSimpleFlag(const char cflag) {
-	return (cflag == INVITE_CHAR || cflag == TOPIC_CHAR);
-}
+// Setters
 
-bool Mode::isArgFlag(const char cflag) {
-	return (
-		cflag == OP_CHANGE_CHAR || cflag == KEY_CHAR || cflag == USRLIMIT_CHAR);
-}
+void Mode::setPassword(const std::string &password) { _password = password; }
+
+void Mode::setUserlimit(const uint userlimit) { _userlimit = userlimit; }
 
 modeStatus Mode::setMode(const t_modSetter setter, const char cflag,
 	const std::vector<std::string> &cmd, const size_t argsIndex) {
@@ -67,6 +64,21 @@ modeStatus Mode::setMode(const t_modSetter setter, const char cflag,
 	return status;
 }
 
+// Getters
+
+uint Mode::getUserLimit() const { return _userlimit; }
+
+std::string Mode::getPassword() const { return _password; }
+
+bool Mode::isSimpleFlag(const char cflag) const {
+	return (cflag == INVITE_CHAR || cflag == TOPIC_CHAR);
+}
+
+bool Mode::isArgFlag(const char cflag) const {
+	return (
+		cflag == OP_CHANGE_CHAR || cflag == KEY_CHAR || cflag == USRLIMIT_CHAR);
+}
+
 std::string Mode::getModeMessage() const {
 	std::string modeMessage = MODE_MESSAGE_PREFIX;
 
@@ -75,6 +87,16 @@ std::string Mode::getModeMessage() const {
 			modeMessage += flagArray[i].FlagChar;
 	}
 	return modeMessage;
+}
+
+bool Mode::hasChanged() const {
+	static modeConfig old = {.mask = NO_MOD, .userlimit = 0, .password = ""};
+	bool hasChanged = old.mask != _mask || old.userlimit != _userlimit ||
+					  old.password != _password;
+	old.mask = _mask;
+	old.userlimit = _userlimit;
+	old.password = _password;
+	return hasChanged;
 }
 
 bool Mode::isTopicProtected() const { return _mask & TOPIC_RESTRICTION; }
@@ -94,23 +116,27 @@ modeStatus Mode::setSimpleMode(const t_modSetter setter, const char c) {
 
 	if (flag)
 		setFlags(flag, setter);
-	status.hasChanged |= (oldMask != _mask);
+	status.hasChanged = (oldMask != _mask);
 	return status;
 }
 
 modeStatus Mode::setArgMode(const t_modSetter setter, const char c,
 	const std::vector<std::string> &modeArg, const size_t modeArgIndex) {
 	const uint8_t flag = searchFlag(c);
+	const uint8_t oldMask = _mask;
 	modeStatus	  status = {.hasChanged = false, .doesUseArg = false};
 
-	if (modeArgIndex < modeArg.size() &&
-		isModeArgValid(c, modeArg[modeArgIndex])) {
+	if (flag == OP_CHANGE && modeArgIndex < modeArg.size()) {
 		status.hasChanged = true;
+	} else if (setter == ADD) {
+		if (modeArgIndex < modeArg.size() &&
+			isModeArgValid(c, modeArg[modeArgIndex]))
+			setFlags(flag, setter);
+	} else if (setter == RM) {
+		setFlags(flag, setter);
 	}
-	if (setter == RM && (flag == PASS_ONLY || flag == USERLIMIT))
-		status.hasChanged = true;
 	status.doesUseArg = modeArgIndex < modeArg.size();
-	setFlags(flag, setter);
+	status.hasChanged |= (oldMask != _mask);
 	return status;
 }
 

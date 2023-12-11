@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 14:08:41 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 14:41:15by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,7 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name), _mode(INVITE_ONLY | TOPIC_RESTRICTION) {
+	: _name(name), _mode(NO_MOD) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -33,11 +33,9 @@ Channel::~Channel() { userMap.clear(); }
 
 void Channel::addNewUser(const Client *const client,
 	const std::vector<std::string> &keys, const size_t keyIndex) {
-	const size_t keysSize = keys.size();
 	if (this->isFull())
 		throw TooManyUserException();
-	if (_mode.isKeyProtected() &&
-		(keyIndex >= keysSize || keys[keyIndex] != _password))
+	if (isAbleToJoin(keys, keyIndex) == false)
 		throw WrongChannelKeyException();
 	SpecifiedClient spClient = {.client = client, .isOp = false};
 	userMap[client->getNickname()] = spClient;
@@ -73,7 +71,6 @@ bool Channel::processMode(
 	t_modSetter		  setter = ADD;
 	size_t			  argsIndex = START_MODE_INDEX;
 	bool			  hasChanged = false;
-
 	for (std::string::const_iterator it = modeString.begin();
 		 it != modeString.end(); ++it) {
 		if (*it == '+' || *it == '-') {
@@ -84,15 +81,17 @@ bool Channel::processMode(
 				status.hasChanged =
 					tryModeApplication(setter, *it, cmd[argsIndex], client);
 			argsIndex += status.doesUseArg;
+			hasChanged |= status.hasChanged;
 		}
-		hasChanged |= status.hasChanged;
 	}
-	return hasChanged;
+	std::cout << hasChanged << std::endl;
+	return _mode.hasChanged() || hasChanged;
 }
 
-bool Channel::isAbleToJoin(const std::vector<std::string> &cmd) const {
+bool Channel::isAbleToJoin(
+	const std::vector<std::string> &cmd, const size_t passIndex) const {
 	return (_mode.isKeyProtected() == false) ||
-		   (cmd.size() > 2 && cmd[2] == _password);
+		   (cmd.size() > passIndex && cmd[passIndex] == _mode.getPassword());
 }
 
 void Channel::sendToOthers(
@@ -171,31 +170,33 @@ bool Channel::tryModeApplication(const t_modSetter setter, const char cflag,
 	try {
 		setModeParameter(cflag, arg, setter, client);
 		hasChanged = true;
-	} catch (std::exception &e) {
+	} catch (UserNotInChannelException &e) {
 		Utils::sendFormattedMessage(ERR_USERNOTINCHANNEL, client, _name);
 	}
+	std::cout << hasChanged << std::endl;
 	return hasChanged;
 }
 
 void Channel::setModeParameter(const char c, std::string &arg,
 	const t_modSetter setter, Client *const client) {
-	if (c == KEY_CHAR)
-		_password = arg;
-	else if (c == USRLIMIT_CHAR) {
-		_userlimit = atoi(arg.c_str());
+	if (c == KEY_CHAR) {
+		_mode.setPassword(arg);
+	} else if (c == USRLIMIT_CHAR) {
+		const int userlimit = atoi(arg.c_str());
+		_mode.setUserlimit(userlimit);
 		std::stringstream ss;
-		ss << _userlimit;
+		ss << userlimit;
 		arg = ss.str();
 	} else if (c == OP_CHANGE_CHAR) {
 		std::map<std::string, SpecifiedClient>::iterator it = userMap.find(arg);
 		if (it == userMap.end()) {
 			client->setLastArg(arg);
-			throw ERR_USERNOTINCHANNEL;
+			throw UserNotInChannelException();
 		} else
 			it->second.isOp = (setter == ADD);
 	}
 }
 
 bool Channel::isFull() const {
-	return _mode.hasUserLimit() && userMap.size() >= _userlimit;
+	return _mode.hasUserLimit() && userMap.size() >= _mode.getUserLimit();
 }

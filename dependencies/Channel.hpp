@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 13:44:20 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 15:42:28 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,17 +49,17 @@ class Channel {
 	bool isUserInChannel(const Client *const client) const;
 	bool canChangeTopic(const Client *const client) const;
 	bool isOp(const Client *const client) const;
-	bool isAbleToJoin(const std::vector<std::string> &cmd) const;
+	bool isAbleToJoin(
+		const std::vector<std::string> &cmd, const size_t passIndex) const;
 	class WrongChannelKeyException : public std::exception {};
 	class TooManyUserException : public std::exception {};
+	class UserNotInChannelException : public std::exception {};
 
    private:
 	// Attributes
 	std::map<std::string, SpecifiedClient> userMap;
 	const std::string					   _name;
 	std::string							   _topic;
-	std::string							   _password;
-	uint								   _userlimit;
 	Mode								   _mode;
 	// Private methods
 	bool tryModeApplication(const t_modSetter setter, const char cflag,
