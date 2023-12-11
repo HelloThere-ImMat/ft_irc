@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 09:33:44 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 10:14:25 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,13 +79,11 @@ bool Channel::processMode(std::vector<std::string> &cmd, Client *const client) {
 			setter = (*it == '+') ? ADD : RM;
 		} else {
 			status = _mode.setMode(setter, *it, cmd, argsIndex);
-			if (status.doesUseArg) {
-				if (status.hasChanged) {
-					status.hasChanged =
-						canModeBeApplied(*it, cmd[argsIndex], setter, client);
-				}
-				++argsIndex;
+			if (status.doesUseArg && status.hasChanged) {
+				status.hasChanged =
+					canModeBeApplied(*it, cmd[argsIndex], setter, client);
 			}
+			argsIndex += status.doesUseArg;
 			hasChanged |= status.hasChanged;
 		}
 	}
