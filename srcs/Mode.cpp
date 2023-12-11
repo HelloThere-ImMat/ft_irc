@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 09:14:51 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 09:36:16 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,6 +83,8 @@ bool Mode::isTopicProtected() const { return _mask & TOPIC_RESTRICTION; }
 bool Mode::isKeyProtected() const { return _mask & PASS_ONLY; }
 
 bool Mode::hasUserLimit() const { return _mask & USERLIMIT; }
+
+bool Mode::isInviteOnly() const { return _mask & INVITE_ONLY; }
 
 // Private methods
 
