@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 16:06:41 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 16:13:43 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,14 +128,15 @@ modeStatus Mode::setArgMode(const t_modSetter setter, const char c,
 
 	if (flag == OP_CHANGE && modeArgIndex < modeArg.size()) {
 		status.hasChanged = true;
+		status.doesUseArg = true;
 	} else if (setter == ADD) {
 		if (modeArgIndex < modeArg.size() &&
 			isModeArgValid(c, modeArg[modeArgIndex]))
 			setFlags(flag, setter);
+		status.doesUseArg = true;
 	} else if (setter == RM) {
 		setFlags(flag, setter);
 	}
-	status.doesUseArg = modeArgIndex < modeArg.size();
 	status.hasChanged |= (oldMask != _mask);
 	return status;
 }
