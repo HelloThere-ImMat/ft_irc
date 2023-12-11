@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/09 22:53:55 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 09:16:49 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,8 +81,10 @@ bool Channel::processMode(
 		} else {
 			status = _mode.setMode(setter, *it, cmd, argsIndex);
 			if (status.doesUseArg) {
-				status.hasChanged =
-					canModeBeApplied(*it, cmd[argsIndex], setter, client);
+				if (status.hasChanged) {
+					status.hasChanged =
+						canModeBeApplied(*it, cmd[argsIndex], setter, client);
+				}
 				++argsIndex;
 			}
 			hasChanged |= status.hasChanged;

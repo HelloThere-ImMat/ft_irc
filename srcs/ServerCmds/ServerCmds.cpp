@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 08:59:32 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 09:04:07 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -180,20 +180,20 @@ void Server::mode(
 		return;
 	const std::map<std::string, Channel *>::iterator it =
 		_channels.find(cmd[1]);
-	if (it != _channels.end()) {
-		Channel *const channel = it->second;
-		if (size == 2) {
-			channel->sendMode(client);
-		} else if (channel->isOp(client) == false) {
-			Utils::sendFormattedMessage(
-				ERR_CHANOPRIVSNEEDED, client, channel->getName());
-		} else {
-			setModeStr(cmd[2]);
-			if (channel->processMode(cmd, client))
-				channel->sendToAll(client, Utils::getFullMessage(cmd, 0));
-		}
-	} else {
+	if (it == _channels.end()) {
 		Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
+		return;
+	}
+	Channel *const channel = it->second;
+	if (size == 2) {
+		channel->sendMode(client);
+	} else if (channel->isOp(client) == false) {
+		Utils::sendFormattedMessage(
+			ERR_CHANOPRIVSNEEDED, client, channel->getName());
+	} else {
+		setModeStr(cmd[2]);
+		if (channel->processMode(cmd, client))
+			channel->sendToAll(client, Utils::getFullMessage(cmd, 0));
 	}
 }
 

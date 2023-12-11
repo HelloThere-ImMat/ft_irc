@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 20:54:29 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 09:14:51 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ static bool isModeArgValid(const char c, const std::string &modeArg) {
 		return Utils::isThereInvalidChar(modeArg, INVALID_CHARSET_KEY) == false;
 	else if (c == USRLIMIT_CHAR) {
 		std::istringstream iss(modeArg);
-		uint			   newLimit;
+		int				   newLimit;
 		if (iss >> newLimit)
 			return newLimit > 0 && newLimit <= CHANNEL_USERLIMIT;
 	} else if (c == OP_CHANGE_CHAR) {
