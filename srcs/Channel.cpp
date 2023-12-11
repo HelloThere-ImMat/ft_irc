@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 09:16:49 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 09:33:44 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,8 +66,7 @@ const std::string &Channel::getName() const { return _name; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
-bool Channel::processMode(
-	std::vector<std::string> &cmd, const Client *const client) {
+bool Channel::processMode(std::vector<std::string> &cmd, Client *const client) {
 	const std::string modeString = cmd[2];
 	t_modSetter		  setter = ADD;
 	modeStatus		  status = {.hasChanged = false, .doesUseArg = false};
@@ -168,7 +167,7 @@ bool Channel::isOp(const Client *const client) const {
 /////////////////////
 
 bool Channel::canModeBeApplied(const char c, std::string &arg,
-	const t_modSetter setter, const Client *const client) {
+	const t_modSetter setter, Client *const client) {
 	if (c == KEY_CHAR)
 		_password = arg;
 	else if (c == USRLIMIT_CHAR) {
@@ -179,7 +178,8 @@ bool Channel::canModeBeApplied(const char c, std::string &arg,
 	} else if (c == OP_CHANGE_CHAR) {
 		std::map<std::string, SpecifiedClient>::iterator it = userMap.find(arg);
 		if (it == userMap.end()) {
-			Utils::sendFormattedMessage(ERR_USERNOTINCHANNEL, client);
+			client->setLastArg(arg);
+			Utils::sendFormattedMessage(ERR_USERNOTINCHANNEL, client, _name);
 			return false;
 		} else
 			it->second.isOp = (setter == ADD);

@@ -77,7 +77,7 @@
 #define ERR_ERRONEUSNICKNAME "432 <client> <arg> :Erroneus nickname"
 #define ERR_NICKNAMEINUSE	 "433 *<client> <arg> :Nickname is already in use"
 #define ERR_USERNOTINCHANNEL \
-	"441 <client> <nick> <channelName> :They aren't on that channel"
+	"441 <client> <arg> <channelName> :They aren't on that channel"
 #define ERR_NOTONCHANNEL \
 	"442 <client> <channelName> :You're not on that channel"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
