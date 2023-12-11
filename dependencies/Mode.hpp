@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 09:37:41 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 13:45:05 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,13 +54,18 @@ class Mode {
 	bool		isTopicProtected() const;
 	bool		hasUserLimit() const;
 	bool		isInviteOnly() const;
-	modeStatus	setMode(const t_modSetter setter, const char c,
-		 const std::vector<std::string> &modArg, const size_t modeArgIndex);
+	bool		isSimpleFlag(const char cflag);
+	bool		isArgFlag(const char cflag);
+	modeStatus	setMode(const t_modSetter setter, const char cflag,
+		 const std::vector<std::string> &cmd, const size_t argsIndex);
 	std::string getModeMessage() const;
 
    private:
 	// Attributes
 	uint8_t _mask;
 	// Private Methods
-	void setFlags(const uint8_t flags, const t_modSetter setter);
+	modeStatus setSimpleMode(const t_modSetter setter, const char c);
+	modeStatus setArgMode(const t_modSetter setter, const char c,
+		const std::vector<std::string> &modeArg, const size_t modeArgIndex);
+	void	   setFlags(const uint8_t flags, const t_modSetter setter);
 };

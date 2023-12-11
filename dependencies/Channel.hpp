@@ -6,20 +6,20 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 09:34:03 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 13:44:20 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <map>
-#include <vector>
 
 #include "Mode.hpp"
 #include "Utils.hpp"
 
 #define OP_PREFIX		   "@"
 #define USERLIST_SEPARATOR " "
+#define START_MODE_INDEX   3
 
 #define MAX_USER_PER_CHANNEL 15
 
@@ -39,7 +39,7 @@ class Channel {
 	const std::string &getTopic() const;
 	const std::string &getName() const;
 	void			   setTopic(const std::string &topic);
-	bool processMode(std::vector<std::string> &cmd, Client *const client);
+	bool processMode(const std::vector<std::string> &cmd, Client *const client);
 	void sendToOthers(
 		const Client *const client, const std::string message) const;
 	void sendToAll(const Client *const client, const std::string message) const;
@@ -62,7 +62,9 @@ class Channel {
 	uint								   _userlimit;
 	Mode								   _mode;
 	// Private methods
-	bool canModeBeApplied(const char c, std::string &arg,
+	bool tryModeApplication(const t_modSetter setter, const char cflag,
+		std::string arg, Client *const client);
+	void setModeParameter(const char c, std::string &arg,
 		const t_modSetter setter, Client *const client);
 	bool isFull() const;
 };

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 10:14:25 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 14:08:41 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,11 +66,12 @@ const std::string &Channel::getName() const { return _name; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
-bool Channel::processMode(std::vector<std::string> &cmd, Client *const client) {
+bool Channel::processMode(
+	const std::vector<std::string> &cmd, Client *const client) {
 	const std::string modeString = cmd[2];
-	t_modSetter		  setter = ADD;
 	modeStatus		  status = {.hasChanged = false, .doesUseArg = false};
-	size_t			  argsIndex = 3;
+	t_modSetter		  setter = ADD;
+	size_t			  argsIndex = START_MODE_INDEX;
 	bool			  hasChanged = false;
 
 	for (std::string::const_iterator it = modeString.begin();
@@ -79,15 +80,14 @@ bool Channel::processMode(std::vector<std::string> &cmd, Client *const client) {
 			setter = (*it == '+') ? ADD : RM;
 		} else {
 			status = _mode.setMode(setter, *it, cmd, argsIndex);
-			if (status.doesUseArg && status.hasChanged) {
+			if (status.hasChanged && status.doesUseArg)
 				status.hasChanged =
-					canModeBeApplied(*it, cmd[argsIndex], setter, client);
-			}
+					tryModeApplication(setter, *it, cmd[argsIndex], client);
 			argsIndex += status.doesUseArg;
-			hasChanged |= status.hasChanged;
 		}
+		hasChanged |= status.hasChanged;
 	}
-	return status.hasChanged;
+	return hasChanged;
 }
 
 bool Channel::isAbleToJoin(const std::vector<std::string> &cmd) const {
@@ -164,7 +164,20 @@ bool Channel::isOp(const Client *const client) const {
 // Private Methods //
 /////////////////////
 
-bool Channel::canModeBeApplied(const char c, std::string &arg,
+bool Channel::tryModeApplication(const t_modSetter setter, const char cflag,
+	std::string arg, Client *const client) {
+	bool hasChanged = false;
+
+	try {
+		setModeParameter(cflag, arg, setter, client);
+		hasChanged = true;
+	} catch (std::exception &e) {
+		Utils::sendFormattedMessage(ERR_USERNOTINCHANNEL, client, _name);
+	}
+	return hasChanged;
+}
+
+void Channel::setModeParameter(const char c, std::string &arg,
 	const t_modSetter setter, Client *const client) {
 	if (c == KEY_CHAR)
 		_password = arg;
@@ -177,12 +190,10 @@ bool Channel::canModeBeApplied(const char c, std::string &arg,
 		std::map<std::string, SpecifiedClient>::iterator it = userMap.find(arg);
 		if (it == userMap.end()) {
 			client->setLastArg(arg);
-			Utils::sendFormattedMessage(ERR_USERNOTINCHANNEL, client, _name);
-			return false;
+			throw ERR_USERNOTINCHANNEL;
 		} else
 			it->second.isOp = (setter == ADD);
 	}
-	return true;
 }
 
 bool Channel::isFull() const {
