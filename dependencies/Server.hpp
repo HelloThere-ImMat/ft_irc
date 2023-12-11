@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/10 15:14:48 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/11 14:18:21 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,6 +107,7 @@ class Server {
 	void topic(const std::vector<std::string> &cmd, Client *const client);
 	void invite(const std::vector<std::string> &cmd, Client *const client);
 	void kick(const std::vector<std::string> &cmd, Client *const client);
+	void quit(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
 	bool isNicknameAlreadyUsed(const std::string &nickname);

@@ -31,6 +31,7 @@ SRCS += privmsg.cpp
 SRCS += part.cpp
 SRCS += invite.cpp
 SRCS += kick.cpp
+SRCS += quit.cpp
 
 vpath %.cpp $(SRCS_PATH)
 

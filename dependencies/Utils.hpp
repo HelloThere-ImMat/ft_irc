@@ -94,6 +94,7 @@
 // Error
 
 #define SEND_FAIL_ERROR "sending failed"
+#define QUIT_RESPONSE	"QUIT command called by <client>"
 
 class Utils {
    public:
