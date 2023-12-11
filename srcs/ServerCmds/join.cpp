@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 09:45:58 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 20:52:10 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 08:53:13 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,6 +51,7 @@ void Server::sendJoinMessage(const Channel *const channel, const Client *client,
 
 	channel->sendToAll(client, JOIN_PREFIX + channelName);
 	channelUserList = channel->getUserList();
+	channel->sendTopic(client);
 	Utils::sendFormattedMessage(
 		UL_JOIN_MESSAGE + channelUserList, client, channelName);
 	Utils::sendFormattedMessage(EUL_JOIN_MESSAGE, client, channelName);
