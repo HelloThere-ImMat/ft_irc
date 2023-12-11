@@ -22,8 +22,7 @@ static bool isPortValid(const std::string &port) {
 		return false;
 	std::istringstream iss(port);
 	uint			   portCount;
-	iss >> portCount;
-	return portCount <= MAX_PORT_VALUE;
+	return (iss >> portCount && portCount <= MAX_PORT_VALUE);
 }
 
 ////////////
@@ -33,8 +32,10 @@ static bool isPortValid(const std::string &port) {
 DataServ::DataServ(const std::string &port) {
 	if (isPortValid(port) == false)
 		throw InvalidPortException();
-	else
-		initAddress(std::atoi(port.c_str()));
+	else {
+		const int portValue = std::atoi(port.c_str());
+		initAddress(portValue);
+	}
 }
 
 DataServ::DataServ(const int port) { initAddress(port); }
