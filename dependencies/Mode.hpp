@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 09:36:25 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 09:37:41 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,12 @@
 
 #define CHANNEL_USERLIMIT 100
 
-#define INVITE_CHAR	   'i'
-#define TOPIC_CHAR	   't'
-#define KEY_CHAR	   'k'
-#define USRLIMIT_CHAR  'l'
-#define OP_CHANGE_CHAR 'o'
+#define INVITE_CHAR			'i'
+#define TOPIC_CHAR			't'
+#define KEY_CHAR			'k'
+#define USRLIMIT_CHAR		'l'
+#define OP_CHANGE_CHAR		'o'
+#define MODE_MESSAGE_PREFIX "+"
 
 #define INVALID_CHARSET_KEY ",: \b\t\n\v\f\r"
 

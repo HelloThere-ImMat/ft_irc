@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 09:36:16 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 09:37:28 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,7 @@ modeStatus Mode::setMode(const t_modSetter setter, const char c,
 }
 
 std::string Mode::getModeMessage() const {
-	std::string modeMessage = "+";
+	std::string modeMessage = MODE_MESSAGE_PREFIX;
 
 	for (size_t i = 0; i < FLAG_COUNT; ++i) {
 		if (_mask & flagArray[i].FlagMask)
