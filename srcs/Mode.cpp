@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 09:37:28 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 09:43:46 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ modeStatus Mode::setMode(const t_modSetter setter, const char c,
 				status.hasChanged = true;
 			}
 			status.doesUseArg = true;
+		} else if ((c == KEY_CHAR || c == USRLIMIT_CHAR) && setter == RM) {
+			flags = searchFlags(c);
 		}
 	} else
 		flags = searchFlags(c);
