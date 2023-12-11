@@ -84,7 +84,6 @@ bool Channel::processMode(
 			hasChanged |= status.hasChanged;
 		}
 	}
-	std::cout << hasChanged << std::endl;
 	return _mode.hasChanged() || hasChanged;
 }
 
@@ -173,7 +172,6 @@ bool Channel::tryModeApplication(const t_modSetter setter, const char cflag,
 	} catch (UserNotInChannelException &e) {
 		Utils::sendFormattedMessage(ERR_USERNOTINCHANNEL, client, _name);
 	}
-	std::cout << hasChanged << std::endl;
 	return hasChanged;
 }
 
@@ -188,7 +186,8 @@ void Channel::setModeParameter(const char c, std::string &arg,
 		ss << userlimit;
 		arg = ss.str();
 	} else if (c == OP_CHANGE_CHAR) {
-		std::map<std::string, SpecifiedClient>::iterator it = userMap.find(arg);
+		const std::map<std::string, SpecifiedClient>::iterator it =
+			userMap.find(arg);
 		if (it == userMap.end()) {
 			client->setLastArg(arg);
 			throw UserNotInChannelException();

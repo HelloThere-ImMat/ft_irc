@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 09:04:07 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 16:17:28 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -168,20 +168,19 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 	}
 }
 
-void Server::mode(
-	const std::vector<std::string> &cmdVector, Client *const client) {
-	std::vector<std::string> cmd = cmdVector;
-	const size_t			 size = cmd.size();
+void Server::mode(const std::vector<std::string> &cmd, Client *const client) {
+	std::vector<std::string> cmdCopy = cmd;
+	const size_t			 size = cmdCopy.size();
 
 	if (size < 2) {
 		Utils::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
 		return;
-	} else if (cmd[1][0] != CHANNEL_PREFIX)
+	} else if (cmdCopy[1][0] != CHANNEL_PREFIX)
 		return;
 	const std::map<std::string, Channel *>::iterator it =
-		_channels.find(cmd[1]);
+		_channels.find(cmdCopy[1]);
 	if (it == _channels.end()) {
-		Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
+		Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmdCopy[1]);
 		return;
 	}
 	Channel *const channel = it->second;
@@ -191,9 +190,9 @@ void Server::mode(
 		Utils::sendFormattedMessage(
 			ERR_CHANOPRIVSNEEDED, client, channel->getName());
 	} else {
-		setModeStr(cmd[2]);
-		if (channel->processMode(cmd, client))
-			channel->sendToAll(client, Utils::getFullMessage(cmd, 0));
+		setModeStr(cmdCopy[2]);
+		if (channel->processMode(cmdCopy, client))
+			channel->sendToAll(client, Utils::getFullMessage(cmdCopy, 0));
 	}
 }
 
