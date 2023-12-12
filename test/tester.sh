@@ -13,7 +13,8 @@ TEST_FOLDER=./test/
 IN_FOLDER=${TEST_FOLDER}/in/
 OUT_FOLDER=${TEST_FOLDER}/out/
 OUT_REF_FOLDER=${TEST_FOLDER}/ref/
-CACHE=${TEST_FOLDER}/.cache
+CACHE_FOLDER=${TEST_FOLDER}/cache
+CACHE=${CACHE_FOLDER}/.cache
 ADDRESS=127.0.0.1
 PORT=6667
 PASSWORD=lol
@@ -97,6 +98,7 @@ outputs_ref=($(put_format "$OUT_REF_FOLDER" ".ref" "${files[@]}"))
 
 # Tests
 declare -a return_values=()  # Array to store return values of test cases
+mkdir ${CACHE_FOLDER}
 
 for i in "${!inputs[@]}"; do
 	Test "$i" "${inputs[i]}" "${outputs[i]}" "${outputs_ref[i]}" &>> "${CACHE}$i" &
@@ -116,8 +118,9 @@ done
 # Display Outputs
 for i in "${!inputs[@]}"; do
 	cat ${CACHE}$i
-	rm ${CACHE}$i
 done
+
+rm -fr ${CACHE_FOLDER}
 
 # Exit with the right value
 if [ "${ret_val}" -eq 0 ]; then
