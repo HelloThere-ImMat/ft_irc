@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 15:39:16 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 14:45:43 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,7 +69,6 @@ class Mode {
 	bool		isInviteOnly() const;
 	bool		isSimpleFlag(const char cflag) const;
 	bool		isArgFlag(const char cflag) const;
-	bool		hasChanged() const;
 	std::string getModeMessage() const;
 
    private:

@@ -89,16 +89,6 @@ std::string Mode::getModeMessage() const {
 	return modeMessage;
 }
 
-bool Mode::hasChanged() const {
-	static modeConfig old = {.mask = NO_MOD, .userlimit = 0, .password = ""};
-	bool hasChanged = old.mask != _mask || old.userlimit != _userlimit ||
-					  old.password != _password;
-	old.mask = _mask;
-	old.userlimit = _userlimit;
-	old.password = _password;
-	return hasChanged;
-}
-
 bool Mode::isTopicProtected() const { return _mask & TOPIC_RESTRICTION; }
 
 bool Mode::isKeyProtected() const { return _mask & PASS_ONLY; }
