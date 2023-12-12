@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/12 00:03:47 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 00:11:51 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,43 +41,6 @@ static std::string removeSetterChar(const std::string &message) {
 	if (message.empty() == false && message[0] == SETTER_CHAR)
 		newMessage.erase(0, 1);
 	return newMessage;
-}
-
-static void removeDuplicateChars(std::string &str) {
-	bool charSet[256] = {false};  // Assuming ASCII characters
-
-	size_t currentIndex = 0;
-	size_t len = str.length();
-
-	for (size_t i = 0; i < len; ++i) {
-		char currentChar = str[i];
-		if (!charSet[static_cast<unsigned char>(currentChar)]) {
-			charSet[static_cast<unsigned char>(currentChar)] = true;
-			str[currentIndex++] = currentChar;
-		}
-	}
-	str.resize(currentIndex);
-}
-
-static void keepOnlySpecificChars(
-	std::string &str, const std::string &allowedChars) {
-	for (std::string::iterator it = str.begin(); it != str.end();) {
-		if (allowedChars.find(*it) == std::string::npos) {
-			it = str.erase(it);
-		} else {
-			++it;
-		}
-	}
-}
-
-static void setModeStr(std::string &str) {
-	keepOnlySpecificChars(str, MODE_SETCHAR);
-	removeDuplicateChars(str);
-	if (str.empty() == false) {
-		char last = str[str.length() - 1];
-		if (last == '-' || last == '+')
-			str.erase(str.length() - 1);
-	}
 }
 
 /////////////
@@ -165,34 +128,6 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 		}
 	} else {
 		Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
-	}
-}
-
-void Server::mode(const std::vector<std::string> &cmd, Client *const client) {
-	std::vector<std::string> cmdCopy = cmd;
-	const size_t			 size = cmdCopy.size();
-
-	if (size < 2) {
-		Utils::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
-		return;
-	} else if (cmdCopy[1][0] != CHANNEL_PREFIX)
-		return;
-	const std::map<std::string, Channel *>::iterator it =
-		_channels.find(cmdCopy[1]);
-	if (it == _channels.end()) {
-		Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmdCopy[1]);
-		return;
-	}
-	Channel *const channel = it->second;
-	if (size == 2) {
-		channel->sendMode(client);
-	} else if (channel->isOp(client) == false) {
-		Utils::sendFormattedMessage(
-			ERR_CHANOPRIVSNEEDED, client, channel->getName());
-	} else {
-		setModeStr(cmdCopy[2]);
-		if (channel->processMode(cmdCopy, client))
-			channel->sendToAll(client, Utils::getFullMessage(cmdCopy, 0));
 	}
 }
 

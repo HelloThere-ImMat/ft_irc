@@ -30,6 +30,7 @@ SRCS += Mode.cpp
 SRCS += join.cpp
 SRCS += privmsg.cpp
 SRCS += part.cpp
+SRCS += mode.cpp
 
 vpath %.cpp $(SRCS_PATH)
 
