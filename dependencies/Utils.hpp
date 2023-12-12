@@ -65,7 +65,7 @@
 
 #define ERROR_PREFIX		"ERROR :"
 #define ERR_CLOSECONNECTION "Connection closed"
-#define ERR_NOSUCHNICK		"401 <client> <channelName> :No such nick/channel"
+#define ERR_NOSUCHNICK		"401 <client> <arg> :No such nick/channel"
 #define ERR_NOSUCHCHANNEL	"403 <client> <channelName> :No such channel"
 #define ERR_CANNOTSENDTOCHAN \
 	"404 <client> <channelName> :Cannot send to channel"

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 16:32:47 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 00:06:19 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,13 +27,15 @@ void Server::sendPrivmsgToChannel(const Client *const client,
 	}
 }
 
-void Server::sendPrivmsgToUser(const Client *const client,
+void Server::sendPrivmsgToUser(Client *const client,
 	const std::string &targetName, const std::string &privMessage) {
 	const Client *const receiver = _clientMap.getClient(targetName);
-	if (receiver == NULL)
-		Utils::sendFormattedMessage(ERR_NOSUCHNICK, client, targetName);
-	else
+	if (receiver == NULL) {
+		client->setLastArg(targetName);
+		Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
+	} else {
 		Utils::sendPrivateMessage(privMessage, client, receiver);
+	}
 }
 
 void Server::privmsg(
