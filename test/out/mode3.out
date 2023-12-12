@@ -1,0 +1,34 @@
+[0;90mPassword: lol[0m
+[0;34m<< [0mCAP LS
+[0;34m<< [0mPASS lol
+[0;34m<< [0mNICK screw
+[0;34m<< [0mUSER pouet
+[0;32m>> [0m001 screw :Welcome to the IRC Network, screw
+[0;90mClient is authenticated: Nickname[screw]; Username[pouet][0m
+[0;34m<< [0mJOIN #pouet
+[0;31m>> [0m:screw!~pouet@localhost JOIN :#pouet
+
+[0;32m>> [0m331 screw #pouet :No topic is set
+[0;32m>> [0m353 screw = #pouet :@screw
+[0;32m>> [0m366 screw #pouet :End of /NAMES list.
+[0;34m<< [0mMODE #pouet +kit+l password 12
+[0;31m>> [0m:screw!~pouet@localhost MODE #pouet +kitl password 12
+
+[0;34m<< [0mMODE #pouet +kit+l password 120
+[0;31m>> [0m:screw!~pouet@localhost MODE #pouet +kit password
+
+[0;34m<< [0mMODE #pouet +l password 120
+[0;34m<< [0mMODE #pouet +l 42
+[0;31m>> [0m:screw!~pouet@localhost MODE #pouet +l 42
+
+[0;34m<< [0mMODE #pouet +it-l password
+[0;31m>> [0m:screw!~pouet@localhost MODE #pouet +it-l
+
+[0;34m<< [0mMODE #pouet -l+l 12
+[0;31m>> [0m:screw!~pouet@localhost MODE #pouet -l
+
+[0;34m<< [0mMODE #pouet +l-l -12
+[0;34m<< [0mMODE #pouet +l-l 21
+[0;31m>> [0m:screw!~pouet@localhost MODE #pouet +l 21
+
+Exited by signal

@@ -135,7 +135,8 @@ modeStatus Mode::setArgMode(const t_modSetter setter, const char c,
 		setFlags(flag, setter);
 		status.hasChanged = true;
 	}
-	status.doesUseArg = modeArgIndex < modeArg.size();
+	if (flag != USERLIMIT || setter != RM)
+		status.doesUseArg = modeArgIndex < modeArg.size();
 	return status;
 }
 

@@ -13,11 +13,13 @@ TEST_FOLDER=./test/
 IN_FOLDER=${TEST_FOLDER}/in/
 OUT_FOLDER=${TEST_FOLDER}/out/
 OUT_REF_FOLDER=${TEST_FOLDER}/ref/
+CACHE=${TEST_FOLDER}/.cache
 ADDRESS=127.0.0.1
 PORT=6667
 PASSWORD=lol
+TIME=5
 
-files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2")
+files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2" "mode3")
 
 #################
 ### FUNCTIONS ###
@@ -33,7 +35,7 @@ function ircTest() {
 	ircserv_pid=$!
 	sleep 1
 	cat ${infile} | sed 's/$/\r/g' | nc ${ADDRESS} $port >/dev/null &
-	sleep 4
+	sleep $TIME
 	kill -s SIGINT $ircserv_pid
 	diff "${outfile}" "${outref}"
 	return $?
@@ -70,6 +72,19 @@ function Test()
 	exit $val
 }
 
+function show_spinner() {
+    local pid=$1
+    local delay=0.1
+    local spin='-\|/'
+
+    echo -n "Loading... "
+    while [ -d /proc/"$pid" ]; do
+        printf "%s" "${spin:i++%${#spin}:1}"
+        sleep "$delay"
+        printf "\b"
+    done
+	printf "\r\033[K"
+}
 ###############
 ### SCRIPT ####
 ###############
@@ -81,10 +96,14 @@ outputs_ref=($(put_format "$OUT_REF_FOLDER" ".ref" "${files[@]}"))
 port_offset=0
 ret_val=0
 for i in "${!inputs[@]}"; do
-	Test "$i" "${inputs[i]}" "${outputs[i]}" "${outputs_ref[i]}" &
+	Test "$i" "${inputs[i]}" "${outputs[i]}" "${outputs_ref[i]}" >> ${CACHE} &
 	port_offset=$port_offset+1
 done
+show_spinner $!
 wait
+cat ${CACHE}
+rm ${CACHE}
+
 if [ "${ret_val}" -eq 0 ]; then
 	exit 0
 else
