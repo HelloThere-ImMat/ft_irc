@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 14:45:43 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 17:25:00 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,9 +73,10 @@ class Mode {
 
    private:
 	// Attributes
-	uint8_t		_mask;
-	uint		_userlimit;
-	std::string _password;
+	modeConfig _config;
+	// uint8_t		_mask;
+	// uint		_userlimit;
+	// std::string _password;
 	// Private Methods
 	modeStatus setSimpleMode(const t_modSetter setter, const char c);
 	modeStatus setArgMode(const t_modSetter setter, const char c,

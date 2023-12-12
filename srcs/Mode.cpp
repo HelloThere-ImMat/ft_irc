@@ -40,17 +40,27 @@ static bool isModeArgValid(const char c, const std::string &modeArg) {
 
 // Public methods
 
-Mode::Mode() : _mask(NO_MOD), _userlimit(0) {}
+Mode::Mode() {
+	_config.mask = NO_MOD;
+	_config.userlimit = 0;
+	_config.password = "";
+}
 
-Mode::Mode(const uint8_t initialMask) : _mask(initialMask), _userlimit(0) {}
+Mode::Mode(const uint8_t initialMask) {
+	_config.mask = initialMask;
+	_config.userlimit = 0;
+	_config.password = "";
+}
 
 Mode::~Mode() {}
 
 // Setters
 
-void Mode::setPassword(const std::string &password) { _password = password; }
+void Mode::setPassword(const std::string &password) {
+	_config.password = password;
+}
 
-void Mode::setUserlimit(const uint userlimit) { _userlimit = userlimit; }
+void Mode::setUserlimit(const uint userlimit) { _config.userlimit = userlimit; }
 
 modeStatus Mode::setMode(const t_modSetter setter, const char cflag,
 	const std::vector<std::string> &cmd, const size_t argsIndex) {
@@ -66,9 +76,9 @@ modeStatus Mode::setMode(const t_modSetter setter, const char cflag,
 
 // Getters
 
-uint Mode::getUserLimit() const { return _userlimit; }
+uint Mode::getUserLimit() const { return _config.userlimit; }
 
-std::string Mode::getPassword() const { return _password; }
+std::string Mode::getPassword() const { return _config.password; }
 
 bool Mode::isSimpleFlag(const char cflag) const {
 	return (cflag == INVITE_CHAR || cflag == TOPIC_CHAR);
@@ -83,19 +93,19 @@ std::string Mode::getModeMessage() const {
 	std::string modeMessage = MODE_MESSAGE_PREFIX;
 
 	for (size_t i = 0; i < FLAG_COUNT; ++i) {
-		if (_mask & flagArray[i].FlagMask)
+		if (_config.mask & flagArray[i].FlagMask)
 			modeMessage += flagArray[i].FlagChar;
 	}
 	return modeMessage;
 }
 
-bool Mode::isTopicProtected() const { return _mask & TOPIC_RESTRICTION; }
+bool Mode::isTopicProtected() const { return _config.mask & TOPIC_RESTRICTION; }
 
-bool Mode::isKeyProtected() const { return _mask & PASS_ONLY; }
+bool Mode::isKeyProtected() const { return _config.mask & PASS_ONLY; }
 
-bool Mode::hasUserLimit() const { return _mask & USERLIMIT; }
+bool Mode::hasUserLimit() const { return _config.mask & USERLIMIT; }
 
-bool Mode::isInviteOnly() const { return _mask & INVITE_ONLY; }
+bool Mode::isInviteOnly() const { return _config.mask & INVITE_ONLY; }
 
 // Private methods
 
@@ -132,7 +142,7 @@ modeStatus Mode::setArgMode(const t_modSetter setter, const char c,
 
 void Mode::setFlags(const uint8_t flags, const t_modSetter setter) {
 	if (setter == ADD)
-		_mask |= flags;
+		_config.mask |= flags;
 	else if (setter == RM)
-		_mask &= ~flags;
+		_config.mask &= ~flags;
 }

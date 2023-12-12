@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 14:41:15by rbroque          ###   ########.fr       */
+/*   Created: 2023/12/12 17:36:59 by rbroque           #+#    #+#             */
+/*   Updated: 2023/12/12 17:37:45 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 
 static bool isSetter(const char c) { return c == '+' || c == '-'; }
 
-static void cleanEmptyMode(std::string &mode) {
+static void cleanModeMessage(std::string &mode) {
 	Utils::removeDuplicateChars(mode);
 	const size_t len = mode.length();
 	if (len > 0 && len <= 2 && isSetter(mode[0]) &&
@@ -115,7 +115,7 @@ std::vector<std::string> Channel::processMode(
 			argsIndex += status.doesUseArg;
 		}
 	}
-	cleanEmptyMode(newModeVect[2]);
+	cleanModeMessage(newModeVect[2]);
 	return newModeVect;
 }
 
