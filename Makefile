@@ -17,6 +17,8 @@ NAME		=	ircserv
 SRCS_PATH += srcs/
 SRCS_PATH += srcs/ServerCmds
 
+# srcs/
+
 SRCS += main.cpp
 SRCS += Server.cpp
 SRCS += DataServ.cpp
@@ -27,10 +29,14 @@ SRCS += ClientManager.cpp
 SRCS += Channel.cpp
 SRCS += Utils.cpp
 SRCS += Mode.cpp
+
+# srcs/ServerCmds
+
 SRCS += join.cpp
 SRCS += privmsg.cpp
 SRCS += part.cpp
 SRCS += mode.cpp
+SRCS += topic.cpp
 
 vpath %.cpp $(SRCS_PATH)
 
