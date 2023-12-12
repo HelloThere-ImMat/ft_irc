@@ -31,6 +31,20 @@ static void cleanEmptyMode(std::string &mode) {
 	}
 }
 
+static char getSetterChar(const t_modSetter setter) {
+	return setter == ADD ? '+' : '-';
+}
+
+static std::vector<std::string> initNewModeVect(
+	const std::vector<std::string> &cmd) {
+	std::vector<std::string> newModeVect;
+
+	newModeVect.push_back(cmd[0]);
+	newModeVect.push_back(cmd[1]);
+	newModeVect.push_back("");
+	return newModeVect;
+}
+
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
@@ -78,14 +92,11 @@ void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 std::vector<std::string> Channel::processMode(
 	const std::vector<std::string> &cmd, Client *const client) {
 	const std::string		 modeString = cmd[2];
-	std::vector<std::string> newModeVect;
+	std::vector<std::string> newModeVect = initNewModeVect(cmd);
 	modeStatus	status = {.hasChanged = false, .doesUseArg = false};
 	t_modSetter setter = ADD;
 	size_t		argsIndex = START_MODE_INDEX;
 
-	newModeVect.push_back(cmd[0]);
-	newModeVect.push_back(cmd[1]);
-	newModeVect.push_back("");
 	for (std::string::const_iterator it = modeString.begin();
 		 it != modeString.end(); ++it) {
 		if (isSetter(*it)) {
@@ -96,8 +107,7 @@ std::vector<std::string> Channel::processMode(
 				status.hasChanged =
 					tryModeApplication(setter, *it, cmd[argsIndex], client);
 			if (status.hasChanged) {
-				newModeVect[2] += setter == ADD ? '+' : '-';
-				newModeVect[2] += *it;
+				newModeVect[2] += getSetterChar(setter) + *it;
 				if (status.doesUseArg)
 					newModeVect.push_back(cmd[argsIndex]);
 			}

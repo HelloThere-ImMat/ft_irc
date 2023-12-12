@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 00:10:53 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 14:06:41 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 14:09:56 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,10 @@ static bool isTargetChannel(const std::string &target) {
 	return target[0] == CHANNEL_PREFIX;
 }
 
+static bool didModeChange(const std::vector<std::string> &modeMessage) {
+	return modeMessage.size() >= 3 && modeMessage[2].empty() == false;
+}
+
 static void applyModeOnChannel(Channel *const channel,
 	const std::vector<std::string> &cmd, Client *const client) {
 	std::vector<std::string> cmdCopy = cmd;
@@ -52,9 +56,8 @@ static void applyModeOnChannel(Channel *const channel,
 		setModeStr(cmdCopy[2]);
 		const std::vector<std::string> newMode =
 			channel->processMode(cmdCopy, client);
-		const std::string modeMessage = Utils::getFullMessage(newMode, 0);
-		if (newMode.size() >= 3 && newMode[2].empty() == false)
-			channel->sendToAll(client, modeMessage);
+		if (didModeChange(newMode))
+			channel->sendToAll(client, Utils::getFullMessage(newMode, 0));
 	}
 }
 
