@@ -19,7 +19,7 @@ PORT=6667
 PASSWORD=lol
 TIME=5
 
-files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2" "mode3")
+files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2" "mode3" "topic")
 
 #################
 ### FUNCTIONS ###
@@ -93,17 +93,31 @@ inputs=($(put_format "$IN_FOLDER" ".in" "${files[@]}"))
 outputs=($(put_format "$OUT_FOLDER" ".out" "${files[@]}"))
 outputs_ref=($(put_format "$OUT_REF_FOLDER" ".ref" "${files[@]}"))
 
-port_offset=0
-ret_val=0
-for i in "${!inputs[@]}"; do
-	Test "$i" "${inputs[i]}" "${outputs[i]}" "${outputs_ref[i]}" >> ${CACHE} &
-	port_offset=$port_offset+1
-done
-show_spinner $!
-wait
-cat ${CACHE}
-rm ${CACHE}
+# Tests
+declare -a return_values=()  # Array to store return values of test cases
 
+for i in "${!inputs[@]}"; do
+	Test "$i" "${inputs[i]}" "${outputs[i]}" "${outputs_ref[i]}" &>> "${CACHE}$i" &
+	return_values+=($!)  # Store the PID of each background process
+done
+
+# Show Spinner when loading
+show_spinner $!
+
+# Get the correct return value
+for pid in "${return_values[@]}"; do
+    wait "$pid"
+    return_code=$?
+    ret_val=$((ret_val + return_code))  # Accumulate return values
+done
+
+# Display Outputs
+for i in "${!inputs[@]}"; do
+	cat ${CACHE}$i
+	rm ${CACHE}$i
+done
+
+# Exit with the right value
 if [ "${ret_val}" -eq 0 ]; then
 	exit 0
 else

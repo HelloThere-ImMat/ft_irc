@@ -1,0 +1,7 @@
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+JOIN #pouet
+TOPIC #pouet
+TOPIC #pouet :Wouah it      is a really nice topic with a looooooooot              of         spaces :)
