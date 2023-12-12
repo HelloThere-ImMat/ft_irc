@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 10:06:38 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 19:00:56 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,8 @@ Server::Server(const std::string &port, const std::string &password)
 	_socket.setup();
 	_epollFd = epoll_create1(0);
 	addFdToPoll(_socket.getSocketFd());
-	printLog("Port: " + port);
+	if (TEST == false)
+		printLog("Port: " + port);
 	printLog("Password: " + password);
 }
 

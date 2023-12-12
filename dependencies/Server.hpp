@@ -6,11 +6,15 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 17:57:02 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 18:54:39 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
+
+#ifndef TEST
+	#define TEST false
+#endif
 
 #include <string.h>
 #include <sys/epoll.h>

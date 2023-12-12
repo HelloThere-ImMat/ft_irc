@@ -87,6 +87,10 @@ ifeq ($(debug), true)
 	CFLAGS	+= -fsanitize=address,undefined -g3
 endif
 
+ifeq ($(filter test,$(MAKECMDGOALS)),test)
+	CFLAGS  += -D TEST=true
+endif
+
 #################
 #### DISPLAY ####
 #################
@@ -122,8 +126,7 @@ $(OBJS)	: $(PATH_OBJS)/%.o : %.cpp Makefile $(DEPS)
 	mkdir -p $(PATH_OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(DEPS_PATH)
 
-test:
-	$(MAKE) -s
+test: all
 	$(ECHOC) $(BLUE) "TESTER"$(NC)"\n\n"
 	$(TESTER)
 

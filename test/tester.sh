@@ -17,22 +17,23 @@ ADDRESS=127.0.0.1
 PORT=6667
 PASSWORD=lol
 
-files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick")
+files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2")
 
 #################
 ### FUNCTIONS ###
 #################
 
 function ircTest() {
-	local infile=$1
-	local outfile=$2
-	local outref=$3
+	local port=$((PORT + $1))
+	local infile=$2
+	local outfile=$3
+	local outref=$4
 
-	./ircserv ${PORT} ${PASSWORD} &> ${outfile} &
+	./ircserv $port ${PASSWORD} &> ${outfile} &
 	ircserv_pid=$!
 	sleep 1
-	cat ${infile} | sed 's/$/\r/g' | nc ${ADDRESS} ${PORT} >/dev/null &
-	sleep 1
+	cat ${infile} | sed 's/$/\r/g' | nc ${ADDRESS} $port >/dev/null &
+	sleep 4
 	kill -s SIGINT $ircserv_pid
 	diff "${outfile}" "${outref}"
 	return $?
@@ -50,6 +51,25 @@ function put_format()
 	echo "${files[@]}"
 }
 
+function Test()
+{
+	local i="$1"
+	local inputs="$2"
+	local outputs="$3"
+	local ref="$4"
+	ircTest "$i" "$inputs" "$outputs" "$ref"
+	val=$?;
+	if [ "${val}" -eq 0 ]; then
+		echo -e "${GREEN}${files[$i]} : OK${NC}"
+	else
+		echo -e "${RED}${files[$i]} KO${NC}"
+		if [[ "$VALGRIND" != "" ]]; then
+				cat $LOG_FILE
+		fi
+	fi
+	exit $val
+}
+
 ###############
 ### SCRIPT ####
 ###############
@@ -58,19 +78,13 @@ inputs=($(put_format "$IN_FOLDER" ".in" "${files[@]}"))
 outputs=($(put_format "$OUT_FOLDER" ".out" "${files[@]}"))
 outputs_ref=($(put_format "$OUT_REF_FOLDER" ".ref" "${files[@]}"))
 
+port_offset=0
 ret_val=0
 for i in "${!inputs[@]}"; do
-	if ircTest "${inputs[i]}" "${outputs[i]}" "${outputs_ref[i]}"; then
-		echo -e "${GREEN}${files[i]} : OK${NC}"
-	else
-		ret_val+=$?
-		echo -e "${RED}${files[i]} KO${NC}"
-		if [[ "$VALGRIND" != "" ]]; then
-				cat $LOG_FILE
-		fi
-	fi
+	Test "$i" "${inputs[i]}" "${outputs[i]}" "${outputs_ref[i]}" &
+	port_offset=$port_offset+1
 done
-
+wait
 if [ "${ret_val}" -eq 0 ]; then
 	exit 0
 else
