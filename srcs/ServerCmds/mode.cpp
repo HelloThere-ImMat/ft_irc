@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 00:10:53 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 14:09:56 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 17:57:09 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,8 @@ static bool isTargetChannel(const std::string &target) {
 }
 
 static bool didModeChange(const std::vector<std::string> &modeMessage) {
-	return modeMessage.size() >= 3 && modeMessage[2].empty() == false;
+	return modeMessage.size() >= MIN_MODE_MSG_SIZE &&
+		   modeMessage[2].empty() == false;
 }
 
 static void applyModeOnChannel(Channel *const channel,
