@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 00:10:53 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 17:57:09 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 17:59:36 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,8 +29,8 @@ static void setModeStr(std::string &str) {
 	keepOnlySpecificChars(str, MODE_SETCHAR);
 	Utils::removeDuplicateChars(str);
 	if (str.empty() == false) {
-		char last = str[str.length() - 1];
-		if (last == '-' || last == '+')
+		const char last = str[str.length() - 1];
+		if (Utils::isSetter(last))
 			str.erase(str.length() - 1);
 	}
 }

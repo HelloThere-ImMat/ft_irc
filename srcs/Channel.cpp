@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 17:36:59 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 17:37:45 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 17:59:59 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,11 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 	return (spClient.client->getNickname());
 }
 
-static bool isSetter(const char c) { return c == '+' || c == '-'; }
-
 static void cleanModeMessage(std::string &mode) {
 	Utils::removeDuplicateChars(mode);
 	const size_t len = mode.length();
-	if (len > 0 && len <= 2 && isSetter(mode[0]) &&
-		(len == 1 || isSetter(mode[1]))) {
+	if (len > 0 && len <= 2 && Utils::isSetter(mode[0]) &&
+		(len == 1 || Utils::isSetter(mode[1]))) {
 		mode = "";
 	}
 }
@@ -99,7 +97,7 @@ std::vector<std::string> Channel::processMode(
 
 	for (std::string::const_iterator it = modeString.begin();
 		 it != modeString.end(); ++it) {
-		if (isSetter(*it)) {
+		if (Utils::isSetter(*it)) {
 			setter = (*it == '+') ? ADD : RM;
 		} else {
 			status = _mode.setMode(setter, *it, cmd, argsIndex);

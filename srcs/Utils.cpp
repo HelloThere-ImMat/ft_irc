@@ -70,6 +70,8 @@ void Utils::removeDuplicateChars(std::string &str) {
 	str.resize(currentIndex);
 }
 
+bool Utils::isSetter(const char c) { return c == '+' || c == '-'; }
+
 // Send Methods
 
 void Utils::sendMessage(
