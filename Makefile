@@ -127,7 +127,7 @@ $(OBJS)	: $(PATH_OBJS)/%.o : %.cpp Makefile $(DEPS)
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(DEPS_PATH)
 
 test: all
-	$(ECHOC) $(BLUE) "TESTER"$(NC)"\n\n"
+	$(ECHOC) $(BLUE) "\nTESTER"$(NC)"\n\n"
 	$(TESTER)
 
 linter:

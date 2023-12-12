@@ -4,5 +4,8 @@ NICK screw
 USER pouet
 JOIN #pouet
 MODE #pouet +ki-l password
+MODE #pouet
 MODE #pouet +l-k password
+MODE #pouet
 MODE #pouet +l-l 12
+MODE #pouet

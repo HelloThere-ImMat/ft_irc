@@ -77,6 +77,7 @@ function show_spinner() {
     local delay=0.1
     local spin='-\|/'
 
+    echo -e $BLUE
     echo -n "Loading... "
     while [ -d /proc/"$pid" ]; do
         printf "%s" "${spin:i++%${#spin}:1}"
@@ -84,6 +85,7 @@ function show_spinner() {
         printf "\b"
     done
 	printf "\r\033[K"
+    echo -e $NC
 }
 ###############
 ### SCRIPT ####

@@ -14,21 +14,37 @@
 [0;34m<< [0mMODE #pouet +kit+l password 12
 [0;31m>> [0m:screw!~pouet@localhost MODE #pouet +kitl password 12
 
+[0;34m<< [0mMODE #pouet
+[0;32m>> [0m324 screw #pouet +itlk
 [0;34m<< [0mMODE #pouet +kit+l password 120
 [0;31m>> [0m:screw!~pouet@localhost MODE #pouet +kit password
 
+[0;34m<< [0mMODE #pouet
+[0;32m>> [0m324 screw #pouet +itlk
 [0;34m<< [0mMODE #pouet +l password 120
+[0;34m<< [0mMODE #pouet
+[0;32m>> [0m324 screw #pouet +itlk
 [0;34m<< [0mMODE #pouet +l 42
 [0;31m>> [0m:screw!~pouet@localhost MODE #pouet +l 42
 
+[0;34m<< [0mMODE #pouet
+[0;32m>> [0m324 screw #pouet +itlk
 [0;34m<< [0mMODE #pouet +it-l password
 [0;31m>> [0m:screw!~pouet@localhost MODE #pouet +it-l
 
+[0;34m<< [0mMODE #pouet
+[0;32m>> [0m324 screw #pouet +itk
 [0;34m<< [0mMODE #pouet -l+l 12
 [0;31m>> [0m:screw!~pouet@localhost MODE #pouet -l
 
+[0;34m<< [0mMODE #pouet
+[0;32m>> [0m324 screw #pouet +itk
 [0;34m<< [0mMODE #pouet +l-l -12
+[0;34m<< [0mMODE #pouet
+[0;32m>> [0m324 screw #pouet +itk
 [0;34m<< [0mMODE #pouet +l-l 21
 [0;31m>> [0m:screw!~pouet@localhost MODE #pouet +l 21
 
+[0;34m<< [0mMODE #pouet
+[0;32m>> [0m324 screw #pouet +itlk
 Exited by signal
