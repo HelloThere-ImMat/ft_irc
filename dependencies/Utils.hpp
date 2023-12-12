@@ -47,6 +47,8 @@
 // RPL
 
 #define RPL_WELCOME	 "001 <client> :Welcome to the <networkname> Network, <nick>"
+#define UL_JOIN_MESSAGE	  "353 <nick> = <channelName> :"
+#define EUL_JOIN_MESSAGE  "366 <client> <channelName> :End of /NAMES list."
 #define RPL_NOTOPIC	 "331 <client> <arg> :No topic is set"
 #define RPL_TOPIC	 "332 <client> <arg> :"
 #define RPL_INVITING "341 <client> <arg> <channelName>"
@@ -59,8 +61,6 @@
 #define PART_PREFIX		  "PART "
 #define INVITATION		  "INVITE <nick> <channelName>"
 #define KICK			  "KICK <channelName> <arg> :"
-#define UL_JOIN_MESSAGE	  "353 <nick> = <channelName> :"
-#define EUL_JOIN_MESSAGE  "366 <client> <channelName> :End of /NAMES list."
 #define PONG_MESSAGE	  "PONG <servername> :<nick>"
 
 // Sent Errors

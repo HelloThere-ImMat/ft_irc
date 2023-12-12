@@ -6,7 +6,7 @@
 /*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 16:20:55 by mat               #+#    #+#             */
-/*   Updated: 2023/12/10 16:32:33 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/12 10:41:14 by mat              ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,20 +21,21 @@ enum inviteError
 };
 
 static void handleError(
-	const int errorCode, Client *const client, std::string args[2]) {
+	const int errorCode, Client *const client, const std::vector<std::string> &cmd) {
 	switch (errorCode) {
-		case 1:
-			client->setLastArg(args[0]);
+		case WRONG_USER_NAME:
+			client->setLastArg(cmd[1]);
 			Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
 			break;
-		case 2:
-			Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, args[1]);
+		case WRONG_CHAN_NAME:
+			Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[2]);
 			break;
-		case 3:
-			Utils::sendFormattedMessage(ERR_NOTONCHANNEL, client, args[1]);
+		case USER_NOT_IN_CHAN:
+			Utils::sendFormattedMessage(ERR_NOTONCHANNEL, client, cmd[2]);
 			break;
-		case 4:
-			Utils::sendFormattedMessage(ERR_USERONCHANNEL, client, args[1]);
+		case TARGET_IN_CHAN:
+			client->setLastArg(cmd[1]);
+			Utils::sendFormattedMessage(ERR_USERONCHANNEL, client, cmd[2]);
 			break;
 	}
 }
@@ -49,15 +50,15 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 	try {
 		if (target == NULL)
 			throw(OpCmdsErrors(WRONG_USER_NAME));
+		const std::string	 channelName = cmd[2];
 		const std::map<std::string, Channel *>::iterator it =
-			_channels.find(cmd[2]);
+			_channels.find(channelName);
 		if (it == _channels.end())
 			throw(OpCmdsErrors(WRONG_CHAN_NAME));
 		const Channel *const channel = it->second;
-		const std::string	 channelName = cmd[2];
 		if (channel->isUserInChannel(client) == false)
 			throw(OpCmdsErrors(USER_NOT_IN_CHAN));
-		if (channel->isUserInChannel(target) == false)
+		if (channel->isUserInChannel(target) == true)
 			throw(OpCmdsErrors(TARGET_IN_CHAN));
 		// SHOULD reject it when the channel has invite-only
 		// mode set, and the user is not a channel operator.
@@ -68,7 +69,6 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 		Utils::sendPrivateMessage(invitation, client, target);
 	} catch (Server::OpCmdsErrors &e) {
 		const int	errorType = e.getCode();
-		std::string args[2] = {cmd[1], cmd[2]};
-		handleError(errorType, client, args);
+		handleError(errorType, client, cmd);
 	}
 }
