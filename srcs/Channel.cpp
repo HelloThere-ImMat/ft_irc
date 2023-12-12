@@ -107,7 +107,8 @@ std::vector<std::string> Channel::processMode(
 				status.hasChanged =
 					tryModeApplication(setter, *it, cmd[argsIndex], client);
 			if (status.hasChanged) {
-				newModeVect[2] += getSetterChar(setter) + *it;
+				newModeVect[2] += getSetterChar(setter);
+				newModeVect[2] += *it;
 				if (status.doesUseArg)
 					newModeVect.push_back(cmd[argsIndex]);
 			}
