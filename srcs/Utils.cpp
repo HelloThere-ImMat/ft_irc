@@ -54,6 +54,22 @@ std::string Utils::getFullMessage(
 	return (fullMessage);
 }
 
+void Utils::removeDuplicateChars(std::string &str) {
+	bool charSet[256] = {false};  // Assuming ASCII characters
+
+	size_t currentIndex = 0;
+	size_t len = str.length();
+
+	for (size_t i = 0; i < len; ++i) {
+		char currentChar = str[i];
+		if (!charSet[static_cast<unsigned char>(currentChar)]) {
+			charSet[static_cast<unsigned char>(currentChar)] = true;
+			str[currentIndex++] = currentChar;
+		}
+	}
+	str.resize(currentIndex);
+}
+
 // Send Methods
 
 void Utils::sendMessage(

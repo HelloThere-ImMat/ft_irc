@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/29 12:53:30 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 15:42:28 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 13:53:38 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,6 @@
 #define USERLIST_SEPARATOR " "
 #define START_MODE_INDEX   3
 
-#define MAX_USER_PER_CHANNEL 15
-
 struct SpecifiedClient {
 	const Client *client;
 	bool		  isOp;
@@ -32,14 +30,15 @@ class Channel {
    public:
 	Channel(const std::string &name, const Client *const client);
 	~Channel();
-	void			   addNewUser(const Client *const client,
-					  const std::vector<std::string> &keys, const size_t keyIndex);
-	void			   removeUser(const Client *const client);
-	const std::string  getUserList() const;
-	const std::string &getTopic() const;
-	const std::string &getName() const;
-	void			   setTopic(const std::string &topic);
-	bool processMode(const std::vector<std::string> &cmd, Client *const client);
+	void					 addNewUser(const Client *const client,
+							const std::vector<std::string> &keys, const size_t keyIndex);
+	void					 removeUser(const Client *const client);
+	const std::string		 getUserList() const;
+	const std::string		  &getTopic() const;
+	const std::string		  &getName() const;
+	void					 setTopic(const std::string &topic);
+	std::vector<std::string> processMode(
+		const std::vector<std::string> &cmd, Client *const client);
 	void sendToOthers(
 		const Client *const client, const std::string message) const;
 	void sendToAll(const Client *const client, const std::string message) const;

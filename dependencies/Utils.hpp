@@ -107,6 +107,7 @@ class Utils {
 		const std::string &listStr, const char delimiter);
 	static std::string getFullMessage(
 		const std::vector<std::string> &cmd, const size_t startIndex);
+	static void removeDuplicateChars(std::string &str);
 	static bool isThereInvalidChar(
 		const std::string &str, const std::string &invalidCharset);
 

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 00:27:03 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 09:06:03 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@
 #define TIMEOUT				-1
 #define PRIVMSG_START_INDEX 2
 #define TOPIC_START_INDEX	2
-#define MODE_ASK_SIZE		2
+#define MODE_NOARG_SIZE		2
 #define MAX_CHANNEL_NB		100
 
 // Parameters

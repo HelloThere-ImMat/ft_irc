@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:18:36 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/11 16:13:43 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 13:50:54y rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,33 +111,32 @@ bool Mode::isInviteOnly() const { return _mask & INVITE_ONLY; }
 
 modeStatus Mode::setSimpleMode(const t_modSetter setter, const char c) {
 	const uint8_t flag = searchFlag(c);
-	const uint8_t oldMask = _mask;
-	modeStatus	  status = {.hasChanged = false, .doesUseArg = false};
+	modeStatus	  status = {.hasChanged = true, .doesUseArg = false};
 
-	if (flag)
-		setFlags(flag, setter);
-	status.hasChanged = (oldMask != _mask);
+	setFlags(flag, setter);
 	return status;
 }
 
 modeStatus Mode::setArgMode(const t_modSetter setter, const char c,
 	const std::vector<std::string> &modeArg, const size_t modeArgIndex) {
 	const uint8_t flag = searchFlag(c);
-	const uint8_t oldMask = _mask;
 	modeStatus	  status = {.hasChanged = false, .doesUseArg = false};
 
 	if (flag == OP_CHANGE && modeArgIndex < modeArg.size()) {
 		status.hasChanged = true;
 		status.doesUseArg = true;
-	} else if (setter == ADD) {
-		if (modeArgIndex < modeArg.size() &&
-			isModeArgValid(c, modeArg[modeArgIndex]))
+	} else if (modeArgIndex < modeArg.size()) {
+		if (setter == ADD && isModeArgValid(c, modeArg[modeArgIndex])) {
 			setFlags(flag, setter);
-		status.doesUseArg = true;
-	} else if (setter == RM) {
-		setFlags(flag, setter);
+			status.hasChanged = true;
+			status.doesUseArg = true;
+		}
 	}
-	status.hasChanged |= (oldMask != _mask);
+	if (setter == RM) {
+		setFlags(flag, setter);
+		status.hasChanged = true;
+		status.doesUseArg = modeArgIndex < modeArg.size();
+	}
 	return status;
 }
 

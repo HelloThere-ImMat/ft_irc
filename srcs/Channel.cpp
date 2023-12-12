@@ -20,6 +20,17 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 	return (spClient.client->getNickname());
 }
 
+static bool isSetter(const char c) { return c == '+' || c == '-'; }
+
+static void cleanEmptyMode(std::string &mode) {
+	Utils::removeDuplicateChars(mode);
+	const size_t len = mode.length();
+	if (len > 0 && len <= 2 && isSetter(mode[0]) &&
+		(len == 1 || isSetter(mode[1]))) {
+		mode = "";
+	}
+}
+
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
@@ -64,27 +75,37 @@ const std::string &Channel::getName() const { return _name; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
-bool Channel::processMode(
+std::vector<std::string> Channel::processMode(
 	const std::vector<std::string> &cmd, Client *const client) {
-	const std::string modeString = cmd[2];
-	modeStatus		  status = {.hasChanged = false, .doesUseArg = false};
-	t_modSetter		  setter = ADD;
-	size_t			  argsIndex = START_MODE_INDEX;
-	bool			  hasChanged = false;
+	const std::string		 modeString = cmd[2];
+	std::vector<std::string> newModeVect;
+	modeStatus	status = {.hasChanged = false, .doesUseArg = false};
+	t_modSetter setter = ADD;
+	size_t		argsIndex = START_MODE_INDEX;
+
+	newModeVect.push_back(cmd[0]);
+	newModeVect.push_back(cmd[1]);
+	newModeVect.push_back("");
 	for (std::string::const_iterator it = modeString.begin();
 		 it != modeString.end(); ++it) {
-		if (*it == '+' || *it == '-') {
+		if (isSetter(*it)) {
 			setter = (*it == '+') ? ADD : RM;
 		} else {
 			status = _mode.setMode(setter, *it, cmd, argsIndex);
 			if (status.hasChanged && status.doesUseArg)
 				status.hasChanged =
 					tryModeApplication(setter, *it, cmd[argsIndex], client);
+			if (status.hasChanged) {
+				newModeVect[2] += setter == ADD ? '+' : '-';
+				newModeVect[2] += *it;
+				if (status.doesUseArg)
+					newModeVect.push_back(cmd[argsIndex]);
+			}
 			argsIndex += status.doesUseArg;
-			hasChanged |= status.hasChanged;
 		}
 	}
-	return _mode.hasChanged() || hasChanged;
+	cleanEmptyMode(newModeVect[2]);
+	return newModeVect;
 }
 
 bool Channel::isAbleToJoin(

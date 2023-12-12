@@ -6,29 +6,13 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 00:10:53 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 00:27:34 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/12 14:06:41 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
 // Static //
-
-static void removeDuplicateChars(std::string &str) {
-	bool charSet[256] = {false};  // Assuming ASCII characters
-
-	size_t currentIndex = 0;
-	size_t len = str.length();
-
-	for (size_t i = 0; i < len; ++i) {
-		char currentChar = str[i];
-		if (!charSet[static_cast<unsigned char>(currentChar)]) {
-			charSet[static_cast<unsigned char>(currentChar)] = true;
-			str[currentIndex++] = currentChar;
-		}
-	}
-	str.resize(currentIndex);
-}
 
 static void keepOnlySpecificChars(
 	std::string &str, const std::string &allowedChars) {
@@ -43,7 +27,7 @@ static void keepOnlySpecificChars(
 
 static void setModeStr(std::string &str) {
 	keepOnlySpecificChars(str, MODE_SETCHAR);
-	removeDuplicateChars(str);
+	Utils::removeDuplicateChars(str);
 	if (str.empty() == false) {
 		char last = str[str.length() - 1];
 		if (last == '-' || last == '+')
@@ -59,15 +43,18 @@ static void applyModeOnChannel(Channel *const channel,
 	const std::vector<std::string> &cmd, Client *const client) {
 	std::vector<std::string> cmdCopy = cmd;
 
-	if (cmdCopy.size() == MODE_ASK_SIZE) {
+	if (cmdCopy.size() == MODE_NOARG_SIZE) {
 		channel->sendMode(client);
 	} else if (channel->isOp(client) == false) {
 		Utils::sendFormattedMessage(
 			ERR_CHANOPRIVSNEEDED, client, channel->getName());
 	} else {
 		setModeStr(cmdCopy[2]);
-		if (channel->processMode(cmdCopy, client))
-			channel->sendToAll(client, Utils::getFullMessage(cmdCopy, 0));
+		const std::vector<std::string> newMode =
+			channel->processMode(cmdCopy, client);
+		const std::string modeMessage = Utils::getFullMessage(newMode, 0);
+		if (newMode.size() >= 3 && newMode[2].empty() == false)
+			channel->sendToAll(client, modeMessage);
 	}
 }
 
