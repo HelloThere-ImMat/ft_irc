@@ -24,18 +24,27 @@ static uint8_t searchFlag(const char c) {
 	return NO_MOD;
 }
 
-static bool isModeArgValid(const char c, const std::string &modeArg) {
-	if (c == KEY_CHAR)
+static bool isModeArgValid(const uint8_t flag, const std::string &modeArg) {
+	if (flag == PASS_ONLY)
 		return Utils::isThereInvalidChar(modeArg, INVALID_CHARSET_KEY) == false;
-	else if (c == USRLIMIT_CHAR) {
+	else if (flag == USERLIMIT) {
 		std::istringstream iss(modeArg);
 		int				   newLimit;
 		if (iss >> newLimit)
 			return newLimit > 0 && newLimit <= CHANNEL_USERLIMIT;
-	} else if (c == OP_CHANGE_CHAR) {
+	} else if (flag == OP_CHANGE) {
 		return true;
 	}
 	return false;
+}
+
+static bool canArgModeBeSet(const t_modSetter setter, const uint8_t flag,
+	const std::vector<std::string> &modeArg, const size_t modeArgIndex) {
+	return setter == RM ||
+		   (modeArgIndex < modeArg.size() &&
+			   (flag == OP_CHANGE ||
+				   (setter == ADD &&
+					   isModeArgValid(flag, modeArg[modeArgIndex]))));
 }
 
 // Public methods
@@ -122,21 +131,11 @@ modeStatus Mode::setArgMode(const t_modSetter setter, const char c,
 	const uint8_t flag = searchFlag(c);
 	modeStatus	  status = {.hasChanged = false, .doesUseArg = false};
 
-	if (flag == OP_CHANGE && modeArgIndex < modeArg.size()) {
-		status.hasChanged = true;
-		status.doesUseArg = true;
-	} else if (modeArgIndex < modeArg.size()) {
-		if (setter == ADD && isModeArgValid(c, modeArg[modeArgIndex])) {
-			setFlags(flag, setter);
-			status.hasChanged = true;
-			status.doesUseArg = true;
-		}
-	}
-	if (setter == RM) {
+	if (canArgModeBeSet(setter, flag, modeArg, modeArgIndex)) {
 		setFlags(flag, setter);
 		status.hasChanged = true;
-		status.doesUseArg = modeArgIndex < modeArg.size();
 	}
+	status.doesUseArg = modeArgIndex < modeArg.size();
 	return status;
 }
 
