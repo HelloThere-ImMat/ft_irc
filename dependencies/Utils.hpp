@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 15:05:47 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 17:10:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
 #define ERR_CHANNELISFULL	  "471 <client> <channelName> :Cannot join channel (+l)"
+#define ERR_INVITEONLYCHAN	  "473 <client> <channelName> :Cannot join channel (+i)"
 #define ERR_BADCHANNELKEY	  "475 <client> <channelName> :Cannot join channel (+k)"
 #define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
 #define ERR_CHANOPRIVSNEEDED \

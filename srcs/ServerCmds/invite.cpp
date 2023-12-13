@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 16:20:55 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 11:46:33 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 17:20:23 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,8 @@ enum inviteError {
 	WRONG_USER_NAME,
 	WRONG_CHAN_NAME,
 	USER_NOT_IN_CHAN,
-	TARGET_IN_CHAN
+	TARGET_IN_CHAN,
+	USER_NOT_OP
 };
 
 static void handleError(const int errorCode, Client *const client,
@@ -36,6 +37,9 @@ static void handleError(const int errorCode, Client *const client,
 			client->setLastArg(cmd[1]);
 			Utils::sendFormattedMessage(ERR_USERONCHANNEL, client, cmd[2]);
 			break;
+		case USER_NOT_OP:
+			Utils::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client, cmd[1]);
+			break;
 	}
 }
 
@@ -54,13 +58,15 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 			_channels.find(channelName);
 		if (it == _channels.end())
 			throw(OpCmdsErrors(WRONG_CHAN_NAME));
-		const Channel *const channel = it->second;
+		Channel *const channel = it->second;
 		if (channel->isUserInChannel(client) == false)
 			throw(OpCmdsErrors(USER_NOT_IN_CHAN));
 		if (channel->isUserInChannel(target) == true)
 			throw(OpCmdsErrors(TARGET_IN_CHAN));
-		// SHOULD reject it when the channel has invite-only
-		// mode set, and the user is not a channel operator.
+		if (channel->canInvite(client) == false)
+			throw(OpCmdsErrors(USER_NOT_OP));
+		if (channel->isInInviteList(target) == false)
+			channel->addToInviteList(target);
 		client->setLastArg(cmd[1]);
 		Utils::sendFormattedMessage(RPL_INVITING, client, channelName);
 		const std::string invitation =

@@ -6,13 +6,35 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 17:36:59 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 17:59:59 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 17:33:43 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Channel.hpp"
 
 // Static
+
+static std::vector<const Client *>::iterator getClientFromList(
+	std::vector<const Client *> &lst, const Client *const client) {
+
+	for (std::vector<const Client *>::iterator it = lst.begin(); it != lst.end(); it++)
+	{
+		if (*it == client)
+			return it;
+	}
+	return lst.end();
+}
+
+static std::vector<const Client *>::const_iterator getClientFromList(
+	const std::vector<const Client *> &lst, const Client *const client) {
+
+	for (std::vector<const Client *>::const_iterator it = lst.begin(); it != lst.end(); it++)
+	{
+		if (*it == client)
+			return it;
+	}
+	return lst.end();
+}
 
 static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 	if (spClient.isOp)
@@ -58,8 +80,10 @@ void Channel::addNewUser(const Client *const client,
 	const std::vector<std::string> &keys, const size_t keyIndex) {
 	if (this->isFull())
 		throw TooManyUserException();
-	if (isAbleToJoin(keys, keyIndex) == false)
+	if (isPassValid(keys, keyIndex) == false)
 		throw WrongChannelKeyException();
+	if (isWelcome(client) == false)
+		throw NotInvitedException();
 	SpecifiedClient spClient = {.client = client, .isOp = false};
 	userMap[client->getNickname()] = spClient;
 }
@@ -117,11 +141,6 @@ std::vector<std::string> Channel::processMode(
 	return newModeVect;
 }
 
-bool Channel::isAbleToJoin(
-	const std::vector<std::string> &cmd, const size_t passIndex) const {
-	return (_mode.isKeyProtected() == false) ||
-		   (cmd.size() > passIndex && cmd[passIndex] == _mode.getPassword());
-}
 
 void Channel::sendToOthers(
 	const Client *const client, const std::string message) const {
@@ -180,6 +199,11 @@ bool Channel::canChangeTopic(const Client *const client) const {
 	return (_mode.isTopicProtected() == false || isOp(client));
 }
 
+bool Channel::canInvite(const Client *const client) const
+{
+	return (_mode.isInviteOnly() == false || isOp(client));
+}
+
 bool Channel::isOp(const Client *const client) const {
 	if (isUserInChannel(client) == false)
 		return false;
@@ -187,6 +211,16 @@ bool Channel::isOp(const Client *const client) const {
 
 	return (userMap.find(nickname)->second.isOp);
 }
+
+bool Channel::isInInviteList(const Client *const client) const {
+	return getClientFromList(_inviteList, client) != _inviteList.end();
+}
+
+void Channel::addToInviteList(const Client *const client)
+{
+	_inviteList.push_back(client);
+}
+
 
 /////////////////////
 // Private Methods //
@@ -224,6 +258,22 @@ void Channel::setModeParameter(const char c, std::string &arg,
 		} else
 			it->second.isOp = (setter == ADD);
 	}
+}
+
+bool Channel::isPassValid(
+	const std::vector<std::string> &cmd, const size_t passIndex) const {
+	return (_mode.isKeyProtected() == false) ||
+		   (cmd.size() > passIndex && cmd[passIndex] == _mode.getPassword());
+}
+
+bool Channel::isWelcome(const Client *const client) {
+	if (_mode.isInviteOnly() == false)
+		return (true);
+	const std::vector<const Client *>::iterator it = getClientFromList(_inviteList, client);
+	if (it == _inviteList.end())
+		return (false);
+	_inviteList.erase(it);
+	return (true);
 }
 
 bool Channel::isFull() const {
