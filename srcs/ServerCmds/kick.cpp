@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:09:20 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 11:58:17 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 12:00:47 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 	try {
 		if (itMap != _channels.end())
 			throw(OpCmdsErrors(WRONG_CHAN_NAME));
-		Channel					*channel = itMap->second;
+		Channel					   *channel = itMap->second;
 		const std::vector<std::string> users =
 			Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
 		for (std::vector<std::string>::const_iterator itUser = users.begin();
