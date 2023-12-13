@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 15:05:22 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 15:49:42 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@
 
 #define LISTEN_FAIL__ERROR			"listening failed"
 #define READ_FAIL__ERROR			"reading failed"
+#define CLIENT_QUIT__ERROR			"close connection"
 #define WRONG_CMD__ERROR			"Invalid Login Command!"
 #define INVALID_SET_PASSWORD__ERROR "Invalid set password"
 
@@ -140,6 +141,10 @@ class Server {
 		virtual const char *what() const throw();
 	};
 	class ReadFailException : public std::exception {
+	   public:
+		virtual const char *what() const throw();
+	};
+	class ClientHasQuitException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};

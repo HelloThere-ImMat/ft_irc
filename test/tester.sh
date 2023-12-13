@@ -18,9 +18,9 @@ CACHE=${CACHE_FOLDER}/.cache
 ADDRESS=127.0.0.1
 PORT=6667
 PASSWORD=lol
-TIME=7
+TIME=8
 
-files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2" "mode3" "topic1" "topic2" "topic3" "kick")
+files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2" "mode3" "topic1" "topic2" "topic3" "kick" "quit")
 
 #################
 ### FUNCTIONS ###
@@ -98,6 +98,7 @@ outputs_ref=($(put_format "$OUT_REF_FOLDER" ".ref" "${files[@]}"))
 
 # Tests
 declare -a return_values=()  # Array to store return values of test cases
+rm -fr ${CACHE_FOLDER}
 mkdir ${CACHE_FOLDER}
 
 for i in "${!inputs[@]}"; do

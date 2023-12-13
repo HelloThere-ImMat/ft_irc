@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:03 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 11:58:37 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 16:40:11 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ ClientManager::~ClientManager() {
 	for (std::map<int, Client*>::iterator it = _socketToClientMap.begin();
 		 it != _socketToClientMap.end(); ++it) {
 		eraseClient(it->second);
-		delete it->second;
 	}
 }
 
@@ -40,13 +39,20 @@ void ClientManager::updateClientNickname(
 	}
 }
 
+// private
 void ClientManager::eraseClient(Client* const client) {
 	const std::string nickname = client->getNickname();
 
 	if (nickname.empty() == false)
 		_nicknameToClientMap.erase(nickname);
+	delete client;
 	if (_size > 0)
 		--_size;
+}
+
+void ClientManager::closeClient(Client *const client) {
+	_socketToClientMap.erase(client->getSocketFd());
+	eraseClient(client);
 }
 
 void ClientManager::sendToAllClients(

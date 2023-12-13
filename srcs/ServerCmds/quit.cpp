@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 14:17:28 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 14:58:49 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 15:47:39 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,4 +24,5 @@ void Server::sendQuitMessageToOthers(const Client *const client, const std::stri
 void Server::quit(const std::vector<std::string> &cmd, Client *const client) {
 	const std::string quitMessage = Utils::getFullMessage(cmd, 0);
 	error(quitMessage, client);
+	throw ClientHasQuitException();
 }

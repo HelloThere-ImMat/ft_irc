@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 15:14:19 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 16:31:19 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,8 +94,8 @@ void Server::closeClient(Client *const client, const std::string &quitMessage) {
 	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
 		 it != _channels.end(); ++it)
 		it->second->removeUser(client);
+	_clientMap.closeClient(client);
 	delFdToPoll(clientFd);
-	_clientMap.eraseClient(client);
 }
 
 void Server::lookForEvents() {
@@ -136,6 +136,8 @@ void Server::readClientCommand(const int sockfd) {
 		} else
 			error(DEFAULT_QUIT, client);
 	} catch (ReadFailException &e) {
+		printLog(e.what());
+	} catch (ClientHasQuitException &e) {
 		printLog(e.what());
 	}
 }
@@ -289,6 +291,10 @@ const char *Server::ListenFailException::what() const throw() {
 
 const char *Server::ReadFailException::what() const throw() {
 	return (READ_FAIL__ERROR);
+}
+
+const char *Server::ClientHasQuitException::what() const throw() {
+	return (CLIENT_QUIT__ERROR);
 }
 
 const char *Server::InvalidLoginCommandException::what() const throw() {

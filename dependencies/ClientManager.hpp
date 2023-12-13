@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 14:23:31 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 16:32:16 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@ class ClientManager {
 	void addClient(Client* const client);
 	void eraseClient(Client* const client);
 	void sendToAllClients(const std::string& message, Client* const client);
+	void closeClient(Client *const client);
 	void updateClientNickname(
 		Client* const client, const std::string& nickname);
 	// Methods to retrieve a client based on either socket or nickname
