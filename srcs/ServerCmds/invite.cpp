@@ -3,25 +3,24 @@
 /*                                                        :::      ::::::::   */
 /*   invite.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 16:20:55 by mat               #+#    #+#             */
-/*   Updated: 2023/12/12 10:41:14 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/13 11:18:58 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
 
-enum inviteError
-{
+enum inviteError {
 	WRONG_USER_NAME,
 	WRONG_CHAN_NAME,
 	USER_NOT_IN_CHAN,
 	TARGET_IN_CHAN
 };
 
-static void handleError(
-	const int errorCode, Client *const client, const std::vector<std::string> &cmd) {
+static void handleError(const int errorCode, Client *const client,
+				const std::vector<std::string> &cmd) {
 	switch (errorCode) {
 		case WRONG_USER_NAME:
 			client->setLastArg(cmd[1]);
@@ -50,7 +49,7 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 	try {
 		if (target == NULL)
 			throw(OpCmdsErrors(WRONG_USER_NAME));
-		const std::string	 channelName = cmd[2];
+		const std::string								 channelName = cmd[2];
 		const std::map<std::string, Channel *>::iterator it =
 			_channels.find(channelName);
 		if (it == _channels.end())
@@ -68,7 +67,7 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 			Utils::getFormattedMessage(INVITATION, target, channelName);
 		Utils::sendPrivateMessage(invitation, client, target);
 	} catch (Server::OpCmdsErrors &e) {
-		const int	errorType = e.getCode();
+		const int errorType = e.getCode();
 		handleError(errorType, client, cmd);
 	}
 }

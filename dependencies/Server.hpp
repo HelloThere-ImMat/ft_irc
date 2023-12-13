@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 11:14:24 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 11:16:35 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@
 #include <typeinfo>
 
 #include "Channel.hpp"
+#include "ClientManager.hpp"
 #include "DataServ.hpp"
 #include "Signal.hpp"
-#include "ClientManager.hpp"
 
 // Count
 
