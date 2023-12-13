@@ -135,6 +135,15 @@ bool Utils::isThereInvalidChar(
 	return false;
 }
 
+std::string Utils::removeSetterChar(const std::string &message) {
+	std::string newMessage;
+
+	newMessage = message;
+	if (message.empty() == false && message[0] == SETTER_CHAR)
+		newMessage.erase(0, 1);
+	return newMessage;
+}
+
 // Exceptions
 
 const char *Utils::SendFailException::what() const throw() {

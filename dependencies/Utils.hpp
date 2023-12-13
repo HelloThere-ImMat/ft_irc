@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 11:08:32 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 13:35:15 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,10 @@
 // Count
 
 #define PATTERN_COUNT 9
+
+// Char
+
+#define SETTER_CHAR	   ':'
 
 // Server specs
 
@@ -117,6 +121,7 @@ class Utils {
 	static bool isSetter(const char c);
 	static bool isThereInvalidChar(
 		const std::string &str, const std::string &invalidCharset);
+	static std::string removeSetterChar(const std::string &message);
 
    private:
 	class SendFailException : public std::exception {

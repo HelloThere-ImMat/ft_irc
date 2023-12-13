@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:09:20 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 12:00:47 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 13:58:52 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,23 @@ static void handleError(const int errorCode, Client *const client,
 	}
 }
 
+void sendKickMessage(const std::vector<std::string> &cmd,
+	const Channel *const channel, const Client *const client) {
+	const size_t cmdSize = cmd.size();
+	std::vector<std::string> cmdCopy = cmd;
+	std::string kickMessage =
+		Utils::getFormattedMessage(KICK, client, cmdCopy[1]);
+	if (cmdSize > 3) {
+		cmdCopy[3] = Utils::removeSetterChar(cmd[3]);
+	}
+	if (cmdSize > 3 && cmdCopy[3].empty() == false)
+		kickMessage += Utils::getFullMessage(cmdCopy, 3);
+	else {
+		kickMessage += client->getNickname();
+	}
+	channel->sendToAll(client, kickMessage);
+}
+
 void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 	const size_t cmdSize = cmd.size();
 	if (cmdSize < 3) {
@@ -49,7 +66,7 @@ void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 	};
 	std::map<std::string, Channel *>::iterator itMap = _channels.find(cmd[1]);
 	try {
-		if (itMap != _channels.end())
+		if (itMap == _channels.end())
 			throw(OpCmdsErrors(WRONG_CHAN_NAME));
 		Channel					   *channel = itMap->second;
 		const std::vector<std::string> users =
@@ -66,13 +83,8 @@ void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 				throw(OpCmdsErrors(USER_NOT_OP));
 			if (channel->isUserInChannel(kickedUser) == false)
 				throw(OpCmdsErrors(TARGET_NOT_IN_CHAN));
-			std::string kickMessage =
-				Utils::getFormattedMessage(KICK, client, cmd[1]);
-			if (cmdSize > 3)
-				kickMessage += Utils::getFullMessage(cmd, 3);
-			else
-				kickMessage += client->getNickname();
-			channel->sendToAll(client, kickMessage);
+			sendKickMessage(cmd, channel, client);
+			channel->removeUser(kickedUser);
 		}
 	} catch (Server::OpCmdsErrors &e) {
 		handleError(e.getCode(), client, cmd);

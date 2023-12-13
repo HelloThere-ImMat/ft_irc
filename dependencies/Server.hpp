@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 11:16:35 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 13:34:59 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,6 @@
 
 // CHAR
 
-#define SETTER_CHAR	   ':'
 #define CHANNEL_PREFIX '#'
 
 // STRINGS
