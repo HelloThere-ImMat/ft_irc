@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 16:20:55 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 17:55:02 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 18:01:40 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,6 @@ static void handleError(const int errorCode, Client *const client,
 	const std::vector<std::string> &cmd) {
 	switch (errorCode) {
 		case WRONG_USER_NAME:
-			client->setLastArg(cmd[1]);
 			Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
 			break;
 		case WRONG_CHAN_NAME:
@@ -34,7 +33,6 @@ static void handleError(const int errorCode, Client *const client,
 			Utils::sendFormattedMessage(ERR_NOTONCHANNEL, client, cmd[2]);
 			break;
 		case TARGET_IN_CHAN:
-			client->setLastArg(cmd[1]);
 			Utils::sendFormattedMessage(ERR_USERONCHANNEL, client, cmd[2]);
 			break;
 		case USER_NOT_OP:
@@ -67,7 +65,6 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 			throw(OpCmdsErrors(TARGET_IN_CHAN));
 		if (channel->isInInviteList(target) == false)
 			channel->addToInviteList(target);
-		client->setLastArg(cmd[1]);
 		Utils::sendFormattedMessage(RPL_INVITING, client, channelName);
 		const std::string invitation =
 			Utils::getFormattedMessage(INVITATION, target, channelName);
