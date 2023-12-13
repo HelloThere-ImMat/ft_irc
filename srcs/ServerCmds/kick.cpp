@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:09:20 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 11:29:11 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 11:50:18 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ enum kickError {
 };
 
 static void handleError(const int errorCode, Client *const client,
-		const std::vector<std::string> &cmd) {
+	const std::vector<std::string> &cmd) {
 	switch (errorCode) {
 		case WRONG_CHAN_NAME:
 			Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
@@ -50,13 +50,13 @@ void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 	std::map<std::string, Channel *>::iterator itMap = _channels.find(cmd[1]);
 	try {
 		if (itMap != _channels.end())
-			throw (OpCmdsErrors(WRONG_CHAN_NAME));
-		Channel						   *channel = itMap->second;
+			throw(OpCmdsErrors(WRONG_CHAN_NAME));
+		Channel						*channel = itMap->second;
 		const std::vector<std::string> users =
 			Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
 		for (std::vector<std::string>::const_iterator itUser = users.begin();
-			itUser != users.end(); itUser++) {
-			Client * kickedUser = _clientMap.getClient(*itUser);
+			 itUser != users.end(); itUser++) {
+			Client *kickedUser = _clientMap.getClient(*itUser);
 			client->setLastArg((*itUser));
 			if (kickedUser == NULL)
 				throw(OpCmdsErrors(WRONG_USER_NAME));
@@ -67,8 +67,7 @@ void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 			if (channel->isUserInChannel(kickedUser) == false)
 				throw(OpCmdsErrors(TARGET_NOT_IN_CHAN));
 			std::string kickMessage =
-				Utils::getFormattedMessage(
-					KICK, client, cmd[1]);
+				Utils::getFormattedMessage(KICK, client, cmd[1]);
 			if (cmdSize > 3)
 				kickMessage += Utils::getFullMessage(cmd, 3);
 			else

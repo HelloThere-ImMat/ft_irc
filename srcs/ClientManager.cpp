@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:03 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 11:19:56 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 11:47:22 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,8 +50,8 @@ void ClientManager::eraseClient(Client* const client) {
 }
 
 void ClientManager::sendToAllClients(
-	const std::string &message, Client *const client) {
-	for (std::map<int, Client *>::iterator it = _socketToClientMap.begin();
+	const std::string &message, Client* const client) {
+	for (std::map<int, Client*>::iterator it = _socketToClientMap.begin();
 		 it != _socketToClientMap.end(); it++)
 		Utils::sendPrivateMessage(message, client, it->second);
 }

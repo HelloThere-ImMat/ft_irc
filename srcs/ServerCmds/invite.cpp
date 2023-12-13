@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 16:20:55 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 11:18:58 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 11:46:33 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ enum inviteError {
 };
 
 static void handleError(const int errorCode, Client *const client,
-				const std::vector<std::string> &cmd) {
+	const std::vector<std::string> &cmd) {
 	switch (errorCode) {
 		case WRONG_USER_NAME:
 			client->setLastArg(cmd[1]);
