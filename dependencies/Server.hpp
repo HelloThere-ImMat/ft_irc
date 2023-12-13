@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 13:34:59 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 15:05:22 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@
 #define TOPIC_START_INDEX	2
 #define MODE_NOARG_SIZE		2
 #define MIN_MODE_MSG_SIZE	3
-#define MAX_CHANNEL_NB		100
+#define MAX_CHANNEL_NB		10
 
 // Parameters
 
@@ -75,7 +75,7 @@ class Server {
 	void lookForEvents();
 	void readClientCommand(const int fd);
 	void addNewClient();
-	void closeClient(Client *const client);
+	void closeClient(Client *const client, const std::string &quitMessage);
 
    private:
 	// Attributes
@@ -129,6 +129,7 @@ class Server {
 	void joinChannel(const std::vector<std::string> &cmd,
 		const Client *const client, Channel *const channel,
 		const size_t keyIndex);
+	void sendQuitMessageToOthers(const Client *const client, const std::string &quitMessage);
 	void sendPrivmsgToChannel(const Client *const client,
 		const std::string &channelName, const std::string &privMessage);
 	void sendPrivmsgToUser(Client *const client, const std::string &targetName,

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 11:45:57 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 14:23:31 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@
 #include "Client.hpp"
 #include "Utils.hpp"
 
-#define MAX_CLIENT_COUNT  20
+#define MAX_CLIENT_COUNT  100
 #define SERVER_FULL_ERROR "Connection limit reached"
 
 class ClientManager {

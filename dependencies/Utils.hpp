@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 13:35:15 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 15:05:47 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,6 +60,7 @@
 
 // Message
 
+#define DEFAULT_QUIT	 "QUIT :leaving"
 #define MESSAGE_SEPARATOR " "
 #define JOIN_PREFIX		  "JOIN :"
 #define PRIVMSG_PREFIX	  "PRIVMSG "
@@ -101,7 +102,6 @@
 // Error
 
 #define SEND_FAIL_ERROR "sending failed"
-#define QUIT_RESPONSE	"QUIT command called by <client>"
 
 class Utils {
    public:

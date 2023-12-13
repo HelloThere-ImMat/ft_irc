@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 11:10:20 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 15:14:19 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,8 +88,9 @@ void Server::addNewClient() {
 	}
 }
 
-void Server::closeClient(Client *const client) {
+void Server::closeClient(Client *const client, const std::string &quitMessage) {
 	const int clientFd = client->getSocketFd();
+	sendQuitMessageToOthers(client, quitMessage);
 	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
 		 it != _channels.end(); ++it)
 		it->second->removeUser(client);
@@ -132,10 +133,8 @@ void Server::readClientCommand(const int sockfd) {
 			processReceivedData(received_data, sockfd);
 		} else if (bytes_received < 0) {
 			throw ReadFailException();
-		} else {
-			closeClient(client);
-			printLog(CLOSED_CLIENT_MESSAGE);
-		}
+		} else
+			error(DEFAULT_QUIT, client);
 	} catch (ReadFailException &e) {
 		printLog(e.what());
 	}
