@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerCmds.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 14:52:42 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/13 10:26:49 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,7 @@ void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
 }
 
 void Server::error(const std::string &message, Client *const client) {
-	const std::string formatErrorMessage = ERROR_PREFIX + message;
-	Utils::sendFormattedMessage(formatErrorMessage, client);
+	Utils::sendFormattedMessage(message, client);
 	closeClient(client);
 	printLog(CLOSED_CLIENT_MESSAGE);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:03 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 11:14:24 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/13 10:26:12 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,12 @@ void ClientManager::eraseClient(Client* const client) {
 
 	if (nickname.empty() == false)
 		_nicknameToClientMap.erase(nickname);
+}
+
+void ClientManager::sendToAllClients(const std::string &message, Client *const client)
+{
+	for (std::map<int, Client *>::iterator it = _socketToClientMap.begin(); it != _socketToClientMap.end(); it++)
+		Utils::sendPrivateMessage(message, client, it->second);
 }
 
 Client* ClientManager::getClient(const std::string& nickname) {

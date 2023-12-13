@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ClientManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 11:12:57 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/13 10:24:06 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,7 @@
 #include <map>
 
 #include "Client.hpp"
+#include "Utils.hpp"
 // debug
 #include <iostream>
 
@@ -25,6 +26,7 @@ class ClientManager {
 	// Methods to change maps
 	void addClient(Client* const client);
 	void eraseClient(Client* const client);
+	void sendToAllClients(const std::string &message, Client *const client);
 	void updateClientNickname(
 		Client* const client, const std::string& nickname);
 	// Methods to retrieve a client based on either socket or nickname
