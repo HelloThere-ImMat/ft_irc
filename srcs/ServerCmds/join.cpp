@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 09:45:58 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 14:55:39 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/11 08:53:13 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,9 +29,9 @@ void Server::createChannel(
 
 void Server::joinChannel(const std::vector<std::string> &cmd,
 	const Client *const client, Channel *const channel, const size_t keyIndex) {
-	std::vector<std::string> keySubArgs;
-	std::string				 channelName = channel->getName();
+	const std::string		 channelName = channel->getName();
 	const size_t			 sizeCmd = cmd.size();
+	std::vector<std::string> keySubArgs;
 
 	if (sizeCmd > 2)
 		keySubArgs = Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
@@ -40,6 +40,8 @@ void Server::joinChannel(const std::vector<std::string> &cmd,
 		sendJoinMessage(channel, client, channelName);
 	} catch (Channel::WrongChannelKeyException &e) {
 		Utils::sendFormattedMessage(ERR_BADCHANNELKEY, client, channelName);
+	} catch (Channel::TooManyUserException &e) {
+		Utils::sendFormattedMessage(ERR_CHANNELISFULL, client, channelName);
 	}
 }
 
@@ -49,6 +51,7 @@ void Server::sendJoinMessage(const Channel *const channel, const Client *client,
 
 	channel->sendToAll(client, JOIN_PREFIX + channelName);
 	channelUserList = channel->getUserList();
+	channel->sendTopic(client);
 	Utils::sendFormattedMessage(
 		UL_JOIN_MESSAGE + channelUserList, client, channelName);
 	Utils::sendFormattedMessage(EUL_JOIN_MESSAGE, client, channelName);

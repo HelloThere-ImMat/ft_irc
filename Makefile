@@ -17,21 +17,29 @@ NAME		=	ircserv
 SRCS_PATH += srcs/
 SRCS_PATH += srcs/ServerCmds
 
+# srcs/
+
+SRCS += main.cpp
 SRCS += Server.cpp
 SRCS += DataServ.cpp
 SRCS += Client.cpp
 SRCS += Signal.cpp
 SRCS += ServerCmds.cpp
 SRCS += ClientManager.cpp
-SRCS += main.cpp
 SRCS += Channel.cpp
 SRCS += Utils.cpp
+SRCS += Mode.cpp
+
+# srcs/ServerCmds
+
 SRCS += join.cpp
 SRCS += privmsg.cpp
 SRCS += part.cpp
 SRCS += invite.cpp
 SRCS += kick.cpp
 SRCS += quit.cpp
+SRCS += mode.cpp
+SRCS += topic.cpp
 
 vpath %.cpp $(SRCS_PATH)
 
@@ -56,6 +64,7 @@ DEPS += ClientManager.hpp
 DEPS += irc.hpp
 DEPS += Channel.hpp
 DEPS += Utils.hpp
+DEPS += Mode.hpp
 
 vpath %.hpp $(DEPS_PATH)
 
@@ -79,6 +88,10 @@ CFLAGS		+=	-std=c++98
 
 ifeq ($(debug), true)
 	CFLAGS	+= -fsanitize=address,undefined -g3
+endif
+
+ifeq ($(filter test,$(MAKECMDGOALS)),test)
+	CFLAGS  += -D TEST=true
 endif
 
 #################
@@ -116,9 +129,8 @@ $(OBJS)	: $(PATH_OBJS)/%.o : %.cpp Makefile $(DEPS)
 	mkdir -p $(PATH_OBJS)
 	$(CC) $(CFLAGS) -c $< -o $@ -I $(DEPS_PATH)
 
-test:
-	$(MAKE) -s
-	$(ECHOC) $(BLUE) "TESTER"$(NC)"\n\n"
+test: all
+	$(ECHOC) $(BLUE) "\nTESTER"$(NC)"\n\n"
 	$(TESTER)
 
 linter:

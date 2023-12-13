@@ -54,6 +54,24 @@ std::string Utils::getFullMessage(
 	return (fullMessage);
 }
 
+void Utils::removeDuplicateChars(std::string &str) {
+	bool charSet[256] = {false};  // Assuming ASCII characters
+
+	size_t currentIndex = 0;
+	size_t len = str.length();
+
+	for (size_t i = 0; i < len; ++i) {
+		char currentChar = str[i];
+		if (!charSet[static_cast<unsigned char>(currentChar)]) {
+			charSet[static_cast<unsigned char>(currentChar)] = true;
+			str[currentIndex++] = currentChar;
+		}
+	}
+	str.resize(currentIndex);
+}
+
+bool Utils::isSetter(const char c) { return c == '+' || c == '-'; }
+
 // Send Methods
 
 void Utils::sendMessage(
@@ -106,6 +124,15 @@ std::string Utils::getFormattedMessage(const std::string &message,
 			formattedMessage, mapPattern[i][0], mapPattern[i][1]);
 	}
 	return formattedMessage;
+}
+
+bool Utils::isThereInvalidChar(
+	const std::string &str, const std::string &invalidCharset) {
+	for (std::string::const_iterator it = str.begin(); it != str.end(); ++it) {
+		if (invalidCharset.find(*it) != std::string::npos)
+			return true;
+	}
+	return false;
 }
 
 // Exceptions

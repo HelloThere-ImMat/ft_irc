@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ClientManager.cpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:03 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/05 11:14:24 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/10 00:23:07 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClientManager.hpp"
 
-ClientManager::ClientManager() {}
+ClientManager::ClientManager() : _size(0) {}
 
 ClientManager::~ClientManager() {
 	for (std::map<int, Client*>::iterator it = _socketToClientMap.begin();
@@ -25,6 +25,9 @@ ClientManager::~ClientManager() {
 void ClientManager::addClient(Client* const client) {
 	_socketToClientMap[client->getSocketFd()] = client;
 	updateClientNickname(client, client->getNickname());
+	++_size;
+	if (_size > MAX_CLIENT_COUNT)
+		throw ServerFullException();
 }
 
 void ClientManager::updateClientNickname(
@@ -42,6 +45,8 @@ void ClientManager::eraseClient(Client* const client) {
 
 	if (nickname.empty() == false)
 		_nicknameToClientMap.erase(nickname);
+	if (_size > 0)
+		--_size;
 }
 
 Client* ClientManager::getClient(const std::string& nickname) {
@@ -56,4 +61,8 @@ Client* ClientManager::getClient(const int sockFd) {
 		return _socketToClientMap[sockFd];
 	}
 	return NULL;
+}
+
+const char* ClientManager::ServerFullException::what() const throw() {
+	return SERVER_FULL_ERROR;
 }

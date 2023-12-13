@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Utils.hpp                                        :+:      :+:    :+:   */
+/*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 11:15:33 by mat              ###   ########.fr       */
+/*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
+/*   Updated: 2023/12/13 11:08:32 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,13 @@
 
 // RPL
 
-#define RPL_WELCOME	 "001 <client> :Welcome to the <networkname> Network, <nick>"
+#define RPL_WELCOME		  "001 <client> :Welcome to the <networkname> Network, <nick>"
+#define RPL_CHANNELMODEIS "324 <client> <channelName> "
+#define RPL_NOTOPIC		  "331 <client> <channelName> :No topic is set"
+#define RPL_TOPIC		  "332 <client> <channelName> :"
 #define UL_JOIN_MESSAGE	  "353 <nick> = <channelName> :"
 #define EUL_JOIN_MESSAGE  "366 <client> <channelName> :End of /NAMES list."
-#define RPL_NOTOPIC	 "331 <client> <arg> :No topic is set"
-#define RPL_TOPIC	 "332 <client> <arg> :"
-#define RPL_INVITING "341 <client> <arg> <channelName>"
+#define RPL_INVITING	  "341 <client> <arg> <channelName>"
 
 // Message
 
@@ -82,10 +83,12 @@
 	"441 <client> <arg> <channelName> :They aren't on that channel"
 #define ERR_NOTONCHANNEL \
 	"442 <client> <channelName> :You're not on that channel"
-#define ERR_USERONCHANNEL	  "443 <client> <nick> <channelName> :is already on channel"
+#define ERR_USERONCHANNEL \
+	"443 <client> <nick> <channelName> :is already on channel"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
+#define ERR_CHANNELISFULL	  "471 <client> <channelName> :Cannot join channel (+l)"
 #define ERR_BADCHANNELKEY	  "475 <client> <channelName> :Cannot join channel (+k)"
 #define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
 #define ERR_CHANOPRIVSNEEDED \
@@ -110,6 +113,10 @@ class Utils {
 		const std::string &listStr, const char delimiter);
 	static std::string getFullMessage(
 		const std::vector<std::string> &cmd, const size_t startIndex);
+	static void removeDuplicateChars(std::string &str);
+	static bool isSetter(const char c);
+	static bool isThereInvalidChar(
+		const std::string &str, const std::string &invalidCharset);
 
    private:
 	class SendFailException : public std::exception {

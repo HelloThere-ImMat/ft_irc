@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/09 02:24:50 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/13 11:10:33 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ void Server::sendPrivmsgToUser(Client *const client,
 	if (receiver == NULL) {
 		client->setLastArg(targetName);
 		Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
-	} else
+	} else {
 		Utils::sendPrivateMessage(privMessage, client, receiver);
+	}
 }
 
 void Server::privmsg(

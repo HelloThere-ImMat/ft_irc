@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/11/29 13:18:12 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 14:55:08 by rbroque          ###   ########.fr       */
+/*   Created: 2023/12/12 17:36:59 by rbroque           #+#    #+#             */
+/*   Updated: 2023/12/12 17:59:59 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,33 @@ static std::string getSpecifiedNick(const SpecifiedClient &spClient) {
 	return (spClient.client->getNickname());
 }
 
+static void cleanModeMessage(std::string &mode) {
+	Utils::removeDuplicateChars(mode);
+	const size_t len = mode.length();
+	if (len > 0 && len <= 2 && Utils::isSetter(mode[0]) &&
+		(len == 1 || Utils::isSetter(mode[1]))) {
+		mode = "";
+	}
+}
+
+static char getSetterChar(const t_modSetter setter) {
+	return setter == ADD ? '+' : '-';
+}
+
+static std::vector<std::string> initNewModeVect(
+	const std::vector<std::string> &cmd) {
+	std::vector<std::string> newModeVect;
+
+	newModeVect.push_back(cmd[0]);
+	newModeVect.push_back(cmd[1]);
+	newModeVect.push_back("");
+	return newModeVect;
+}
+
 // Methods
 
 Channel::Channel(const std::string &name, const Client *const client)
-	: _name(name),
-	  _password("p"),
-	  _isTopicProtected(true),
-	  _isPasswordProtected(true) {
+	: _name(name), _mode(NO_MOD) {
 	const SpecifiedClient spClient = {.client = client, .isOp = true};
 
 	userMap[client->getNickname()] = spClient;
@@ -36,10 +56,9 @@ Channel::~Channel() { userMap.clear(); }
 
 void Channel::addNewUser(const Client *const client,
 	const std::vector<std::string> &keys, const size_t keyIndex) {
-	const size_t keysSize = keys.size();
-	// penser a faire le check de channel limit
-	if (_isPasswordProtected &&
-		(keyIndex >= keysSize || keys[keyIndex] != _password))
+	if (this->isFull())
+		throw TooManyUserException();
+	if (isAbleToJoin(keys, keyIndex) == false)
 		throw WrongChannelKeyException();
 	SpecifiedClient spClient = {.client = client, .isOp = false};
 	userMap[client->getNickname()] = spClient;
@@ -68,6 +87,42 @@ const std::string &Channel::getName() const { return _name; }
 
 void Channel::setTopic(const std::string &newTopic) { _topic = newTopic; }
 
+std::vector<std::string> Channel::processMode(
+	const std::vector<std::string> &cmd, Client *const client) {
+	const std::string		 modeString = cmd[2];
+	std::vector<std::string> newModeVect = initNewModeVect(cmd);
+	modeStatus	status = {.hasChanged = false, .doesUseArg = false};
+	t_modSetter setter = ADD;
+	size_t		argsIndex = START_MODE_INDEX;
+
+	for (std::string::const_iterator it = modeString.begin();
+		 it != modeString.end(); ++it) {
+		if (Utils::isSetter(*it)) {
+			setter = (*it == '+') ? ADD : RM;
+		} else {
+			status = _mode.setMode(setter, *it, cmd, argsIndex);
+			if (status.hasChanged && status.doesUseArg)
+				status.hasChanged =
+					tryModeApplication(setter, *it, cmd[argsIndex], client);
+			if (status.hasChanged) {
+				newModeVect[2] += getSetterChar(setter);
+				newModeVect[2] += *it;
+				if (status.doesUseArg)
+					newModeVect.push_back(cmd[argsIndex]);
+			}
+			argsIndex += status.doesUseArg;
+		}
+	}
+	cleanModeMessage(newModeVect[2]);
+	return newModeVect;
+}
+
+bool Channel::isAbleToJoin(
+	const std::vector<std::string> &cmd, const size_t passIndex) const {
+	return (_mode.isKeyProtected() == false) ||
+		   (cmd.size() > passIndex && cmd[passIndex] == _mode.getPassword());
+}
+
 void Channel::sendToOthers(
 	const Client *const client, const std::string message) const {
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
@@ -89,17 +144,25 @@ void Channel::sendToAll(
 
 void Channel::sendTopic(const Client *const client) const {
 	if (_topic.empty())
-		Utils::sendFormattedMessage(RPL_NOTOPIC, client);
+		Utils::sendFormattedMessage(RPL_NOTOPIC, client, _name);
 	else {
 		const std::string formatRPL =
-			Utils::getFormattedMessage(RPL_TOPIC, client) + _topic;
+			Utils::getFormattedMessage(RPL_TOPIC, client, _name) + _topic;
 		Utils::sendMessage(formatRPL, client);
 	}
 }
 
 void Channel::sendTopicToAll(const Client *const client) const {
-	const std::string formatRPL = Utils::getFormattedMessage(RPL_TOPIC, client);
+	const std::string formatRPL =
+		Utils::getFormattedMessage(RPL_TOPIC, client, _name);
 	sendToAll(client, formatRPL + _topic);
+}
+
+void Channel::sendMode(const Client *const client) const {
+	const std::string rplMessage =
+		Utils::getFormattedMessage(RPL_CHANNELMODEIS, client, _name);
+	const std::string modeMessage = rplMessage + _mode.getModeMessage();
+	Utils::sendMessage(modeMessage, client);
 }
 
 bool Channel::isUserInChannel(const Client *const client) const {
@@ -114,12 +177,8 @@ bool Channel::isUserInChannel(const Client *const client) const {
 }
 
 bool Channel::canChangeTopic(const Client *const client) const {
-	return (_isTopicProtected == false || isOp(client));
+	return (_mode.isTopicProtected() == false || isOp(client));
 }
-
-/////////////
-// PRIVATE //
-/////////////
 
 bool Channel::isOp(const Client *const client) const {
 	if (isUserInChannel(client) == false)
@@ -127,4 +186,46 @@ bool Channel::isOp(const Client *const client) const {
 	const std::string nickname = client->getNickname();
 
 	return (userMap.find(nickname)->second.isOp);
+}
+
+/////////////////////
+// Private Methods //
+/////////////////////
+
+bool Channel::tryModeApplication(const t_modSetter setter, const char cflag,
+	std::string arg, Client *const client) {
+	bool hasChanged = false;
+
+	try {
+		setModeParameter(cflag, arg, setter, client);
+		hasChanged = true;
+	} catch (UserNotInChannelException &e) {
+		Utils::sendFormattedMessage(ERR_USERNOTINCHANNEL, client, _name);
+	}
+	return hasChanged;
+}
+
+void Channel::setModeParameter(const char c, std::string &arg,
+	const t_modSetter setter, Client *const client) {
+	if (c == KEY_CHAR) {
+		_mode.setPassword(arg);
+	} else if (c == USRLIMIT_CHAR) {
+		const int userlimit = atoi(arg.c_str());
+		_mode.setUserlimit(userlimit);
+		std::stringstream ss;
+		ss << userlimit;
+		arg = ss.str();
+	} else if (c == OP_CHANGE_CHAR) {
+		const std::map<std::string, SpecifiedClient>::iterator it =
+			userMap.find(arg);
+		if (it == userMap.end()) {
+			client->setLastArg(arg);
+			throw UserNotInChannelException();
+		} else
+			it->second.isOp = (setter == ADD);
+	}
+}
+
+bool Channel::isFull() const {
+	return _mode.hasUserLimit() && userMap.size() >= _mode.getUserLimit();
 }
