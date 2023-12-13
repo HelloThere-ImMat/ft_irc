@@ -1,0 +1,13 @@
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+JOIN #pouet
+TOPIC #pouet
+TOPIC #pouet:
+TOPIC #pouet wouah  a  topic         with single space between each word!
+TOPIC #pouet
+JOIN #lol
+TOPIC #lol
+TOPIC #lol : <client> <channelName> <nick>
+TOPIC #lol

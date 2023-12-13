@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerCmds.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 14:52:42 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/12 17:27:30 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,6 @@ static bool areOnlyAuthorizedChar(const std::string &str) {
 
 static bool isNicknameValid(const std::string &nickname) {
 	return isdigit(nickname[0]) == false && areOnlyAuthorizedChar(nickname);
-}
-
-static std::string removeSetterChar(const std::string &message) {
-	std::string newMessage;
-
-	newMessage = message;
-	if (message.empty() == false && message[0] == SETTER_CHAR)
-		newMessage.erase(0, 1);
-	return newMessage;
 }
 
 /////////////
@@ -101,34 +92,6 @@ void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
 void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 	(void)cmd;
 	Utils::sendFormattedMessage(PONG_MESSAGE, client);
-}
-
-void Server::topic(const std::vector<std::string> &cmd, Client *const client) {
-	const size_t size = cmd.size();
-
-	if (size < 2) {
-		Utils::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
-		return;
-	}
-	const std::map<std::string, Channel *>::iterator it =
-		_channels.find(cmd[1]);
-	if (it != _channels.end()) {
-		Channel *const channel = it->second;
-		if (channel->isUserInChannel(client) == false)
-			Utils::sendFormattedMessage(ERR_NOTONCHANNEL, client, cmd[1]);
-		else if (size == 2)
-			channel->sendTopic(client);
-		else if (channel->canChangeTopic(client) == false) {
-			Utils::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client, cmd[1]);
-		} else {
-			const std::string topic =
-				removeSetterChar(Utils::getFullMessage(cmd, TOPIC_START_INDEX));
-			channel->setTopic(topic);
-			channel->sendTopicToAll(client);
-		}
-	} else {
-		Utils::sendFormattedMessage(ERR_NOSUCHCHANNEL, client, cmd[1]);
-	}
 }
 
 void Server::error(const std::string &message, Client *const client) {

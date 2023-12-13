@@ -1,0 +1,21 @@
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+JOIN #pouet
+MODE #pouet +kit+l password 12
+MODE #pouet
+MODE #pouet +kit+l password 120
+MODE #pouet
+MODE #pouet +l password 120
+MODE #pouet
+MODE #pouet +l 42
+MODE #pouet
+MODE #pouet +it-l password
+MODE #pouet
+MODE #pouet -l+l 12
+MODE #pouet
+MODE #pouet +l-l -12
+MODE #pouet
+MODE #pouet +l-l 21
+MODE #pouet

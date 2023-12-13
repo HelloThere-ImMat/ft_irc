@@ -1,0 +1,21 @@
+[0;90mPassword: lol[0m
+[0;34m<< [0mCAP LS
+[0;34m<< [0mPASS lol
+[0;34m<< [0mNICK screw
+[0;34m<< [0mUSER pouet
+[0;32m>> [0m001 screw :Welcome to the IRC Network, screw
+[0;90mClient is authenticated: Nickname[screw]; Username[pouet][0m
+[0;34m<< [0mJOIN #pouet
+[0;31m>> [0m:screw!~pouet@localhost JOIN :#pouet
+
+[0;32m>> [0m331 screw #pouet :No topic is set
+[0;32m>> [0m353 screw = #pouet :@screw
+[0;32m>> [0m366 screw #pouet :End of /NAMES list.
+[0;34m<< [0mTOPIC
+[0;32m>> [0m461 screw TOPIC :Not enough parameters
+[0;34m<< [0mTOPIC #pouet
+[0;32m>> [0m331 screw #pouet :No topic is set
+[0;34m<< [0mTOPIC #pouet :Wouah it      is a really nice topic with a looooooooot              of         spaces :)
+[0;31m>> [0m:screw!~pouet@localhost 332 screw #pouet :Wouah it      is a really nice topic with a looooooooot              of         spaces :)
+
+Exited by signal

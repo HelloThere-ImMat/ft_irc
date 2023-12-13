@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   Utils.hpp                                        :+:      :+:    :+:   */
+/*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/12/05 09:55:46 by mat               #+#    #+#             */
-/*   Updated: 2023/12/07 11:15:33 by mat              ###   ########.fr       */
+/*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
+/*   Updated: 2023/12/12 23:59:00 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,9 +46,10 @@
 
 // RPL
 
-#define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
-#define RPL_NOTOPIC "331 <client> <arg> :No topic is set"
-#define RPL_TOPIC	"332 <client> <arg> :"
+#define RPL_WELCOME		  "001 <client> :Welcome to the <networkname> Network, <nick>"
+#define RPL_CHANNELMODEIS "324 <client> <channelName> "
+#define RPL_NOTOPIC		  "331 <client> <channelName> :No topic is set"
+#define RPL_TOPIC		  "332 <client> <channelName> :"
 
 // Message
 
@@ -64,7 +65,7 @@
 
 #define ERROR_PREFIX		"ERROR :"
 #define ERR_CLOSECONNECTION "Connection closed"
-#define ERR_NOSUCHNICK		"401 <client> <nickname> :No such nick/channel"
+#define ERR_NOSUCHNICK		"401 <client> <arg> :No such nick/channel"
 #define ERR_NOSUCHCHANNEL	"403 <client> <channelName> :No such channel"
 #define ERR_CANNOTSENDTOCHAN \
 	"404 <client> <channelName> :Cannot send to channel"
@@ -75,11 +76,14 @@
 #define ERR_NONICKNAMEGIVEN	 "431 <client> :No nickname given"
 #define ERR_ERRONEUSNICKNAME "432 <client> <arg> :Erroneus nickname"
 #define ERR_NICKNAMEINUSE	 "433 *<client> <arg> :Nickname is already in use"
+#define ERR_USERNOTINCHANNEL \
+	"441 <client> <arg> <channelName> :They aren't on that channel"
 #define ERR_NOTONCHANNEL \
 	"442 <client> <channelName> :You're not on that channel"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
+#define ERR_CHANNELISFULL	  "471 <client> <channelName> :Cannot join channel (+l)"
 #define ERR_BADCHANNELKEY	  "475 <client> <channelName> :Cannot join channel (+k)"
 #define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
 #define ERR_CHANOPRIVSNEEDED \
@@ -87,7 +91,7 @@
 
 // Error
 
-#define SEND_FAIL_ERROR "sending failed"
+#define SEND_FAIL_ERROR "send failed"
 
 class Utils {
    public:
@@ -103,6 +107,10 @@ class Utils {
 		const std::string &listStr, const char delimiter);
 	static std::string getFullMessage(
 		const std::vector<std::string> &cmd, const size_t startIndex);
+	static void removeDuplicateChars(std::string &str);
+	static bool isSetter(const char c);
+	static bool isThereInvalidChar(
+		const std::string &str, const std::string &invalidCharset);
 
    private:
 	class SendFailException : public std::exception {

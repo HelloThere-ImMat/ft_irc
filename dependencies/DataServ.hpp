@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/27 08:35:31 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/28 10:19:14 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/08 17:59:21 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,8 +17,10 @@
 #include <unistd.h>
 
 #include <iostream>
+#include <sstream>
 
 #define DEFAULT_OPTION		1
+#define MAX_PORT_VALUE		65535
 #define SOCKET_INIT__ERROR	"Cannot create socket"
 #define SOCKET_OPT__ERROR	"Invalid socket assets"
 #define SOCKET_BIND__ERROR	"Cannot bind socket to address"

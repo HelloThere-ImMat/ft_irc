@@ -3,19 +3,22 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/08 12:17:03 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/12 18:54:39 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
+#ifndef TEST
+	#define TEST false
+#endif
+
 #include <string.h>
 #include <sys/epoll.h>
 
-#include <exception>
 #include <typeinfo>
 
 #include "Channel.hpp"
@@ -27,9 +30,10 @@
 
 #define BUFFER_SIZE			1024
 #define TIMEOUT				-1
-#define MAX_CLIENT_COUNT	3
 #define PRIVMSG_START_INDEX 2
 #define TOPIC_START_INDEX	2
+#define MODE_NOARG_SIZE		2
+#define MIN_MODE_MSG_SIZE	3
 #define MAX_CHANNEL_NB		100
 
 // Parameters
@@ -38,14 +42,17 @@
 
 // CHAR
 
-#define SETTER_CHAR ':'
+#define SETTER_CHAR	   ':'
+#define CHANNEL_PREFIX '#'
 
 // STRINGS
 
-#define INMES_PREFIX		 "<< "
-#define CHANNEL_PREFIX		 '#'
-#define DEFAULT_USERNAME	 "Placeholder"
-#define SPECIAL_NICK_CHARSET "[]{}*\\|_"
+#define INMES_PREFIX			 "<< "
+#define CHANNEL_PREFIX			 '#'
+#define DEFAULT_USERNAME		 "Placeholder"
+#define SPECIAL_NICK_CHARSET	 "[]{}*\\|_"
+#define MODE_SETCHAR			 "itklo+-"
+#define INVALID_PASSWORD_CHARSET " \b\t\n\v\f\r,"
 
 // Logs
 
@@ -53,9 +60,10 @@
 
 // Errors
 
-#define LISTEN_FAIL__ERROR "listening failed"
-#define READ_FAIL__ERROR   "reading failed"
-#define WRONG_CMD__ERROR   "Invalid Login Command!"
+#define LISTEN_FAIL__ERROR			"listening failed"
+#define READ_FAIL__ERROR			"reading failed"
+#define WRONG_CMD__ERROR			"Invalid Login Command!"
+#define INVALID_SET_PASSWORD__ERROR "Invalid set password"
 
 class Server {
 	typedef void (Server::*CommandFunction)(
@@ -79,6 +87,9 @@ class Server {
 	std::string							   _password;
 	ClientManager						   _clientMap;
 	// Private Methods
+	//    Initialisation methods
+	void initializeCmdMap();
+	//    Print methods
 	void printLog(const std::string &logMessage) const;
 	//    Poll Methods
 	void addFdToPoll(const int fd);
@@ -105,6 +116,7 @@ class Server {
 	void privmsg(const std::vector<std::string> &cmd, Client *const client);
 	void part(const std::vector<std::string> &cmd, Client *const client);
 	void topic(const std::vector<std::string> &cmd, Client *const client);
+	void mode(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
 	bool isNicknameAlreadyUsed(const std::string &nickname);
@@ -117,8 +129,8 @@ class Server {
 		const size_t keyIndex);
 	void sendPrivmsgToChannel(const Client *const client,
 		const std::string &channelName, const std::string &privMessage);
-	void sendPrivmsgToUser(const Client *const client,
-		const std::string &targetName, const std::string &privMessage);
+	void sendPrivmsgToUser(Client *const client, const std::string &targetName,
+		const std::string &privMessage);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
@@ -129,6 +141,10 @@ class Server {
 		virtual const char *what() const throw();
 	};
 	class InvalidLoginCommandException : public std::exception {
+	   public:
+		virtual const char *what() const throw();
+	};
+	class InvalidSetPasswordException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};

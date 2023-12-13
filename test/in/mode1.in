@@ -1,0 +1,9 @@
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+JOIN #pouet
+MODE
+MODE #pouet
+MODE #pouet +i
+MODE #pouet
