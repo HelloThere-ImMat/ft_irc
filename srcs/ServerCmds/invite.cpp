@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 16:20:55 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 17:20:23 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 17:55:02 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ static void handleError(const int errorCode, Client *const client,
 			Utils::sendFormattedMessage(ERR_USERONCHANNEL, client, cmd[2]);
 			break;
 		case USER_NOT_OP:
-			Utils::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client, cmd[1]);
+			Utils::sendFormattedMessage(ERR_CHANOPRIVSNEEDED, client, cmd[2]);
 			break;
 	}
 }
@@ -49,10 +49,7 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 		Utils::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
 		return;
 	}
-	const Client *const target = _clientMap.getClient(cmd[1]);
 	try {
-		if (target == NULL)
-			throw(OpCmdsErrors(WRONG_USER_NAME));
 		const std::string								 channelName = cmd[2];
 		const std::map<std::string, Channel *>::iterator it =
 			_channels.find(channelName);
@@ -61,10 +58,13 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 		Channel *const channel = it->second;
 		if (channel->isUserInChannel(client) == false)
 			throw(OpCmdsErrors(USER_NOT_IN_CHAN));
-		if (channel->isUserInChannel(target) == true)
-			throw(OpCmdsErrors(TARGET_IN_CHAN));
 		if (channel->canInvite(client) == false)
 			throw(OpCmdsErrors(USER_NOT_OP));
+		const Client *const target = _clientMap.getClient(cmd[1]);
+		if (target == NULL)
+			throw(OpCmdsErrors(WRONG_USER_NAME));
+		if (channel->isUserInChannel(target) == true)
+			throw(OpCmdsErrors(TARGET_IN_CHAN));
 		if (channel->isInInviteList(target) == false)
 			channel->addToInviteList(target);
 		client->setLastArg(cmd[1]);

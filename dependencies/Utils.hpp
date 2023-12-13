@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 17:10:08 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 17:52:58 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@
 #define ERR_NOTONCHANNEL \
 	"442 <client> <channelName> :You're not on that channel"
 #define ERR_USERONCHANNEL \
-	"443 <client> <nick> <channelName> :is already on channel"
+	"443 <client> <arg> <channelName> :is already on channel"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
