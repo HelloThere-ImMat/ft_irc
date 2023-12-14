@@ -37,7 +37,9 @@ const std::string &Client::getBuffer() const { return (_buffer); }
 uint8_t Client::getLogMask() const { return (_loginMask); }
 
 bool Client::isInChannel(const Channel *const channel) const {
-	for (std::map<std::string, const Channel *>::const_iterator it = _chanMap.begin(); it != _chanMap.end(); ++it) {
+	for (std::map<std::string, const Channel *>::const_iterator it =
+			 _chanMap.begin();
+		 it != _chanMap.end(); ++it) {
 		if (it->second == channel)
 			return true;
 	}
@@ -75,8 +77,9 @@ void Client::rmFromChanMap(const Channel *const newChannel) {
 bool Client::isAuthenticated() const { return _loginMask == LOGGED; }
 
 void Client::sendToChannels(const std::string &message) const {
-
-	for (std::map<std::string, const Channel *>::const_iterator it = _chanMap.begin(); it != _chanMap.end(); ++it) {
+	for (std::map<std::string, const Channel *>::const_iterator it =
+			 _chanMap.begin();
+		 it != _chanMap.end(); ++it) {
 		it->second->sendToOthers(this, message);
 	}
 }

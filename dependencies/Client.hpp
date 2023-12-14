@@ -15,8 +15,8 @@
 #include <stdint.h>
 #include <unistd.h>
 
-#include <string>
 #include <map>
+#include <string>
 
 #define EMPTY_LOGIN 0x00
 #define CAP_LOGIN	0x01
@@ -39,7 +39,7 @@ class Client {
 	const std::string &getLastCmd() const;
 	const std::string &getLastArg() const;
 	const std::string &getBuffer() const;
-	bool isInChannel(const Channel *const channel) const;
+	bool			   isInChannel(const Channel *const channel) const;
 	// Setters
 	void setBuffer(const std::string &incompleteMessage);
 	void setNickname(const std::string &nickname);
@@ -55,12 +55,12 @@ class Client {
 	void clearBuffer();
 
    private:
-	const int	_sockfd;
-	uint8_t		_loginMask;
-	std::string _nickname;
-	std::string _username;
-	std::string _lastCmd;
-	std::string _lastArg;
-	std::string _buffer;
+	const int									 _sockfd;
+	uint8_t										 _loginMask;
+	std::string									 _nickname;
+	std::string									 _username;
+	std::string									 _lastCmd;
+	std::string									 _lastArg;
+	std::string									 _buffer;
 	std::map<const std::string, const Channel *> _chanMap;
 };

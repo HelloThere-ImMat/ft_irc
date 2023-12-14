@@ -64,7 +64,7 @@
 typedef struct s_conv {
 	const Client *user1;
 	const Client *user2;
-}			Conversation;
+} Conversation;
 
 class Server {
 	typedef void (Server::*CommandFunction)(
@@ -129,19 +129,19 @@ class Server {
 	bool isNicknameAlreadyUsed(const std::string &nickname);
 	void sendJoinMessage(const Channel *const channel,
 		const Client *const client, const std::string &channelName);
-	void createChannel(
-		Client *const client, const std::string &channelName);
-	void joinChannel(const std::vector<std::string> &cmd,
-		Client *const client, Channel *const channel,
-		const size_t keyIndex);
+	void createChannel(Client *const client, const std::string &channelName);
+	void joinChannel(const std::vector<std::string> &cmd, Client *const client,
+		Channel *const channel, const size_t keyIndex);
 	void sendQuitMessageToOthers(
 		const Client *const client, const std::string &quitMessage);
 	void sendPrivmsgToChannel(const Client *const client,
 		const std::string &channelName, const std::string &privMessage);
 	void sendPrivmsgToUser(Client *const client, const std::string &targetName,
 		const std::string &privMessage);
-	void notifyInConv(const Client *const client, const std::string message) const;
-	void notifyNickUpdate(const Client *const client, const std::string newNick) const;
+	void notifyInConv(
+		const Client *const client, const std::string message) const;
+	void notifyNickUpdate(
+		const Client *const client, const std::string newNick) const;
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:

@@ -16,13 +16,15 @@
 // Static methods //
 ///////////////////
 
-static bool areSameConv(const Conversation &conv1, const Conversation &conv2){
-	return (conv1.user1 == conv2.user1 && conv1.user2 == conv2.user2)
-		|| (conv1.user1 == conv2.user2 && conv1.user2 == conv2.user1);
+static bool areSameConv(const Conversation &conv1, const Conversation &conv2) {
+	return (conv1.user1 == conv2.user1 && conv1.user2 == conv2.user2) ||
+		   (conv1.user1 == conv2.user2 && conv1.user2 == conv2.user1);
 }
 
-static bool isNewConv(const std::vector<Conversation> &convList, const Conversation &conv) {
-	for (std::vector<Conversation>::const_iterator it = convList.begin(); it != convList.end(); ++it) {
+static bool isNewConv(
+	const std::vector<Conversation> &convList, const Conversation &conv) {
+	for (std::vector<Conversation>::const_iterator it = convList.begin();
+		 it != convList.end(); ++it) {
 		if (areSameConv(*it, conv))
 			return false;
 	}

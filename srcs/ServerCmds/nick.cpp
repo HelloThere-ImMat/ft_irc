@@ -42,8 +42,8 @@ bool Server::isNicknameAlreadyUsed(const std::string &nickname) {
 	return _clientMap.getClient(nickname) != NULL;
 }
 
-void Server::notifyInConv(const Client *const client, const std::string message) const {
-
+void Server::notifyInConv(
+	const Client *const client, const std::string message) const {
 	std::vector<Conversation>::const_iterator it = _convList.begin();
 
 	while (it != _convList.end()) {
@@ -55,7 +55,8 @@ void Server::notifyInConv(const Client *const client, const std::string message)
 	}
 }
 
-void Server::notifyNickUpdate(const Client *const client, const std::string newNick) const {
+void Server::notifyNickUpdate(
+	const Client *const client, const std::string newNick) const {
 	const std::string nickUpdateMessage = NICK_PREFIX + newNick;
 	Utils::sendPrivateMessage(nickUpdateMessage, client, client);
 	client->sendToChannels(nickUpdateMessage);
