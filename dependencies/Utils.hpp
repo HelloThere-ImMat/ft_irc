@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 16:44:34 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 17:07:32 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -120,7 +120,7 @@ class Utils {
 	static void		   sendPrivateMessage(const std::string &message,
 			   const Client *const sender, const Client *const receiver);
 	static void 				sendPrivateMessage(const std::string &message,
-			   Bot &bot, const Client *const receiver);
+			const Bot &bot, const Client *const receiver);
 	static void		   sendFormattedMessage(const std::string &message,
 			   const Client *const client, std::string channelName = "");
 	static std::string getFormattedMessage(const std::string &message,

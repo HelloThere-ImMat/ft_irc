@@ -6,11 +6,19 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 13:36:54 by mdorr             #+#    #+#             */
-/*   Updated: 2023/12/14 16:39:01 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 17:05:54 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
+
+static std::string loadingResponses[] = {
+	"Loading...",
+	"..",
+	"...",
+	"hhmmmmmm..",
+	"Let me think..."
+};
 
 // Static functions
 
@@ -55,11 +63,7 @@ void Bot::interact(const Client *const client, const std::string &message)
 	}
 	else {
 		_botUsers.push_back(client);
-		std::string message = Utils::getFormattedMessage(BOT_INTRO_MESS, client);
-		sendMessage(client, message.c_str());
-		sendMessage(client, BOT_INTRO_MESS2);
-		sendMessage(client, BOT_INTRO_MESS3);
-		sendMessage(client, BOT_INTRO_MESS4);
+		sendIntroMessage(client);
 	}
 }
 
@@ -69,25 +73,16 @@ const std::string &Bot::getName() const {
 
 Bot::Bot() : _name(BOT_NAME)
 {
-	_loadingResponses.push_back("Loading...");
-	_loadingResponses.push_back("..");
-	_loadingResponses.push_back("...");
-	_loadingResponses.push_back("hmmmmmm..");
-	_loadingResponses.push_back("Let me think...");
 }
 
 // Private methods
-void Bot::sendMessage(const Client *const client, const char *message)
-{
-	std::string formattedMess = PRIVMSG_PREFIX + client->getNickname() + " " + message;
+void Bot::sendMessage(const Client *const client, const char *message) const {
+	const std::string formattedMess = PRIVMSG_PREFIX + client->getNickname() + " " + message;
 	Utils::sendPrivateMessage(formattedMess, *this, client);
 }
 
-void Bot::respond(const Client *const client, const std::string &message)
-{
-	std::string::const_iterator lastChar= message.end() - 1;
-
-	if (*lastChar == '?')
+void Bot::respond(const Client *const client, const std::string &message) const {
+	if (message.find('?') != std::string::npos)
 		sendMessage(client, BOT_Q_ANS);
 	else
 	{
@@ -95,10 +90,18 @@ void Bot::respond(const Client *const client, const std::string &message)
 		for (size_t i = 0; i < loadingPrintsNb; i++)
 		{
 			sleep(1);
-			size_t loadingIndex = getRandNb(_loadingResponses.size());
-			sendMessage(client, _loadingResponses[loadingIndex].c_str());
+			size_t loadingIndex = getRandNb(LOADING_RESP_NB);
+			sendMessage(client, loadingResponses[loadingIndex].c_str());
 		}
 		sleep(2);
 		sendMessage(client, BOT_BASIC_ANS);
 	}
+}
+
+void Bot::sendIntroMessage(const Client *const client) const {
+	const std::string formattedIntroMessage = Utils::getFormattedMessage(BOT_INTRO_MESS, client);
+	sendMessage(client, formattedIntroMessage.c_str());
+	sendMessage(client, BOT_INTRO_MESS2);
+	sendMessage(client, BOT_INTRO_MESS3);
+	sendMessage(client, BOT_INTRO_MESS4);
 }

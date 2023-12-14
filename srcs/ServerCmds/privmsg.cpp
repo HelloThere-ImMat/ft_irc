@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/14 16:45:56 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 16:47:07 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,5 @@ void Server::privmsg(
 			_bot.interact(client, privMessage);
 		else
 			sendPrivmsgToUser(client, *itTarget, privMessage);
-		}
 	}
 }

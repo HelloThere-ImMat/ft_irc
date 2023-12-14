@@ -88,7 +88,7 @@ void Utils::sendMessage(
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
 }
 
-void Utils::sendPrivateMessage(const std::string &message, Bot &bot, const Client *const receiver)
+void Utils::sendPrivateMessage(const std::string &message, const Bot &bot, const Client *const receiver)
 {
 	const std::string botSpec =
 		bot.getName() + "!~" + bot.getName() + "@localhost";

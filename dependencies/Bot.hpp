@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 13:37:08 by mdorr             #+#    #+#             */
-/*   Updated: 2023/12/14 16:33:46 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 17:05:45 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,11 @@
 #include <cstdlib>
 
 
+#define LOADING_RESP_NB	5
+
 #define BOT_INTRO_MESS ":Hi <client>,"
 #define BOT_INTRO_MESS2 "My name is Marvin, I am a simple script bot."
-#define BOT_INTRO_MESS3 "I am based of a Novel from <…> called <…>."
+#define BOT_INTRO_MESS3 "I am based of a Novel from Douglas Adams called \"The Hitchhiker's Guide to the Galaxy\"."
 #define BOT_INTRO_MESS4 "You can ask me anything you want, i will be happy to try and help you"
 
 #define BOT_Q_ANS		"I don't answer stupid questions"
@@ -35,7 +37,7 @@ class Bot
 	private:
 		std::string					_name;
 		std::vector<const Client *> _botUsers;
-		std::vector<std::string>	_loadingResponses;
-		void	sendMessage(const Client *const client, const char *message);
-		void	respond(const Client *const client, const std::string &message);
+		void	sendMessage(const Client *const client, const char *message) const;
+		void	respond(const Client *const client, const std::string &message) const;
+		void	sendIntroMessage(const Client *const client) const;
 };
