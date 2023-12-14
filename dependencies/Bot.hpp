@@ -16,9 +16,9 @@
 
 #include "Utils.hpp"
 
-#define LOADING_RESP_NB 	5
-#define BOT_TIME_LOAD		1
-#define BOT_TIME_SUSPENSE	2
+#define LOADING_RESP_NB	  5
+#define BOT_TIME_LOAD	  1
+#define BOT_TIME_SUSPENSE 2
 
 #define BOT_INTRO_MESS	":Hi <client>,"
 #define BOT_INTRO_MESS2 "My name is Marvin, I am a simple script bot."
@@ -42,7 +42,8 @@ class Bot {
    private:
 	std::string					_name;
 	std::vector<const Client *> _botUsers;
-	void sendMessage(const Client *const client, const char *const message) const;
+	void						sendMessage(
+							   const Client *const client, const char *const message) const;
 	void respond(const Client *const client, const std::string &message) const;
 	void sendIntroMessage(const Client *const client) const;
 };

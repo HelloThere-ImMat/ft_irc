@@ -12,7 +12,6 @@
 
 #include "Bot.hpp"
 
-
 Bot::Bot() : _name(BOT_NAME) {}
 
 static std::string loadingResponses[] = {
@@ -43,8 +42,7 @@ static bool hasAlreadyInteracted(
 void Bot::removeUserFromList(const Client *const client) {
 	std::vector<const Client *>::iterator it = _botUsers.begin();
 
-	while (it != _botUsers.end() && *it != client)
-		++it;
+	while (it != _botUsers.end() && *it != client) ++it;
 	if (it != _botUsers.end())
 		_botUsers.erase(it);
 }
@@ -61,7 +59,8 @@ void Bot::interact(const Client *const client, const std::string &message) {
 const std::string &Bot::getName() const { return (_name); }
 
 // Private methods
-void Bot::sendMessage(const Client *const client, const char *const message) const {
+void Bot::sendMessage(
+	const Client *const client, const char *const message) const {
 	const std::string formattedMess =
 		PRIVMSG_PREFIX + client->getNickname() + " " + message;
 	Utils::sendPrivateMessage(formattedMess, *this, client);
