@@ -12,9 +12,10 @@
 
 #include "Server.hpp"
 
-void Server::sendQuitMessageToOthers(const Client *const client, const std::string &quitMessage) {
-	for(std::map<std::string, Channel *>::iterator it = _channels.begin();
-		it != _channels.end(); it++) {
+void Server::sendQuitMessageToOthers(
+	const Client *const client, const std::string &quitMessage) {
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
+		 it != _channels.end(); it++) {
 		const Channel *const channel = it->second;
 		if (channel->isUserInChannel(client))
 			channel->sendToOthers(client, quitMessage);

@@ -50,7 +50,7 @@ void ClientManager::eraseClient(Client* const client) {
 		--_size;
 }
 
-void ClientManager::closeClient(Client *const client) {
+void ClientManager::closeClient(Client* const client) {
 	_socketToClientMap.erase(client->getSocketFd());
 	eraseClient(client);
 }

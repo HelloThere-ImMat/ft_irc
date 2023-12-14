@@ -35,7 +35,7 @@
 
 // Char
 
-#define SETTER_CHAR	   ':'
+#define SETTER_CHAR ':'
 
 // Server specs
 
@@ -60,7 +60,7 @@
 
 // Message
 
-#define DEFAULT_QUIT	 "QUIT :leaving"
+#define DEFAULT_QUIT	  "QUIT :leaving"
 #define MESSAGE_SEPARATOR " "
 #define JOIN_PREFIX		  "JOIN :"
 #define PRIVMSG_PREFIX	  "PRIVMSG "
@@ -94,9 +94,10 @@
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
 #define ERR_CHANNELISFULL	  "471 <client> <channelName> :Cannot join channel (+l)"
-#define ERR_INVITEONLYCHAN	  "473 <client> <channelName> :Cannot join channel (+i)"
-#define ERR_BADCHANNELKEY	  "475 <client> <channelName> :Cannot join channel (+k)"
-#define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
+#define ERR_INVITEONLYCHAN \
+	"473 <client> <channelName> :Cannot join channel (+i)"
+#define ERR_BADCHANNELKEY "475 <client> <channelName> :Cannot join channel (+k)"
+#define ERR_BADCHANMASK	  "476 <channelName> :Bad Channel Mask"
 #define ERR_CHANOPRIVSNEEDED \
 	"482 <client> <channelName> :You're not channel operator"
 

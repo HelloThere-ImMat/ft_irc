@@ -16,9 +16,8 @@
 
 static std::vector<const Client *>::iterator getClientFromList(
 	std::vector<const Client *> &lst, const Client *const client) {
-
-	for (std::vector<const Client *>::iterator it = lst.begin(); it != lst.end(); it++)
-	{
+	for (std::vector<const Client *>::iterator it = lst.begin();
+		 it != lst.end(); it++) {
 		if (*it == client)
 			return it;
 	}
@@ -27,9 +26,8 @@ static std::vector<const Client *>::iterator getClientFromList(
 
 static std::vector<const Client *>::const_iterator getClientFromList(
 	const std::vector<const Client *> &lst, const Client *const client) {
-
-	for (std::vector<const Client *>::const_iterator it = lst.begin(); it != lst.end(); it++)
-	{
+	for (std::vector<const Client *>::const_iterator it = lst.begin();
+		 it != lst.end(); it++) {
 		if (*it == client)
 			return it;
 	}
@@ -141,7 +139,6 @@ std::vector<std::string> Channel::processMode(
 	return newModeVect;
 }
 
-
 void Channel::sendToOthers(
 	const Client *const client, const std::string message) const {
 	for (std::map<std::string, SpecifiedClient>::const_iterator it =
@@ -199,8 +196,7 @@ bool Channel::canChangeTopic(const Client *const client) const {
 	return (_mode.isTopicProtected() == false || isOp(client));
 }
 
-bool Channel::canInvite(const Client *const client) const
-{
+bool Channel::canInvite(const Client *const client) const {
 	return (_mode.isInviteOnly() == false || isOp(client));
 }
 
@@ -216,11 +212,9 @@ bool Channel::isInInviteList(const Client *const client) const {
 	return getClientFromList(_inviteList, client) != _inviteList.end();
 }
 
-void Channel::addToInviteList(const Client *const client)
-{
+void Channel::addToInviteList(const Client *const client) {
 	_inviteList.push_back(client);
 }
-
 
 /////////////////////
 // Private Methods //
@@ -269,7 +263,8 @@ bool Channel::isPassValid(
 bool Channel::isWelcome(const Client *const client) {
 	if (_mode.isInviteOnly() == false)
 		return (true);
-	const std::vector<const Client *>::iterator it = getClientFromList(_inviteList, client);
+	const std::vector<const Client *>::iterator it =
+		getClientFromList(_inviteList, client);
 	if (it == _inviteList.end())
 		return (false);
 	_inviteList.erase(it);

@@ -59,7 +59,7 @@ class Channel {
    private:
 	// Attributes
 	std::map<std::string, SpecifiedClient> userMap;
-	std::vector<const Client *>	   _inviteList;
+	std::vector<const Client *>			   _inviteList;
 	const std::string					   _name;
 	std::string							   _topic;
 	Mode								   _mode;

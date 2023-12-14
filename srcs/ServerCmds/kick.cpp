@@ -43,9 +43,9 @@ static void handleError(const int errorCode, Client *const client,
 
 void sendKickMessage(const std::vector<std::string> &cmd,
 	const Channel *const channel, const Client *const client) {
-	const size_t cmdSize = cmd.size();
+	const size_t			 cmdSize = cmd.size();
 	std::vector<std::string> cmdCopy = cmd;
-	std::string kickMessage =
+	std::string				 kickMessage =
 		Utils::getFormattedMessage(KICK, client, cmdCopy[1]);
 	if (cmdSize > 3) {
 		cmdCopy[3] = Utils::removeSetterChar(cmd[3]);

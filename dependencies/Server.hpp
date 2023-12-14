@@ -130,7 +130,8 @@ class Server {
 	void joinChannel(const std::vector<std::string> &cmd,
 		const Client *const client, Channel *const channel,
 		const size_t keyIndex);
-	void sendQuitMessageToOthers(const Client *const client, const std::string &quitMessage);
+	void sendQuitMessageToOthers(
+		const Client *const client, const std::string &quitMessage);
 	void sendPrivmsgToChannel(const Client *const client,
 		const std::string &channelName, const std::string &privMessage);
 	void sendPrivmsgToUser(Client *const client, const std::string &targetName,
