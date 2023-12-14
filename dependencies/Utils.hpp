@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 17:13:49 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 17:31:02 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -121,9 +121,9 @@ class Utils {
 	static void sendPrivateMessage(const std::string &message, const Bot &bot,
 		const Client *const receiver);
 	static void sendFormattedMessage(const std::string &message,
-		const Client *const client, std::string channelName = "");
+		const Client *const client, const std::string channelName = "");
 	static std::string getFormattedMessage(const std::string &message,
-		const Client *const client, std::string channelName = "");
+		const Client *const client, const std::string channelName = "");
 	static std::vector<std::string> splitString(
 		const std::string &listStr, const char delimiter);
 	static std::string getFullMessage(

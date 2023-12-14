@@ -116,14 +116,14 @@ void Utils::sendPrivateMessage(const std::string &message,
 }
 
 void Utils::sendFormattedMessage(const std::string &message,
-	const Client *const client, std::string channelName) {
+	const Client *const client, const std::string channelName) {
 	sendMessage(getFormattedMessage(message, client, channelName), client);
 }
 
 // Format methods
 
 std::string Utils::getFormattedMessage(const std::string &message,
-	const Client *const client, std::string channelName) {
+	const Client *const client, const std::string channelName) {
 	const std::string mapPattern[PATTERN_COUNT][2] = {
 		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
 		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},

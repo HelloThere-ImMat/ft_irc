@@ -1,0 +1,8 @@
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+NICK marvin
+PRIVMSG marvin :Hi
+PRIVMSG marvin :what ?
+NICK marvin

@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 13:37:08 by mdorr             #+#    #+#             */
-/*   Updated: 2023/12/14 17:05:45 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 17:36:40 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,9 @@
 
 #include "Utils.hpp"
 
-#define LOADING_RESP_NB 5
+#define LOADING_RESP_NB 	5
+#define BOT_TIME_LOAD		1
+#define BOT_TIME_SUSPENSE	2
 
 #define BOT_INTRO_MESS	":Hi <client>,"
 #define BOT_INTRO_MESS2 "My name is Marvin, I am a simple script bot."

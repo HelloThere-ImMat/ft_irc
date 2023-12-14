@@ -3,14 +3,17 @@
 /*                                                        :::      ::::::::   */
 /*   Bot.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 13:36:54 by mdorr             #+#    #+#             */
-/*   Updated: 2023/12/14 16:20:35 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 17:42:22 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
+
+
+Bot::Bot() : _name(BOT_NAME) {}
 
 static std::string loadingResponses[] = {
 	"Loading...", "..", "...", "hhmmmmmm..", "Let me think..."};
@@ -25,9 +28,9 @@ static size_t getRandNb(const size_t range) {
 	return (rNb);
 }
 
-static bool hasAllreadyInteracted(
-	const Client *const client, std::vector<const Client *> &botUsers) {
-	for (std::vector<const Client *>::iterator it = botUsers.begin();
+static bool hasAlreadyInteracted(
+	const Client *const client, const std::vector<const Client *> &botUsers) {
+	for (std::vector<const Client *>::const_iterator it = botUsers.begin();
 		 it != botUsers.end(); it++) {
 		if (*it == client)
 			return (true);
@@ -40,17 +43,14 @@ static bool hasAllreadyInteracted(
 void Bot::removeUserFromList(const Client *const client) {
 	std::vector<const Client *>::iterator it = _botUsers.begin();
 
-	while (it != _botUsers.end()) {
-		if (*it == client)
-			break;
+	while (it != _botUsers.end() && *it != client)
 		++it;
-	}
 	if (it != _botUsers.end())
 		_botUsers.erase(it);
 }
 
 void Bot::interact(const Client *const client, const std::string &message) {
-	if (hasAllreadyInteracted(client, _botUsers)) {
+	if (hasAlreadyInteracted(client, _botUsers)) {
 		respond(client, message);
 	} else {
 		_botUsers.push_back(client);
@@ -59,8 +59,6 @@ void Bot::interact(const Client *const client, const std::string &message) {
 }
 
 const std::string &Bot::getName() const { return (_name); }
-
-Bot::Bot() : _name(BOT_NAME) {}
 
 // Private methods
 void Bot::sendMessage(const Client *const client, const char *message) const {
@@ -76,11 +74,11 @@ void Bot::respond(
 	else {
 		size_t loadingPrintsNb = getRandNb(4);
 		for (size_t i = 0; i < loadingPrintsNb; i++) {
-			sleep(1);
+			sleep(BOT_TIME_LOAD);
 			size_t loadingIndex = getRandNb(LOADING_RESP_NB);
 			sendMessage(client, loadingResponses[loadingIndex].c_str());
 		}
-		sleep(2);
+		sleep(BOT_TIME_SUSPENSE);
 		sendMessage(client, BOT_BASIC_ANS);
 	}
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   nick.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 14:30:08 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 15:13:57 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 17:40:45 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ static bool isNicknameValid(const std::string &nickname) {
 /////////////
 
 bool Server::isNicknameAlreadyUsed(const std::string &nickname) {
-	return _clientMap.getClient(nickname) != NULL;
+	return _clientMap.getClient(nickname) != NULL || nickname == _bot.getName();
 }
 
 void Server::notifyInConv(

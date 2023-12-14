@@ -20,7 +20,7 @@ PORT=6667
 PASSWORD=lol
 TIME=9
 
-files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2" "mode3" "topic1" "topic2" "topic3" "kick" "quit" "invite" "nick")
+files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2" "mode3" "topic1" "topic2" "topic3" "kick" "quit" "invite" "nick" "bot")
 
 #################
 ### FUNCTIONS ###

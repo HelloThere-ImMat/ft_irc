@@ -1,0 +1,24 @@
+[0;90mPassword: lol[0m
+[0;34m<< [0mCAP LS
+[0;34m<< [0mPASS lol
+[0;34m<< [0mNICK screw
+[0;34m<< [0mUSER pouet
+[0;32m>> [0m001 screw :Welcome to the IRC Network, screw
+[0;90mClient is authenticated: Nickname[screw]; Username[pouet][0m
+[0;34m<< [0mNICK marvin
+[0;32m>> [0m433 *screw marvin :Nickname is already in use
+[0;34m<< [0mPRIVMSG marvin :Hi
+[0;31m>> [0m:marvin!~marvin@localhost PRIVMSG screw :Hi screw,
+
+[0;31m>> [0m:marvin!~marvin@localhost PRIVMSG screw My name is Marvin, I am a simple script bot.
+
+[0;31m>> [0m:marvin!~marvin@localhost PRIVMSG screw I am based of a Novel from Douglas Adams called "The Hitchhiker's Guide to the Galaxy".
+
+[0;31m>> [0m:marvin!~marvin@localhost PRIVMSG screw You can ask me anything you want, i will be happy to try and help you
+
+[0;34m<< [0mPRIVMSG marvin :what ?
+[0;31m>> [0m:marvin!~marvin@localhost PRIVMSG screw I don't answer stupid questions
+
+[0;34m<< [0mNICK marvin
+[0;32m>> [0m433 *screw marvin :Nickname is already in use
+Exited by signal
