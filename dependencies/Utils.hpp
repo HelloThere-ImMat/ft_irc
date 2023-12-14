@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 17:52:58 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 15:19:39 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@
 // Char
 
 #define SETTER_CHAR ':'
+
+// Name
+
+#define BOT_NAME	"marvin"
 
 // Server specs
 
@@ -68,6 +72,7 @@
 #define INVITATION		  "INVITE <nick> <channelName>"
 #define KICK			  "KICK <channelName> <arg> :"
 #define PONG_MESSAGE	  "PONG <servername> :<nick>"
+
 
 // Sent Errors
 
@@ -105,12 +110,16 @@
 
 #define SEND_FAIL_ERROR "sending failed"
 
+class Bot;
+
 class Utils {
    public:
 	static void sendMessage(
 		const std::string &message, const Client *const client);
 	static void		   sendPrivateMessage(const std::string &message,
 			   const Client *const sender, const Client *const receiver);
+	static void 				sendPrivateMessage(const std::string &message,
+			   Bot &bot, const Client *const receiver);
 	static void		   sendFormattedMessage(const std::string &message,
 			   const Client *const client, std::string channelName = "");
 	static std::string getFormattedMessage(const std::string &message,

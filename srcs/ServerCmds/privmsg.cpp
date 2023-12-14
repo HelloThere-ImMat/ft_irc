@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   privmsg.cpp                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 11:10:33 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 15:31:20 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,9 +57,12 @@ void Server::privmsg(
 		 itTarget != targetList.end(); itTarget++) {
 		const std::string privMessage =
 			PRIVMSG_PREFIX + *itTarget + " " + fullMessage;
+		printLog(privMessage);
 
 		if ((*itTarget)[0] == CHANNEL_PREFIX)
 			sendPrivmsgToChannel(client, *itTarget, privMessage);
+		else if (*itTarget == _bot.getName())
+			_bot.interact(client);
 		else
 			sendPrivmsgToUser(client, *itTarget, privMessage);
 	}

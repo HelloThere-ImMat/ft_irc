@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ServerCmds.cpp                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/14 11:20:34 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 15:31:38 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ void Server::user(const std::vector<std::string> &cmd, Client *const client) {
 }
 
 bool Server::isNicknameAlreadyUsed(const std::string &nickname) {
-	return _clientMap.getClient(nickname) != NULL;
+	return _clientMap.getClient(nickname) != NULL || nickname == _bot.getName();
 }
 
 void Server::nick(const std::vector<std::string> &cmd, Client *const client) {

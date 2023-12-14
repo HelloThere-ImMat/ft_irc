@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Utils.hpp"
+#include "Bot.hpp"
 
 // Static Funcs
 
@@ -85,6 +86,20 @@ void Utils::sendMessage(
 		throw SendFailException();
 	else
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
+}
+
+void Utils::sendPrivateMessage(const std::string &message, Bot &bot, const Client *const receiver)
+{
+	const std::string botSpec =
+		bot.getName() + "!~" + bot.getName() + "@localhost";
+	const std::string formatMessage =
+		":" + botSpec + " " + message + END_MESSAGE;
+
+	if (send(receiver->getSocketFd(), formatMessage.c_str(),
+			formatMessage.size(), 0) < 0)
+		throw SendFailException();
+	else
+		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
 }
 
 void Utils::sendPrivateMessage(const std::string &message,

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.cpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 11:18:08 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 15:32:57 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,6 +94,7 @@ void Server::closeClient(Client *const client, const std::string &quitMessage) {
 	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
 		 it != _channels.end(); ++it)
 		it->second->removeUser(client);
+	_bot.removeUserFromList(client);
 	_clientMap.closeClient(client);
 	delFdToPoll(clientFd);
 }
