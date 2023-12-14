@@ -1,0 +1,34 @@
+[0;90mPassword: lol[0m
+[0;34m<< [0mCAP LS
+[0;34m<< [0mPASS lol
+[0;34m<< [0mNICK screw
+[0;34m<< [0mUSER pouet
+[0;32m>> [0m001 screw :Welcome to the IRC Network, screw
+[0;90mClient is authenticated: Nickname[screw]; Username[pouet][0m
+[0;34m<< [0mNICK lol
+[0;31m>> [0m:screw!~pouet@localhost NICK :lol
+
+[0;34m<< [0mJOIN #pouet
+[0;31m>> [0m:lol!~pouet@localhost JOIN :#pouet
+
+[0;32m>> [0m331 lol #pouet :No topic is set
+[0;32m>> [0m353 lol = #pouet :@lol
+[0;32m>> [0m366 lol #pouet :End of /NAMES list.
+[0;34m<< [0mNICK wouah
+[0;31m>> [0m:lol!~pouet@localhost NICK :wouah
+
+[0;34m<< [0mPRIVMSG screw :hello
+[0;32m>> [0m401 wouah screw :No such nick/channel
+[0;34m<< [0mPRIVMSG lol :hello
+[0;32m>> [0m401 wouah lol :No such nick/channel
+[0;34m<< [0mNICK wouah
+[0;32m>> [0m433 *wouah wouah :Nickname is already in use
+[0;34m<< [0mPRIVMSG lol :hello
+[0;32m>> [0m401 wouah lol :No such nick/channel
+[0;34m<< [0mPRIVMSG wouah :hello
+[0;31m>> [0m:wouah!~pouet@localhost PRIVMSG wouah :hello
+
+[0;34m<< [0mQUIT
+[0;32m>> [0mERROR :QUIT
+[0;90mclose connection[0m
+Exited by signal

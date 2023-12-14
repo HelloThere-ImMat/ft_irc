@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 09:45:58 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 17:17:18 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 16:22:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,20 +15,21 @@
 // Join Methods
 
 void Server::createChannel(
-	const Client *const client, const std::string &channelName) {
+	Client *const client, const std::string &channelName) {
 	if (channelName[0] != CHANNEL_PREFIX)
 		Utils::sendFormattedMessage(ERR_BADCHANMASK, client, channelName);
 	else if (_channels.size() >= MAX_CHANNEL_NB)
 		Utils::sendFormattedMessage(ERR_TOOMANYCHANNELS, client, channelName);
 	else {
-		Channel *channel = new Channel(channelName, client);
+		Channel *const channel = new Channel(channelName, client);
 		_channels[channelName] = channel;
+		client->addToChanMap(channel);
 		sendJoinMessage(channel, client, channelName);
 	}
 }
 
 void Server::joinChannel(const std::vector<std::string> &cmd,
-	const Client *const client, Channel *const channel, const size_t keyIndex) {
+	Client *const client, Channel *const channel, const size_t keyIndex) {
 	const std::string		 channelName = channel->getName();
 	const size_t			 sizeCmd = cmd.size();
 	std::vector<std::string> keySubArgs;
@@ -36,8 +37,11 @@ void Server::joinChannel(const std::vector<std::string> &cmd,
 	if (sizeCmd > 2)
 		keySubArgs = Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
 	try {
-		channel->addNewUser(client, keySubArgs, keyIndex);
-		sendJoinMessage(channel, client, channelName);
+		if (client->isInChannel(channel) == false) {
+			channel->addNewUser(client, keySubArgs, keyIndex);
+			client->addToChanMap(channel);
+			sendJoinMessage(channel, client, channelName);
+		}
 	} catch (Channel::WrongChannelKeyException &e) {
 		Utils::sendFormattedMessage(ERR_BADCHANNELKEY, client, channelName);
 	} catch (Channel::TooManyUserException &e) {

@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 17:52:58 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 14:20:51 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,6 +65,7 @@
 #define JOIN_PREFIX		  "JOIN :"
 #define PRIVMSG_PREFIX	  "PRIVMSG "
 #define PART_PREFIX		  "PART "
+#define NICK_PREFIX		  "NICK :"
 #define INVITATION		  "INVITE <nick> <channelName>"
 #define KICK			  "KICK <channelName> <arg> :"
 #define PONG_MESSAGE	  "PONG <servername> :<nick>"

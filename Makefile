@@ -40,6 +40,7 @@ SRCS += kick.cpp
 SRCS += quit.cpp
 SRCS += mode.cpp
 SRCS += topic.cpp
+SRCS += nick.cpp
 
 vpath %.cpp $(SRCS_PATH)
 
