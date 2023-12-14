@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 18:09:20 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 13:58:52 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:43:21 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ enum kickError {
 	TARGET_NOT_IN_CHAN
 };
 
-static void handleError(const int errorCode, Client *const client,
+static void handleError(const int errorCode, const Client *const client,
 	const std::vector<std::string> &cmd) {
 	switch (errorCode) {
 		case WRONG_CHAN_NAME:
@@ -64,16 +64,16 @@ void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 		Utils::sendFormattedMessage(ERR_NEEDMOREPARAMS, client);
 		return;
 	};
-	std::map<std::string, Channel *>::iterator itMap = _channels.find(cmd[1]);
 	try {
+		const std::map<std::string, Channel *>::iterator itMap = _channels.find(cmd[1]);
 		if (itMap == _channels.end())
 			throw(OpCmdsErrors(WRONG_CHAN_NAME));
-		Channel					   *channel = itMap->second;
+		Channel					   *const channel = itMap->second;
 		const std::vector<std::string> users =
 			Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
 		for (std::vector<std::string>::const_iterator itUser = users.begin();
 			 itUser != users.end(); itUser++) {
-			Client *kickedUser = _clientMap.getClient(*itUser);
+			const Client *const kickedUser = _clientMap.getClient(*itUser);
 			client->setLastArg((*itUser));
 			if (kickedUser == NULL)
 				throw(OpCmdsErrors(WRONG_USER_NAME));

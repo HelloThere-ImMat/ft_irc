@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/08 16:20:55 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 18:01:40 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:44:48 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ enum inviteError {
 	USER_NOT_OP
 };
 
-static void handleError(const int errorCode, Client *const client,
+static void handleError(const int errorCode, const Client *const client,
 	const std::vector<std::string> &cmd) {
 	switch (errorCode) {
 		case WRONG_USER_NAME:
@@ -70,7 +70,6 @@ void Server::invite(const std::vector<std::string> &cmd, Client *const client) {
 			Utils::getFormattedMessage(INVITATION, target, channelName);
 		Utils::sendPrivateMessage(invitation, client, target);
 	} catch (Server::OpCmdsErrors &e) {
-		const int errorType = e.getCode();
-		handleError(errorType, client, cmd);
+		handleError(e.getCode(), client, cmd);
 	}
 }

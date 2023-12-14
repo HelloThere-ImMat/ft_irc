@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 16:32:16 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:30:46 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,6 @@ class ClientManager {
 	~ClientManager();
 	// Methods to change maps
 	void addClient(Client* const client);
-	void eraseClient(Client* const client);
-	void sendToAllClients(const std::string& message, Client* const client);
 	void closeClient(Client* const client);
 	void updateClientNickname(
 		Client* const client, const std::string& nickname);
@@ -42,7 +40,10 @@ class ClientManager {
 	};
 
    private:
+	// Attributes
 	std::map<int, Client*>		   _socketToClientMap;
 	std::map<std::string, Client*> _nicknameToClientMap;
 	size_t						   _size;
+	// Methods
+	void eraseClient(Client* const client);
 };
