@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 11:20:40 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 13:29:50 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,11 @@
 #define WRONG_CMD__ERROR			"Invalid Login Command!"
 #define INVALID_SET_PASSWORD__ERROR "Invalid set password"
 
+typedef struct s_conv {
+	const Client *user1;
+	const Client *user2;
+}			Conversation;
+
 class Server {
 	typedef void (Server::*CommandFunction)(
 		const std::vector<std::string> &, Client *const);
@@ -82,6 +87,7 @@ class Server {
 	std::map<std::string, CommandFunction> _cmdMap;
 	std::string							   _password;
 	ClientManager						   _clientMap;
+	std::vector<Conversation>			   _convMap;
 	// Private Methods
 	//    Initialisation methods
 	void initializeCmdMap();

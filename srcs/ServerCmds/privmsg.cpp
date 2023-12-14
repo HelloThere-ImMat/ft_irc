@@ -6,11 +6,32 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 11:10:33 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 13:49:40 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+////////////////////
+// Static methods //
+///////////////////
+
+static bool areSameConv(const Conversation &conv1, const Conversation &conv2){
+	return (conv1.user1 == conv2.user1 && conv1.user2 == conv2.user2)
+		|| (conv1.user1 == conv2.user2 && conv1.user2 == conv2.user1);
+}
+
+static bool isNewConv(const std::vector<Conversation> &convMap, const Conversation &conv) {
+	for (std::vector<Conversation>::const_iterator it = convMap.begin(); it != convMap.end(); ++it) {
+		if (areSameConv(*it, conv))
+			return false;
+	}
+	return true;
+}
+
+//////////////////////
+// Private methods //
+/////////////////////
 
 void Server::sendPrivmsgToChannel(const Client *const client,
 	const std::string &channelName, const std::string &privMessage) {
@@ -34,6 +55,9 @@ void Server::sendPrivmsgToUser(Client *const client,
 		client->setLastArg(targetName);
 		Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
 	} else {
+		const Conversation conv = {.user1 = client, .user2 = receiver};
+		if (isNewConv(_convMap, conv))
+			_convMap.push_back(conv);
 		Utils::sendPrivateMessage(privMessage, client, receiver);
 	}
 }
@@ -60,7 +84,12 @@ void Server::privmsg(
 
 		if ((*itTarget)[0] == CHANNEL_PREFIX)
 			sendPrivmsgToChannel(client, *itTarget, privMessage);
-		else
+		else {
 			sendPrivmsgToUser(client, *itTarget, privMessage);
+		}
 	}
+	// std::cout << "Conv Map:" << std::endl;
+	// for (std::vector<Conversation>::iterator it = _convMap.begin(); it != _convMap.end(); ++it) {
+	// 	std::cout << "User1:"<< it->user1->getNickname() << "; User2:" << it->user2->getNickname() << std::endl;
+	// }
 }
