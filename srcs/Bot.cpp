@@ -6,14 +6,24 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 13:36:54 by mdorr             #+#    #+#             */
-/*   Updated: 2023/12/14 15:36:24 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 16:39:01 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Bot.hpp"
 
-static bool hasAllreadyInteracted(const Client *const client, std::vector<const Client *> &botUsers)
+// Static functions
+
+static size_t getRandNb(size_t range)
 {
+	size_t rNb;
+
+	srand(time(NULL));
+	rNb = rand() % range;
+	return (rNb);
+}
+
+static bool hasAllreadyInteracted(const Client *const client, std::vector<const Client *> &botUsers) {
 	for (std::vector<const Client *>::iterator it = botUsers.begin(); it != botUsers.end(); it++)
 	{
 		if (*it == client)
@@ -22,10 +32,7 @@ static bool hasAllreadyInteracted(const Client *const client, std::vector<const 
 	return (false);
 }
 
-//void Bot::respond(const Client *const client)
-//{
-
-//}
+// Public methods
 
 void Bot::removeUserFromList(const Client *const client)
 {
@@ -41,17 +48,10 @@ void Bot::removeUserFromList(const Client *const client)
 		_botUsers.erase(it);
 }
 
-void Bot::sendMessage(const Client *const client, const char *message)
+void Bot::interact(const Client *const client, const std::string &message)
 {
-	std::string formattedMess = PRIVMSG_PREFIX + client->getNickname() + " " + message;
-	Utils::sendPrivateMessage(formattedMess, *this, client);
-}
-
-void Bot::interact(const Client *const client)
-{
-
 	if (hasAllreadyInteracted(client, _botUsers)) {
-		std::cout << "hellooo" << std::endl;
+		respond(client, message);
 	}
 	else {
 		_botUsers.push_back(client);
@@ -63,7 +63,6 @@ void Bot::interact(const Client *const client)
 	}
 }
 
-
 const std::string &Bot::getName() const {
 	return (_name);
 }
@@ -73,6 +72,33 @@ Bot::Bot() : _name(BOT_NAME)
 	_loadingResponses.push_back("Loading...");
 	_loadingResponses.push_back("..");
 	_loadingResponses.push_back("...");
-	_loadingResponses.push_back("hhmmmmmm..");
+	_loadingResponses.push_back("hmmmmmm..");
 	_loadingResponses.push_back("Let me think...");
+}
+
+// Private methods
+void Bot::sendMessage(const Client *const client, const char *message)
+{
+	std::string formattedMess = PRIVMSG_PREFIX + client->getNickname() + " " + message;
+	Utils::sendPrivateMessage(formattedMess, *this, client);
+}
+
+void Bot::respond(const Client *const client, const std::string &message)
+{
+	std::string::const_iterator lastChar= message.end() - 1;
+
+	if (*lastChar == '?')
+		sendMessage(client, BOT_Q_ANS);
+	else
+	{
+		size_t loadingPrintsNb =  getRandNb(4);
+		for (size_t i = 0; i < loadingPrintsNb; i++)
+		{
+			sleep(1);
+			size_t loadingIndex = getRandNb(_loadingResponses.size());
+			sendMessage(client, _loadingResponses[loadingIndex].c_str());
+		}
+		sleep(2);
+		sendMessage(client, BOT_BASIC_ANS);
+	}
 }
