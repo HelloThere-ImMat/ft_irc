@@ -88,10 +88,9 @@ void Utils::sendMessage(
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
 }
 
-void Utils::sendPrivateMessage(const std::string &message, const Bot &bot, const Client *const receiver)
-{
+void Utils::sendPrivateMessage(const std::string &message, const std::string &senderNick, const std::string &senderName, const Client *const receiver) {
 	const std::string botSpec =
-		bot.getName() + "!~" + bot.getName() + "@localhost";
+		senderNick + "!~" + senderName + "@localhost";
 	const std::string formatMessage =
 		":" + botSpec + " " + message + END_MESSAGE;
 
@@ -102,18 +101,16 @@ void Utils::sendPrivateMessage(const std::string &message, const Bot &bot, const
 		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
 }
 
+
+void Utils::sendPrivateMessage(const std::string &message, const Bot &bot, const Client *const receiver)
+{
+	const std::string botName = bot.getName();
+	sendPrivateMessage(message, botName, botName, receiver);
+}
+
 void Utils::sendPrivateMessage(const std::string &message,
 	const Client *const sender, const Client *const receiver) {
-	const std::string senderSpec =
-		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
-	const std::string formatMessage =
-		":" + senderSpec + " " + message + END_MESSAGE;
-
-	if (send(receiver->getSocketFd(), formatMessage.c_str(),
-			formatMessage.size(), 0) < 0)
-		throw SendFailException();
-	else
-		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
+	sendPrivateMessage(message, sender->getNickname(), sender->getUsername(), receiver);
 }
 
 void Utils::sendFormattedMessage(const std::string &message,

@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 17:07:32 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 17:13:49 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,7 @@ class Utils {
 	static std::string removeSetterChar(const std::string &message);
 
    private:
+	static void sendPrivateMessage(const std::string &message, const std::string &senderNick, const std::string &senderName, const Client *const target);
 	class SendFailException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
