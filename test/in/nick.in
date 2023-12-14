@@ -10,3 +10,4 @@ PRIVMSG lol :hello
 NICK wouah
 PRIVMSG lol :hello
 PRIVMSG wouah :hello
+QUIT
