@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 14:30:08 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 14:33:03 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 14:58:34 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ void Server::notifyInConv(const Client *const client, const std::string message)
 void Server::notifyNickUpdate(const Client *const client, const std::string newNick) const {
 	const std::string nickUpdateMessage = NICK_PREFIX + newNick;
 	Utils::sendPrivateMessage(nickUpdateMessage, client, client);
-	// notifyInChannel(client, nickUpdateMessage);
+	client->sendToChannels(nickUpdateMessage);
 	notifyInConv(client, nickUpdateMessage);
 }
 

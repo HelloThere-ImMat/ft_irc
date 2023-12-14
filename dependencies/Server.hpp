@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 14:25:43 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 14:50:06 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -130,9 +130,9 @@ class Server {
 	void sendJoinMessage(const Channel *const channel,
 		const Client *const client, const std::string &channelName);
 	void createChannel(
-		const Client *const client, const std::string &channelName);
+		Client *const client, const std::string &channelName);
 	void joinChannel(const std::vector<std::string> &cmd,
-		const Client *const client, Channel *const channel,
+		Client *const client, Channel *const channel,
 		const size_t keyIndex);
 	void sendQuitMessageToOthers(
 		const Client *const client, const std::string &quitMessage);

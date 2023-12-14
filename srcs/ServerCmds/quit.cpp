@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/11 14:17:28 by mat               #+#    #+#             */
-/*   Updated: 2023/12/14 11:19:04 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 14:36:51 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ void Server::sendQuitMessageToOthers(
 		if (channel->isUserInChannel(client))
 			channel->sendToOthers(client, quitMessage);
 	}
+	// TO BE UPDATED
 }
 
 void Server::quit(const std::vector<std::string> &cmd, Client *const client) {
