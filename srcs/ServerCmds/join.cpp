@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 09:45:58 by mat               #+#    #+#             */
-/*   Updated: 2023/12/14 14:56:23 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 16:19:30 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,10 +37,12 @@ void Server::joinChannel(const std::vector<std::string> &cmd,
 	if (sizeCmd > 2)
 		keySubArgs = Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
 	try {
-		channel->addNewUser(client, keySubArgs, keyIndex);
 		if (client->isInChannel(channel) == false)
+		{
+			channel->addNewUser(client, keySubArgs, keyIndex);
 			client->addToChanMap(channel);
-		sendJoinMessage(channel, client, channelName);
+			sendJoinMessage(channel, client, channelName);
+		}
 	} catch (Channel::WrongChannelKeyException &e) {
 		Utils::sendFormattedMessage(ERR_BADCHANNELKEY, client, channelName);
 	} catch (Channel::TooManyUserException &e) {

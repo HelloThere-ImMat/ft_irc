@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/20 17:30:35 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 15:00:29 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 16:19:03 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,13 +37,9 @@ const std::string &Client::getBuffer() const { return (_buffer); }
 uint8_t Client::getLogMask() const { return (_loginMask); }
 
 bool Client::isInChannel(const Channel *const channel) const {
-	for (std::map<std::string, const Channel *>::const_iterator it =
-			 _chanMap.begin();
-		 it != _chanMap.end(); ++it) {
-		if (it->second == channel)
-			return true;
-	}
-	return false;
+	const std::string channelName = channel->getName();
+
+	return _chanMap.find(channelName) != _chanMap.end();
 }
 
 // Setters
