@@ -1,0 +1,12 @@
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+NICK lol
+JOIN #pouet
+NICK wouah
+PRIVMSG screw :hello
+PRIVMSG lol :hello
+NICK wouah
+PRIVMSG lol :hello
+PRIVMSG wouah :hello

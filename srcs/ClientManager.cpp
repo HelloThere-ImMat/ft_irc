@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:03 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 11:31:05 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 15:14:27 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,9 @@ void ClientManager::updateClientNickname(
 	Client* const client, const std::string& nickname) {
 	if (nickname.empty() == false) {
 		const std::string oldNickname = client->getNickname();
-		if (oldNickname.empty() == false)
+		if (oldNickname.empty() == false) {
 			_nicknameToClientMap.erase(oldNickname);
+		}
 		_nicknameToClientMap[nickname] = client;
 	}
 }

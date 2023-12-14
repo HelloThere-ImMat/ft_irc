@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 14:30:08 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 14:58:34 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 15:13:57 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,8 +72,8 @@ void Server::nick(const std::vector<std::string> &cmd, Client *const client) {
 	else {
 		if (client->isAuthenticated())
 			notifyNickUpdate(client, cmd[1]);
-		client->setNickname(cmd[1]);
 		_clientMap.updateClientNickname(client, cmd[1]);
+		client->setNickname(cmd[1]);
 		client->addToLoginMask(NICK_LOGIN);
 	}
 }

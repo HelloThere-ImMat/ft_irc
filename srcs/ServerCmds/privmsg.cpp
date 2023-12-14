@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/14 14:03:39 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 15:04:07 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,9 +87,5 @@ void Server::privmsg(
 		else {
 			sendPrivmsgToUser(client, *itTarget, privMessage);
 		}
-	}
-	std::cout << "Conv List:" << std::endl;
-	for (std::vector<Conversation>::iterator it = _convList.begin(); it != _convList.end(); ++it) {
-		std::cout << "User1:"<< it->user1->getNickname() << "; User2:" << it->user2->getNickname() << std::endl;
 	}
 }
