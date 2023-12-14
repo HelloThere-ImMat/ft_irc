@@ -21,8 +21,8 @@
 
 #include <typeinfo>
 
-#include "Channel.hpp"
 #include "Bot.hpp"
+#include "Channel.hpp"
 #include "ClientManager.hpp"
 #include "DataServ.hpp"
 #include "Signal.hpp"

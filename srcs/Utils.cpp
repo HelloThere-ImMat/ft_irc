@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "Utils.hpp"
+
 #include "Bot.hpp"
 
 // Static Funcs
@@ -88,9 +89,10 @@ void Utils::sendMessage(
 		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
 }
 
-void Utils::sendPrivateMessage(const std::string &message, const std::string &senderNick, const std::string &senderName, const Client *const receiver) {
-	const std::string botSpec =
-		senderNick + "!~" + senderName + "@localhost";
+void Utils::sendPrivateMessage(const std::string &message,
+	const std::string &senderNick, const std::string &senderName,
+	const Client *const receiver) {
+	const std::string botSpec = senderNick + "!~" + senderName + "@localhost";
 	const std::string formatMessage =
 		":" + botSpec + " " + message + END_MESSAGE;
 
@@ -101,16 +103,16 @@ void Utils::sendPrivateMessage(const std::string &message, const std::string &se
 		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
 }
 
-
-void Utils::sendPrivateMessage(const std::string &message, const Bot &bot, const Client *const receiver)
-{
+void Utils::sendPrivateMessage(
+	const std::string &message, const Bot &bot, const Client *const receiver) {
 	const std::string botName = bot.getName();
 	sendPrivateMessage(message, botName, botName, receiver);
 }
 
 void Utils::sendPrivateMessage(const std::string &message,
 	const Client *const sender, const Client *const receiver) {
-	sendPrivateMessage(message, sender->getNickname(), sender->getUsername(), receiver);
+	sendPrivateMessage(
+		message, sender->getNickname(), sender->getUsername(), receiver);
 }
 
 void Utils::sendFormattedMessage(const std::string &message,

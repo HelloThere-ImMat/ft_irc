@@ -39,7 +39,7 @@
 
 // Name
 
-#define BOT_NAME	"marvin"
+#define BOT_NAME "marvin"
 
 // Server specs
 
@@ -73,7 +73,6 @@
 #define INVITATION		  "INVITE <nick> <channelName>"
 #define KICK			  "KICK <channelName> <arg> :"
 #define PONG_MESSAGE	  "PONG <servername> :<nick>"
-
 
 // Sent Errors
 
@@ -117,12 +116,12 @@ class Utils {
    public:
 	static void sendMessage(
 		const std::string &message, const Client *const client);
-	static void		   sendPrivateMessage(const std::string &message,
-			   const Client *const sender, const Client *const receiver);
-	static void 				sendPrivateMessage(const std::string &message,
-			const Bot &bot, const Client *const receiver);
-	static void		   sendFormattedMessage(const std::string &message,
-			   const Client *const client, std::string channelName = "");
+	static void sendPrivateMessage(const std::string &message,
+		const Client *const sender, const Client *const receiver);
+	static void sendPrivateMessage(const std::string &message, const Bot &bot,
+		const Client *const receiver);
+	static void sendFormattedMessage(const std::string &message,
+		const Client *const client, std::string channelName = "");
 	static std::string getFormattedMessage(const std::string &message,
 		const Client *const client, std::string channelName = "");
 	static std::vector<std::string> splitString(
@@ -136,7 +135,9 @@ class Utils {
 	static std::string removeSetterChar(const std::string &message);
 
    private:
-	static void sendPrivateMessage(const std::string &message, const std::string &senderNick, const std::string &senderName, const Client *const target);
+	static void sendPrivateMessage(const std::string &message,
+		const std::string &senderNick, const std::string &senderName,
+		const Client *const target);
 	class SendFailException : public std::exception {
 	   public:
 		virtual const char *what() const throw();

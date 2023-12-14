@@ -334,6 +334,24 @@
       "-I",
       "dependencies/",
       "-o",
+      "objs/Bot.o",
+      "srcs/Bot.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/Bot.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/Bot.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
       "objs/nick.o",
       "srcs/ServerCmds/nick.cpp"
     ],
