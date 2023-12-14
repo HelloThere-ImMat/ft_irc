@@ -6,25 +6,27 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:03 by rbroque           #+#    #+#             */
-/*   Updated: 2023/11/30 21:45:53 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:31:05 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ClientManager.hpp"
 
-ClientManager::ClientManager() {}
+ClientManager::ClientManager() : _size(0) {}
 
 ClientManager::~ClientManager() {
 	for (std::map<int, Client*>::iterator it = _socketToClientMap.begin();
 		 it != _socketToClientMap.end(); ++it) {
 		eraseClient(it->second);
-		delete it->second;
 	}
 }
 
 void ClientManager::addClient(Client* const client) {
 	_socketToClientMap[client->getSocketFd()] = client;
 	updateClientNickname(client, client->getNickname());
+	++_size;
+	if (_size > MAX_CLIENT_COUNT)
+		throw ServerFullException();
 }
 
 void ClientManager::updateClientNickname(
@@ -37,11 +39,9 @@ void ClientManager::updateClientNickname(
 	}
 }
 
-void ClientManager::eraseClient(Client* const client) {
-	const std::string nickname = client->getNickname();
-
-	if (nickname.empty() == false)
-		_nicknameToClientMap.erase(nickname);
+void ClientManager::closeClient(Client* const client) {
+	_socketToClientMap.erase(client->getSocketFd());
+	eraseClient(client);
 }
 
 Client* ClientManager::getClient(const std::string& nickname) {
@@ -56,4 +56,22 @@ Client* ClientManager::getClient(const int sockFd) {
 		return _socketToClientMap[sockFd];
 	}
 	return NULL;
+}
+
+const char* ClientManager::ServerFullException::what() const throw() {
+	return SERVER_FULL_ERROR;
+}
+
+/////////////
+// PRIVATE //
+/////////////
+
+void ClientManager::eraseClient(Client* const client) {
+	const std::string nickname = client->getNickname();
+
+	if (nickname.empty() == false)
+		_nicknameToClientMap.erase(nickname);
+	delete client;
+	if (_size > 0)
+		--_size;
 }

@@ -1,0 +1,12 @@
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+JOIN #pouet
+TOPIC #pouet
+TOPIC #pouet ::
+TOPIC #pouet
+TOPIC #pouet :
+TOPIC #pouet
+TOPIC #pouet :::: ::This is a topic with dots...:: :::
+TOPIC #pouet

@@ -6,81 +6,60 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/01 10:17:23 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:20:40 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
-#include <map>
-#include <sstream>
-#include <vector>
+#ifndef TEST
+	#define TEST false
+#endif
 
+#include <string.h>
+#include <sys/epoll.h>
+
+#include <typeinfo>
+
+#include "Channel.hpp"
 #include "ClientManager.hpp"
 #include "DataServ.hpp"
-#include "irc.hpp"
+#include "Signal.hpp"
 
 // Count
 
-#define BUFFER_SIZE		 1024
-#define TIMEOUT			 -1
-#define PATTERN_COUNT	 6
-#define MAX_CLIENT_COUNT 3
+#define BUFFER_SIZE			1024
+#define TIMEOUT				-1
+#define PRIVMSG_START_INDEX 2
+#define TOPIC_START_INDEX	2
+#define MODE_NOARG_SIZE		2
+#define MIN_MODE_MSG_SIZE	3
+#define MAX_CHANNEL_NB		10
 
 // Parameters
 
 #define USERLEN 18
 
+// CHAR
+
+#define CHANNEL_PREFIX '#'
+
 // STRINGS
 
-#define DOMAIN_NAME			 "ft_irc.local"
-#define NETWORK_NAME		 "IRC"
-#define SERVER_NAME			 "IRCserv"
-#define END_MESSAGE			 "\r\n"
-#define INMES_PREFIX		 "<< "
-#define OUTMES_PREFIX		 ">> "
-#define DEFAULT_USERNAME	 "Placeholder"
-#define SPECIAL_NICK_CHARSET "[]{}*\\|"
-
-// COLORS
-
-#define NC	   "\033[0m"
-#define RED	   "\033[0;31m"
-#define GREEN  "\033[0;32m"
-#define ORANGE "\033[0;33m"
-#define BLUE   "\033[0;34m"
-#define GREY   "\033[0;90m"
-
-// RPL
-
-#define RPL_WELCOME "001 <client> :Welcome to the <networkname> Network, <nick>"
-
-// Message
-
-#define PONG_MESSAGE "PONG <servername> :<nick>"
-
-// Logs
-
-#define CLOSED_CLIENT_MESSAGE "Client has been disconnected"
-
-// Sent Errors
-
-#define ERROR_PREFIX		  "ERROR :"
-#define ERR_CLOSECONNECTION	  "Connection closed"
-#define ERR_UNKNOWNCOMMAND	  "421 <client> <command> :Unknown command"
-#define ERR_NONICKNAMEGIVEN	  "431 <client> :No nickname given"
-#define ERR_ERRONEUSNICKNAME  "432 <client> <arg> :Erroneus nickname"
-#define ERR_NICKNAMEINUSE	  "433 <client> <arg> :Nickname is already in use"
-#define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
-#define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
-#define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
+#define INMES_PREFIX			 "<< "
+#define CHANNEL_PREFIX			 '#'
+#define DEFAULT_USERNAME		 "Placeholder"
+#define SPECIAL_NICK_CHARSET	 "[]{}*\\|_"
+#define MODE_SETCHAR			 "itklo+-"
+#define INVALID_PASSWORD_CHARSET " \b\t\n\v\f\r,"
 
 // Errors
 
-#define LISTEN_FAIL__ERROR "listening failed"
-#define READ_FAIL__ERROR   "reading failed"
-#define SEND_FAIL__ERROR   "sending failed"
-#define WRONG_CMD__ERROR   "Invalid Login Command!"
+#define LISTEN_FAIL__ERROR			"listening failed"
+#define READ_FAIL__ERROR			"reading failed"
+#define CLIENT_QUIT__ERROR			"close connection"
+#define WRONG_CMD__ERROR			"Invalid Login Command!"
+#define INVALID_SET_PASSWORD__ERROR "Invalid set password"
 
 class Server {
 	typedef void (Server::*CommandFunction)(
@@ -89,26 +68,25 @@ class Server {
    public:
 	Server(const std::string &port, const std::string &password);
 	~Server();
-	void start();
 	void listen() const;
 	void lookForEvents();
 	void readClientCommand(const int fd);
 	void addNewClient();
-	void closeClient(Client *const client);
+	void closeClient(Client *const client, const std::string &quitMessage);
 
    private:
 	// Attributes
 	DataServ							   _socket;
 	int									   _epollFd;
+	std::map<std::string, Channel *>	   _channels;
 	std::map<std::string, CommandFunction> _cmdMap;
 	std::string							   _password;
 	ClientManager						   _clientMap;
 	// Private Methods
+	//    Initialisation methods
+	void initializeCmdMap();
+	//    Print methods
 	void printLog(const std::string &logMessage) const;
-	//    Send Methods
-	void sendMessage(const std::string &message, const int clientFd) const;
-	void sendFormattedMessage(
-		const std::string &message, const Client *const client) const;
 	//    Poll Methods
 	void addFdToPoll(const int fd);
 	void delFdToPoll(const int fd);
@@ -130,9 +108,30 @@ class Server {
 	void user(const std::vector<std::string> &cmd, Client *const client);
 	void nick(const std::vector<std::string> &cmd, Client *const client);
 	void ping(const std::vector<std::string> &cmd, Client *const client);
+	void join(const std::vector<std::string> &cmd, Client *const client);
+	void privmsg(const std::vector<std::string> &cmd, Client *const client);
+	void part(const std::vector<std::string> &cmd, Client *const client);
+	void topic(const std::vector<std::string> &cmd, Client *const client);
+	void invite(const std::vector<std::string> &cmd, Client *const client);
+	void kick(const std::vector<std::string> &cmd, Client *const client);
+	void quit(const std::vector<std::string> &cmd, Client *const client);
+	void mode(const std::vector<std::string> &cmd, Client *const client);
 	void error(const std::string &message, Client *const client);
 	// CMD_UTILS
 	bool isNicknameAlreadyUsed(const std::string &nickname);
+	void sendJoinMessage(const Channel *const channel,
+		const Client *const client, const std::string &channelName);
+	void createChannel(
+		const Client *const client, const std::string &channelName);
+	void joinChannel(const std::vector<std::string> &cmd,
+		const Client *const client, Channel *const channel,
+		const size_t keyIndex);
+	void sendQuitMessageToOthers(
+		const Client *const client, const std::string &quitMessage);
+	void sendPrivmsgToChannel(const Client *const client,
+		const std::string &channelName, const std::string &privMessage);
+	void sendPrivmsgToUser(Client *const client, const std::string &targetName,
+		const std::string &privMessage);
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:
@@ -142,12 +141,24 @@ class Server {
 	   public:
 		virtual const char *what() const throw();
 	};
-	class SendFailException : public std::exception {
+	class ClientHasQuitException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
 	};
 	class InvalidLoginCommandException : public std::exception {
 	   public:
 		virtual const char *what() const throw();
+	};
+	class InvalidSetPasswordException : public std::exception {
+	   public:
+		virtual const char *what() const throw();
+	};
+	class OpCmdsErrors : public std::exception {
+	   public:
+		OpCmdsErrors(const int errorCode) : _errorCode(errorCode) {}
+		int getCode() const { return (_errorCode); }
+
+	   private:
+		const int _errorCode;
 	};
 };

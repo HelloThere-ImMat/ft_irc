@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/01 10:17:13 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:18:08 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,36 +21,25 @@ static std::vector<std::string> getCommandTokens(
 	std::vector<std::string> tokens;
 	std::istringstream		 iss(ircMessage);
 	std::string				 token;
+	char					 restChar;
 
-	while (iss >> token) {
+	while (iss >> token && token[0] != SETTER_CHAR) {
 		tokens.push_back(token);
 	}
+	if (iss.eof() == false) {  // found a separator
+		while (iss.get(
+			restChar))	// concatenate the separator with the end of the line
+			token += restChar;
+		tokens.push_back(token);
+	} else if (token[0] ==
+			   SETTER_CHAR)	 // the final token is beginning with a separator
+		tokens.push_back(token);
 	return tokens;
 }
 
-static std::string replacePatterns(std::string original,
-	const std::string &pattern, const std::string &replacement) {
-	size_t startPos = 0;
-	while ((startPos = original.find(pattern, startPos)) != std::string::npos) {
-		original.replace(startPos, pattern.length(), replacement);
-		startPos += replacement.length();
-	}
-	return original;
-}
-
-static std::string getFormattedMessage(
-	const std::string &message, const Client *const client) {
-	const std::string mapPattern[PATTERN_COUNT][2] = {
-		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
-		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},
-		{"<command>", client->getLastCmd()}, {"<arg>", client->getLastArg()}};
-	std::string formattedMessage = message;
-
-	for (size_t i = 0; i < PATTERN_COUNT; ++i) {
-		formattedMessage = replacePatterns(
-			formattedMessage, mapPattern[i][0], mapPattern[i][1]);
-	}
-	return formattedMessage;
+static bool isPasswordValid(const std::string &password) {
+	return password.empty() == false && Utils::isThereInvalidChar(password,
+											INVALID_PASSWORD_CHARSET) == false;
 }
 
 ////////////
@@ -58,28 +47,27 @@ static std::string getFormattedMessage(
 ////////////
 
 Server::Server(const std::string &port, const std::string &password)
-	: _socket(port), _password(password) {
-	_cmdMap["PASS"] = &Server::pass;
-	_cmdMap["USER"] = &Server::user;
-	_cmdMap["NICK"] = &Server::nick;
-	_cmdMap["CAP"] = &Server::cap;
-	_cmdMap["PING"] = &Server::ping;
-
-	printLog("Port: " + port);
+	: _socket(port) {
+	if (isPasswordValid(password) == false)
+		throw InvalidSetPasswordException();
+	_password = password;
+	initializeCmdMap();
+	_socket.setup();
+	_epollFd = epoll_create1(0);
+	addFdToPoll(_socket.getSocketFd());
+	if (TEST == false)
+		printLog("Port: " + port);
 	printLog("Password: " + password);
-	_epollFd = 0;
 }
 
 Server::~Server() {
 	delFdToPoll(_socket.getSocketFd());
 	if (_epollFd != 0)
 		close(_epollFd);
-}
-
-void Server::start() {
-	_socket.setup();
-	_epollFd = epoll_create1(0);
-	addFdToPoll(_socket.getSocketFd());
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
+		 it != _channels.end(); ++it) {
+		delete it->second;
+	}
 }
 
 void Server::listen() const {
@@ -93,14 +81,21 @@ void Server::addNewClient() {
 	const int newFd = _socket.acceptNewConnectionSocket();
 
 	addFdToPoll(newFd);
-	_clientMap.addClient(new Client(newFd));
+	try {
+		_clientMap.addClient(new Client(newFd));
+	} catch (ClientManager::ServerFullException &e) {
+		error(e.what(), _clientMap.getClient(newFd));
+	}
 }
 
-void Server::closeClient(Client *const client) {
+void Server::closeClient(Client *const client, const std::string &quitMessage) {
 	const int clientFd = client->getSocketFd();
-
+	sendQuitMessageToOthers(client, quitMessage);
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
+		 it != _channels.end(); ++it)
+		it->second->removeUser(client);
+	_clientMap.closeClient(client);
 	delFdToPoll(clientFd);
-	_clientMap.eraseClient(client);
 }
 
 void Server::lookForEvents() {
@@ -138,11 +133,11 @@ void Server::readClientCommand(const int sockfd) {
 			processReceivedData(received_data, sockfd);
 		} else if (bytes_received < 0) {
 			throw ReadFailException();
-		} else {
-			closeClient(client);
-			printLog(CLOSED_CLIENT_MESSAGE);
-		}
+		} else
+			error(DEFAULT_QUIT, client);
 	} catch (ReadFailException &e) {
+		printLog(e.what());
+	} catch (ClientHasQuitException &e) {
 		printLog(e.what());
 	}
 }
@@ -151,26 +146,28 @@ void Server::readClientCommand(const int sockfd) {
 // PRIVATE //
 /////////////
 
+// Initialisation methods
+
+void Server::initializeCmdMap() {
+	_cmdMap["PASS"] = &Server::pass;
+	_cmdMap["USER"] = &Server::user;
+	_cmdMap["NICK"] = &Server::nick;
+	_cmdMap["CAP"] = &Server::cap;
+	_cmdMap["PING"] = &Server::ping;
+	_cmdMap["JOIN"] = &Server::join;
+	_cmdMap["PRIVMSG"] = &Server::privmsg;
+	_cmdMap["PART"] = &Server::part;
+	_cmdMap["MODE"] = &Server::mode;
+	_cmdMap["TOPIC"] = &Server::topic;
+	_cmdMap["INVITE"] = &Server::invite;
+	_cmdMap["KICK"] = &Server::kick;
+	_cmdMap["QUIT"] = &Server::quit;
+}
+
+// Print methods
+
 void Server::printLog(const std::string &logMessage) const {
 	std::cout << GREY << logMessage << NC << std::endl;
-}
-
-//	Send Methods
-
-void Server::sendMessage(const std::string &message, const int clientFd) const {
-	static const std::string domainName = DOMAIN_NAME;
-	const std::string		 formatMessage =
-		":" + domainName + " " + message + END_MESSAGE;
-
-	if (send(clientFd, formatMessage.c_str(), formatMessage.size(), 0) < 0)
-		throw SendFailException();
-	else
-		std::cout << GREEN << OUTMES_PREFIX << NC << message << std::endl;
-}
-
-void Server::sendFormattedMessage(
-	const std::string &message, const Client *const client) const {
-	sendMessage(getFormattedMessage(message, client), client->getSocketFd());
 }
 
 //	Poll Methods
@@ -240,10 +237,10 @@ void Server::handleCmd(
 		if (it != _cmdMap.end())
 			(this->*fct)(cmd, client);
 		else
-			sendFormattedMessage(ERR_UNKNOWNCOMMAND, client);
+			Utils::sendFormattedMessage(ERR_UNKNOWNCOMMAND, client);
 	} catch (std::string &e) {	// Catch only command exception
 		std::cout << client << ": " << e << std::endl;
-		sendFormattedMessage(e, client);
+		Utils::sendFormattedMessage(e, client);
 	}
 }
 
@@ -280,7 +277,7 @@ void Server::getUserLogin(
 		setClientLogAssets(cmd, client);
 	}
 	if (client->isAuthenticated()) {
-		sendFormattedMessage(RPL_WELCOME, client);
+		Utils::sendFormattedMessage(RPL_WELCOME, client);
 		printLog("Client is authenticated: Nickname[" + client->getNickname() +
 				 "]; Username[" + client->getUsername() + "]");
 	}
@@ -296,10 +293,14 @@ const char *Server::ReadFailException::what() const throw() {
 	return (READ_FAIL__ERROR);
 }
 
-const char *Server::SendFailException::what() const throw() {
-	return (SEND_FAIL__ERROR);
+const char *Server::ClientHasQuitException::what() const throw() {
+	return (CLIENT_QUIT__ERROR);
 }
 
 const char *Server::InvalidLoginCommandException::what() const throw() {
 	return (WRONG_CMD__ERROR);
+}
+
+const char *Server::InvalidSetPasswordException::what() const throw() {
+	return (INVALID_SET_PASSWORD__ERROR);
 }

@@ -1,0 +1,12 @@
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+INVITE lol
+INVITE screw #pouet
+INVITE screw
+JOIN #pouet
+INVITE screw #pouet
+INVITE screw
+PART #pouet
+INVITE screw #pouet

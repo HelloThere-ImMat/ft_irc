@@ -10,6 +10,24 @@
       "-I",
       "dependencies/",
       "-o",
+      "objs/main.o",
+      "srcs/main.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/main.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/main.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
       "objs/Server.o",
       "srcs/Server.cpp"
     ],
@@ -83,10 +101,10 @@
       "dependencies/",
       "-o",
       "objs/ServerCmds.o",
-      "srcs/ServerCmds.cpp"
+      "srcs/ServerCmds/ServerCmds.cpp"
     ],
     "directory": "/home/screw/Desktop/Code/ft_irc",
-    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds.cpp",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/ServerCmds.cpp",
     "output": "/home/screw/Desktop/Code/ft_irc/objs/ServerCmds.o"
   },
   {
@@ -118,11 +136,191 @@
       "-I",
       "dependencies/",
       "-o",
-      "objs/main.o",
-      "srcs/main.cpp"
+      "objs/Channel.o",
+      "srcs/Channel.cpp"
     ],
     "directory": "/home/screw/Desktop/Code/ft_irc",
-    "file": "/home/screw/Desktop/Code/ft_irc/srcs/main.cpp",
-    "output": "/home/screw/Desktop/Code/ft_irc/objs/main.o"
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/Channel.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/Channel.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/Utils.o",
+      "srcs/Utils.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/Utils.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/Utils.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/Mode.o",
+      "srcs/Mode.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/Mode.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/Mode.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/join.o",
+      "srcs/ServerCmds/join.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/join.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/join.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/privmsg.o",
+      "srcs/ServerCmds/privmsg.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/privmsg.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/privmsg.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/part.o",
+      "srcs/ServerCmds/part.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/part.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/part.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/invite.o",
+      "srcs/ServerCmds/invite.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/invite.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/invite.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/kick.o",
+      "srcs/ServerCmds/kick.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/kick.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/kick.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/quit.o",
+      "srcs/ServerCmds/quit.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/quit.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/quit.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/mode.o",
+      "srcs/ServerCmds/mode.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/mode.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/mode.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/topic.o",
+      "srcs/ServerCmds/topic.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/topic.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/topic.o"
   }
 ]
