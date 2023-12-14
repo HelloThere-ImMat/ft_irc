@@ -3,17 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   ClientManager.hpp                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 11:30:46 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 15:48:01 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #pragma once
 
 #include <exception>
-#include <map>
 
 #include "Client.hpp"
 #include "Utils.hpp"
