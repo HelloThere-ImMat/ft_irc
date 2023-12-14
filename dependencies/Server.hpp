@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 13:29:50 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 14:25:43 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,7 @@ class Server {
 	std::map<std::string, CommandFunction> _cmdMap;
 	std::string							   _password;
 	ClientManager						   _clientMap;
-	std::vector<Conversation>			   _convMap;
+	std::vector<Conversation>			   _convList;
 	// Private Methods
 	//    Initialisation methods
 	void initializeCmdMap();
@@ -103,6 +103,8 @@ class Server {
 	void handleCmd(const std::vector<std::string> &cmd, Client *const client);
 	void getUserLogin(
 		const std::vector<std::string> &cmd, Client *const client);
+	void removeUserFromChannels(const Client *const client);
+	void removeUserConv(const Client *const client);
 	//    Log Methods
 	void tryPasswordAuth(
 		const std::vector<std::string> &cmd, Client *const client);
@@ -138,6 +140,8 @@ class Server {
 		const std::string &channelName, const std::string &privMessage);
 	void sendPrivmsgToUser(Client *const client, const std::string &targetName,
 		const std::string &privMessage);
+	void notifyInConv(const Client *const client, const std::string message) const;
+	void notifyNickUpdate(const Client *const client, const std::string newNick) const;
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:

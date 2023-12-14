@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/14 13:49:40 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 14:03:39 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,8 @@ static bool areSameConv(const Conversation &conv1, const Conversation &conv2){
 		|| (conv1.user1 == conv2.user2 && conv1.user2 == conv2.user1);
 }
 
-static bool isNewConv(const std::vector<Conversation> &convMap, const Conversation &conv) {
-	for (std::vector<Conversation>::const_iterator it = convMap.begin(); it != convMap.end(); ++it) {
+static bool isNewConv(const std::vector<Conversation> &convList, const Conversation &conv) {
+	for (std::vector<Conversation>::const_iterator it = convList.begin(); it != convList.end(); ++it) {
 		if (areSameConv(*it, conv))
 			return false;
 	}
@@ -56,8 +56,8 @@ void Server::sendPrivmsgToUser(Client *const client,
 		Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
 	} else {
 		const Conversation conv = {.user1 = client, .user2 = receiver};
-		if (isNewConv(_convMap, conv))
-			_convMap.push_back(conv);
+		if (isNewConv(_convList, conv))
+			_convList.push_back(conv);
 		Utils::sendPrivateMessage(privMessage, client, receiver);
 	}
 }
@@ -88,8 +88,8 @@ void Server::privmsg(
 			sendPrivmsgToUser(client, *itTarget, privMessage);
 		}
 	}
-	// std::cout << "Conv Map:" << std::endl;
-	// for (std::vector<Conversation>::iterator it = _convMap.begin(); it != _convMap.end(); ++it) {
-	// 	std::cout << "User1:"<< it->user1->getNickname() << "; User2:" << it->user2->getNickname() << std::endl;
-	// }
+	std::cout << "Conv List:" << std::endl;
+	for (std::vector<Conversation>::iterator it = _convList.begin(); it != _convList.end(); ++it) {
+		std::cout << "User1:"<< it->user1->getNickname() << "; User2:" << it->user2->getNickname() << std::endl;
+	}
 }
