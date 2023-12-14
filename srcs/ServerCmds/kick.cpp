@@ -65,10 +65,11 @@ void Server::kick(const std::vector<std::string> &cmd, Client *const client) {
 		return;
 	};
 	try {
-		const std::map<std::string, Channel *>::iterator itMap = _channels.find(cmd[1]);
+		const std::map<std::string, Channel *>::iterator itMap =
+			_channels.find(cmd[1]);
 		if (itMap == _channels.end())
 			throw(OpCmdsErrors(WRONG_CHAN_NAME));
-		Channel					   *const channel = itMap->second;
+		Channel *const				   channel = itMap->second;
 		const std::vector<std::string> users =
 			Utils::splitString(cmd[2], CMD_ARG_SEPARATOR);
 		for (std::vector<std::string>::const_iterator itUser = users.begin();
