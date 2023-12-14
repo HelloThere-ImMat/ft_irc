@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 13:36:54 by mdorr             #+#    #+#             */
-/*   Updated: 2023/12/14 17:42:22 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 17:47:12 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,7 +61,7 @@ void Bot::interact(const Client *const client, const std::string &message) {
 const std::string &Bot::getName() const { return (_name); }
 
 // Private methods
-void Bot::sendMessage(const Client *const client, const char *message) const {
+void Bot::sendMessage(const Client *const client, const char *const message) const {
 	const std::string formattedMess =
 		PRIVMSG_PREFIX + client->getNickname() + " " + message;
 	Utils::sendPrivateMessage(formattedMess, *this, client);
@@ -72,10 +72,10 @@ void Bot::respond(
 	if (message.find('?') != std::string::npos)
 		sendMessage(client, BOT_Q_ANS);
 	else {
-		size_t loadingPrintsNb = getRandNb(4);
+		const size_t loadingPrintsNb = getRandNb(4);
 		for (size_t i = 0; i < loadingPrintsNb; i++) {
 			sleep(BOT_TIME_LOAD);
-			size_t loadingIndex = getRandNb(LOADING_RESP_NB);
+			const size_t loadingIndex = getRandNb(LOADING_RESP_NB);
 			sendMessage(client, loadingResponses[loadingIndex].c_str());
 		}
 		sleep(BOT_TIME_SUSPENSE);

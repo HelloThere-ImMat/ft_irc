@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 13:37:08 by mdorr             #+#    #+#             */
-/*   Updated: 2023/12/14 17:36:40 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 17:46:28 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ class Bot {
    private:
 	std::string					_name;
 	std::vector<const Client *> _botUsers;
-	void sendMessage(const Client *const client, const char *message) const;
+	void sendMessage(const Client *const client, const char *const message) const;
 	void respond(const Client *const client, const std::string &message) const;
 	void sendIntroMessage(const Client *const client) const;
 };
