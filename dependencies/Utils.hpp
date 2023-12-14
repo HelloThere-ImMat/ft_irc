@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/12 23:59:00 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 17:52:58 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,10 @@
 
 #define PATTERN_COUNT 9
 
+// Char
+
+#define SETTER_CHAR ':'
+
 // Server specs
 
 #define HOST_NAME	 "localhost"
@@ -50,15 +54,19 @@
 #define RPL_CHANNELMODEIS "324 <client> <channelName> "
 #define RPL_NOTOPIC		  "331 <client> <channelName> :No topic is set"
 #define RPL_TOPIC		  "332 <client> <channelName> :"
+#define UL_JOIN_MESSAGE	  "353 <nick> = <channelName> :"
+#define EUL_JOIN_MESSAGE  "366 <client> <channelName> :End of /NAMES list."
+#define RPL_INVITING	  "341 <client> <arg> <channelName>"
 
 // Message
 
+#define DEFAULT_QUIT	  "QUIT :leaving"
 #define MESSAGE_SEPARATOR " "
 #define JOIN_PREFIX		  "JOIN :"
 #define PRIVMSG_PREFIX	  "PRIVMSG "
 #define PART_PREFIX		  "PART "
-#define UL_JOIN_MESSAGE	  "353 <nick> = <channelName> :"
-#define EUL_JOIN_MESSAGE  "366 <client> <channelName> :End of /NAMES list."
+#define INVITATION		  "INVITE <nick> <channelName>"
+#define KICK			  "KICK <channelName> <arg> :"
 #define PONG_MESSAGE	  "PONG <servername> :<nick>"
 
 // Sent Errors
@@ -80,18 +88,22 @@
 	"441 <client> <arg> <channelName> :They aren't on that channel"
 #define ERR_NOTONCHANNEL \
 	"442 <client> <channelName> :You're not on that channel"
+#define ERR_USERONCHANNEL \
+	"443 <client> <arg> <channelName> :is already on channel"
 #define ERR_NEEDMOREPARAMS	  "461 <client> <command> :Not enough parameters"
 #define ERR_ALREADYREGISTERED "462 <client> :You may not reregister"
 #define ERR_PASSWDMISMATCH	  "464 <client> :Password incorrect"
 #define ERR_CHANNELISFULL	  "471 <client> <channelName> :Cannot join channel (+l)"
-#define ERR_BADCHANNELKEY	  "475 <client> <channelName> :Cannot join channel (+k)"
-#define ERR_BADCHANMASK		  "476 <channelName> :Bad Channel Mask"
+#define ERR_INVITEONLYCHAN \
+	"473 <client> <channelName> :Cannot join channel (+i)"
+#define ERR_BADCHANNELKEY "475 <client> <channelName> :Cannot join channel (+k)"
+#define ERR_BADCHANMASK	  "476 <channelName> :Bad Channel Mask"
 #define ERR_CHANOPRIVSNEEDED \
 	"482 <client> <channelName> :You're not channel operator"
 
 // Error
 
-#define SEND_FAIL_ERROR "send failed"
+#define SEND_FAIL_ERROR "sending failed"
 
 class Utils {
    public:
@@ -111,6 +123,7 @@ class Utils {
 	static bool isSetter(const char c);
 	static bool isThereInvalidChar(
 		const std::string &str, const std::string &invalidCharset);
+	static std::string removeSetterChar(const std::string &message);
 
    private:
 	class SendFailException : public std::exception {

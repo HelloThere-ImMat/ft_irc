@@ -1,0 +1,11 @@
+[0;90mPassword: lol[0m
+[0;34m<< [0mCAP LS
+[0;34m<< [0mPASS lol
+[0;34m<< [0mNICK screw
+[0;34m<< [0mUSER pouet
+[0;32m>> [0m001 screw :Welcome to the IRC Network, screw
+[0;90mClient is authenticated: Nickname[screw]; Username[pouet][0m
+[0;34m<< [0mQUIT
+[0;32m>> [0mERROR :QUIT
+[0;90mclose connection[0m
+Exited by signal

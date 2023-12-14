@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/12 17:27:30 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:20:34 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,8 +95,8 @@ void Server::ping(const std::vector<std::string> &cmd, Client *const client) {
 }
 
 void Server::error(const std::string &message, Client *const client) {
-	const std::string formatErrorMessage = ERROR_PREFIX + message;
-	Utils::sendFormattedMessage(formatErrorMessage, client);
-	closeClient(client);
-	printLog(CLOSED_CLIENT_MESSAGE);
+	const std::string errorMessage = ERROR_PREFIX + message;
+	Utils::sendFormattedMessage(errorMessage, client);
+	closeClient(client, message);
+	throw ClientHasQuitException();
 }

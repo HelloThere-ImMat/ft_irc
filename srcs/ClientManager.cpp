@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/30 08:53:03 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/10 00:23:07 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:31:05 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,6 @@ ClientManager::~ClientManager() {
 	for (std::map<int, Client*>::iterator it = _socketToClientMap.begin();
 		 it != _socketToClientMap.end(); ++it) {
 		eraseClient(it->second);
-		delete it->second;
 	}
 }
 
@@ -40,13 +39,9 @@ void ClientManager::updateClientNickname(
 	}
 }
 
-void ClientManager::eraseClient(Client* const client) {
-	const std::string nickname = client->getNickname();
-
-	if (nickname.empty() == false)
-		_nicknameToClientMap.erase(nickname);
-	if (_size > 0)
-		--_size;
+void ClientManager::closeClient(Client* const client) {
+	_socketToClientMap.erase(client->getSocketFd());
+	eraseClient(client);
 }
 
 Client* ClientManager::getClient(const std::string& nickname) {
@@ -65,4 +60,18 @@ Client* ClientManager::getClient(const int sockFd) {
 
 const char* ClientManager::ServerFullException::what() const throw() {
 	return SERVER_FULL_ERROR;
+}
+
+/////////////
+// PRIVATE //
+/////////////
+
+void ClientManager::eraseClient(Client* const client) {
+	const std::string nickname = client->getNickname();
+
+	if (nickname.empty() == false)
+		_nicknameToClientMap.erase(nickname);
+	delete client;
+	if (_size > 0)
+		--_size;
 }

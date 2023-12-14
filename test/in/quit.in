@@ -1,0 +1,15 @@
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+QUIT
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+QUIT :
+CAP LS
+PASS lol
+NICK screw
+USER pouet
+QUIT :bye    guys (only me actually)!

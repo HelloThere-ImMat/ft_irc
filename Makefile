@@ -35,6 +35,9 @@ SRCS += Mode.cpp
 SRCS += join.cpp
 SRCS += privmsg.cpp
 SRCS += part.cpp
+SRCS += invite.cpp
+SRCS += kick.cpp
+SRCS += quit.cpp
 SRCS += mode.cpp
 SRCS += topic.cpp
 

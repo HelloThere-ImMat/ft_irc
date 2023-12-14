@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/06 09:45:58 by mat               #+#    #+#             */
-/*   Updated: 2023/12/11 08:53:13 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/13 17:17:18 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,8 @@ void Server::joinChannel(const std::vector<std::string> &cmd,
 		Utils::sendFormattedMessage(ERR_BADCHANNELKEY, client, channelName);
 	} catch (Channel::TooManyUserException &e) {
 		Utils::sendFormattedMessage(ERR_CHANNELISFULL, client, channelName);
+	} catch (Channel::NotInvitedException &e) {
+		Utils::sendFormattedMessage(ERR_INVITEONLYCHAN, client, channelName);
 	}
 }
 

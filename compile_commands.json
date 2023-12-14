@@ -244,6 +244,60 @@
       "-I",
       "dependencies/",
       "-o",
+      "objs/invite.o",
+      "srcs/ServerCmds/invite.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/invite.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/invite.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/kick.o",
+      "srcs/ServerCmds/kick.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/kick.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/kick.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/quit.o",
+      "srcs/ServerCmds/quit.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/quit.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/quit.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
       "objs/mode.o",
       "srcs/ServerCmds/mode.cpp"
     ],

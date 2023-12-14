@@ -3,6 +3,5 @@
 [0;34m<< [0mPASS i
 [0;32m>> [0m464  :Password incorrect
 [0;32m>> [0mERROR :Connection closed
-[0;90mClient has been disconnected[0m
-[0;34m<< [0mNICK screw
+[0;90mclose connection[0m
 Exited by signal
