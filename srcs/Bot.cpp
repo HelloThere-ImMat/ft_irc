@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/14 13:36:54 by mdorr             #+#    #+#             */
-/*   Updated: 2023/12/14 16:16:18 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 16:20:35 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ static std::string loadingResponses[] = {
 
 // Static functions
 
-static size_t getRandNb(size_t range) {
+static size_t getRandNb(const size_t range) {
 	size_t rNb;
 
 	std::srand(time(NULL));
