@@ -6,11 +6,34 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/14 16:14:37 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 16:45:56 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "Server.hpp"
+
+////////////////////
+// Static methods //
+///////////////////
+
+static bool areSameConv(const Conversation &conv1, const Conversation &conv2) {
+	return (conv1.user1 == conv2.user1 && conv1.user2 == conv2.user2) ||
+		   (conv1.user1 == conv2.user2 && conv1.user2 == conv2.user1);
+}
+
+static bool isNewConv(
+	const std::vector<Conversation> &convList, const Conversation &conv) {
+	for (std::vector<Conversation>::const_iterator it = convList.begin();
+		 it != convList.end(); ++it) {
+		if (areSameConv(*it, conv))
+			return false;
+	}
+	return true;
+}
+
+//////////////////////
+// Private methods //
+/////////////////////
 
 void Server::sendPrivmsgToChannel(const Client *const client,
 	const std::string &channelName, const std::string &privMessage) {
@@ -34,6 +57,9 @@ void Server::sendPrivmsgToUser(Client *const client,
 		client->setLastArg(targetName);
 		Utils::sendFormattedMessage(ERR_NOSUCHNICK, client);
 	} else {
+		const Conversation conv = {.user1 = client, .user2 = receiver};
+		if (isNewConv(_convList, conv))
+			_convList.push_back(conv);
 		Utils::sendPrivateMessage(privMessage, client, receiver);
 	}
 }
@@ -65,5 +91,6 @@ void Server::privmsg(
 			_bot.interact(client, privMessage);
 		else
 			sendPrivmsgToUser(client, *itTarget, privMessage);
+		}
 	}
 }

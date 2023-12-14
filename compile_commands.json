@@ -322,5 +322,23 @@
     "directory": "/home/screw/Desktop/Code/ft_irc",
     "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/topic.cpp",
     "output": "/home/screw/Desktop/Code/ft_irc/objs/topic.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/c++",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-std=c++98",
+      "-c",
+      "-I",
+      "dependencies/",
+      "-o",
+      "objs/nick.o",
+      "srcs/ServerCmds/nick.cpp"
+    ],
+    "directory": "/home/screw/Desktop/Code/ft_irc",
+    "file": "/home/screw/Desktop/Code/ft_irc/srcs/ServerCmds/nick.cpp",
+    "output": "/home/screw/Desktop/Code/ft_irc/objs/nick.o"
   }
 ]

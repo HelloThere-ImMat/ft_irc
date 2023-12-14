@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 14:53:49 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 16:44:29 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,6 +62,11 @@
 #define WRONG_CMD__ERROR			"Invalid Login Command!"
 #define INVALID_SET_PASSWORD__ERROR "Invalid set password"
 
+typedef struct s_conv {
+	const Client *user1;
+	const Client *user2;
+} Conversation;
+
 class Server {
 	typedef void (Server::*CommandFunction)(
 		const std::vector<std::string> &, Client *const);
@@ -84,6 +89,7 @@ class Server {
 	std::string							   _password;
 	ClientManager						   _clientMap;
 	Bot									   _bot;
+	std::vector<Conversation>			   _convList;
 	// Private Methods
 	//    Initialisation methods
 	void initializeCmdMap();
@@ -99,6 +105,8 @@ class Server {
 	void handleCmd(const std::vector<std::string> &cmd, Client *const client);
 	void getUserLogin(
 		const std::vector<std::string> &cmd, Client *const client);
+	void removeUserFromChannels(const Client *const client);
+	void removeUserConv(const Client *const client);
 	//    Log Methods
 	void tryPasswordAuth(
 		const std::vector<std::string> &cmd, Client *const client);
@@ -123,17 +131,19 @@ class Server {
 	bool isNicknameAlreadyUsed(const std::string &nickname);
 	void sendJoinMessage(const Channel *const channel,
 		const Client *const client, const std::string &channelName);
-	void createChannel(
-		const Client *const client, const std::string &channelName);
-	void joinChannel(const std::vector<std::string> &cmd,
-		const Client *const client, Channel *const channel,
-		const size_t keyIndex);
+	void createChannel(Client *const client, const std::string &channelName);
+	void joinChannel(const std::vector<std::string> &cmd, Client *const client,
+		Channel *const channel, const size_t keyIndex);
 	void sendQuitMessageToOthers(
 		const Client *const client, const std::string &quitMessage);
 	void sendPrivmsgToChannel(const Client *const client,
 		const std::string &channelName, const std::string &privMessage);
 	void sendPrivmsgToUser(Client *const client, const std::string &targetName,
 		const std::string &privMessage);
+	void notifyInConv(
+		const Client *const client, const std::string message) const;
+	void notifyNickUpdate(
+		const Client *const client, const std::string newNick) const;
 	// Exceptions
 	class ListenFailException : public std::exception {
 	   public:

@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 15:19:39 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 16:44:34 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,7 @@
 #define JOIN_PREFIX		  "JOIN :"
 #define PRIVMSG_PREFIX	  "PRIVMSG "
 #define PART_PREFIX		  "PART "
+#define NICK_PREFIX		  "NICK :"
 #define INVITATION		  "INVITE <nick> <channelName>"
 #define KICK			  "KICK <channelName> <arg> :"
 #define PONG_MESSAGE	  "PONG <servername> :<nick>"

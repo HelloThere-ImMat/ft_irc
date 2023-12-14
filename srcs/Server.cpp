@@ -6,7 +6,7 @@
 /*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 12:10:42 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 15:32:57 by mdorr            ###   ########.fr       */
+/*   Updated: 2023/12/14 16:45:03 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,10 +91,8 @@ void Server::addNewClient() {
 void Server::closeClient(Client *const client, const std::string &quitMessage) {
 	const int clientFd = client->getSocketFd();
 	sendQuitMessageToOthers(client, quitMessage);
-	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
-		 it != _channels.end(); ++it)
-		it->second->removeUser(client);
-	_bot.removeUserFromList(client);
+	removeUserFromChannels(client);
+	removeUserConv(client);
 	_clientMap.closeClient(client);
 	delFdToPoll(clientFd);
 }
@@ -281,6 +279,23 @@ void Server::getUserLogin(
 		Utils::sendFormattedMessage(RPL_WELCOME, client);
 		printLog("Client is authenticated: Nickname[" + client->getNickname() +
 				 "]; Username[" + client->getUsername() + "]");
+	}
+}
+
+void Server::removeUserFromChannels(const Client *const client) {
+	for (std::map<std::string, Channel *>::iterator it = _channels.begin();
+		 it != _channels.end(); ++it)
+		it->second->removeUser(client);
+}
+
+void Server::removeUserConv(const Client *const client) {
+	std::vector<Conversation>::iterator it = _convList.begin();
+	while (it != _convList.end()) {
+		if (it->user1 == client || it->user2 == client) {
+			it = _convList.erase(it);
+		} else {
+			++it;
+		}
 	}
 }
 

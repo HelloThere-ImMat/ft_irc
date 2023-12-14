@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   part.cpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mat <mat@student.42.fr>                    +#+  +:+       +#+        */
+/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:33 by mat               #+#    #+#             */
-/*   Updated: 2023/12/08 15:40:59 by mat              ###   ########.fr       */
+/*   Updated: 2023/12/14 14:50:48 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void Server::part(const std::vector<std::string> &cmd, Client *const client) {
 			Channel *const channel = itMap->second;
 			if (channel->isUserInChannel(client)) {
 				channel->sendToAll(client, PART_PREFIX + *itCurrChanName);
+				client->rmFromChanMap(channel);
 				channel->removeUser(client);
 			} else
 				Utils::sendFormattedMessage(
