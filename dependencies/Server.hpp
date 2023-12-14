@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 15:49:42 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:20:40 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,6 @@
 #define SPECIAL_NICK_CHARSET	 "[]{}*\\|_"
 #define MODE_SETCHAR			 "itklo+-"
 #define INVALID_PASSWORD_CHARSET " \b\t\n\v\f\r,"
-
-// Logs
-
-#define CLOSED_CLIENT_MESSAGE "Client has been disconnected"
 
 // Errors
 

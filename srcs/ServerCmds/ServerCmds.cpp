@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/28 17:04:42 by mat               #+#    #+#             */
-/*   Updated: 2023/12/13 14:58:09 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 11:20:34 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,5 +98,5 @@ void Server::error(const std::string &message, Client *const client) {
 	const std::string errorMessage = ERROR_PREFIX + message;
 	Utils::sendFormattedMessage(errorMessage, client);
 	closeClient(client, message);
-	printLog(CLOSED_CLIENT_MESSAGE);
+	throw ClientHasQuitException();
 }
