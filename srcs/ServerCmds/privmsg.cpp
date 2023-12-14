@@ -6,7 +6,7 @@
 /*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 14:47:09 by mat               #+#    #+#             */
-/*   Updated: 2023/12/14 15:04:07 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 16:23:48 by rbroque          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,11 +83,11 @@ void Server::privmsg(
 		 itTarget != targetList.end(); itTarget++) {
 		const std::string privMessage =
 			PRIVMSG_PREFIX + *itTarget + " " + fullMessage;
-
 		if ((*itTarget)[0] == CHANNEL_PREFIX)
 			sendPrivmsgToChannel(client, *itTarget, privMessage);
-		else {
+		else if (*itTarget == _bot.getName())
+			_bot.interact(client, privMessage);
+		else
 			sendPrivmsgToUser(client, *itTarget, privMessage);
-		}
 	}
 }

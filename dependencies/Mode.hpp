@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Mode.hpp                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/07 09:16:05 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/13 14:24:55 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 16:55:13 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -74,9 +74,6 @@ class Mode {
    private:
 	// Attributes
 	modeConfig _config;
-	// uint8_t		_mask;
-	// uint		_userlimit;
-	// std::string _password;
 	// Private Methods
 	modeStatus setSimpleMode(const t_modSetter setter, const char c);
 	modeStatus setArgMode(const t_modSetter setter, const char c,

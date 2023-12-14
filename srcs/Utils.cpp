@@ -12,6 +12,8 @@
 
 #include "Utils.hpp"
 
+#include "Bot.hpp"
+
 // Static Funcs
 
 static std::string replacePatterns(const std::string &original,
@@ -88,11 +90,11 @@ void Utils::sendMessage(
 }
 
 void Utils::sendPrivateMessage(const std::string &message,
-	const Client *const sender, const Client *const receiver) {
-	const std::string senderSpec =
-		sender->getNickname() + "!~" + sender->getUsername() + "@localhost";
+	const std::string &senderNick, const std::string &senderName,
+	const Client *const receiver) {
+	const std::string botSpec = senderNick + "!~" + senderName + "@localhost";
 	const std::string formatMessage =
-		":" + senderSpec + " " + message + END_MESSAGE;
+		":" + botSpec + " " + message + END_MESSAGE;
 
 	if (send(receiver->getSocketFd(), formatMessage.c_str(),
 			formatMessage.size(), 0) < 0)
@@ -101,15 +103,27 @@ void Utils::sendPrivateMessage(const std::string &message,
 		std::cout << RED << OUTMES_PREFIX << NC << formatMessage << std::endl;
 }
 
+void Utils::sendPrivateMessage(
+	const std::string &message, const Bot &bot, const Client *const receiver) {
+	const std::string botName = bot.getName();
+	sendPrivateMessage(message, botName, botName, receiver);
+}
+
+void Utils::sendPrivateMessage(const std::string &message,
+	const Client *const sender, const Client *const receiver) {
+	sendPrivateMessage(
+		message, sender->getNickname(), sender->getUsername(), receiver);
+}
+
 void Utils::sendFormattedMessage(const std::string &message,
-	const Client *const client, std::string channelName) {
+	const Client *const client, const std::string channelName) {
 	sendMessage(getFormattedMessage(message, client, channelName), client);
 }
 
 // Format methods
 
 std::string Utils::getFormattedMessage(const std::string &message,
-	const Client *const client, std::string channelName) {
+	const Client *const client, const std::string channelName) {
 	const std::string mapPattern[PATTERN_COUNT][2] = {
 		{"<networkname>", NETWORK_NAME}, {"<servername>", SERVER_NAME},
 		{"<client>", client->getNickname()}, {"<nick>", client->getNickname()},

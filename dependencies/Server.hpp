@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Server.hpp                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/11/19 00:49:22 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 14:50:06 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 16:44:29 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,7 @@
 
 #include <typeinfo>
 
+#include "Bot.hpp"
 #include "Channel.hpp"
 #include "ClientManager.hpp"
 #include "DataServ.hpp"
@@ -87,6 +88,7 @@ class Server {
 	std::map<std::string, CommandFunction> _cmdMap;
 	std::string							   _password;
 	ClientManager						   _clientMap;
+	Bot									   _bot;
 	std::vector<Conversation>			   _convList;
 	// Private Methods
 	//    Initialisation methods

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   Utils.hpp                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rbroque <rbroque@student.42.fr>            +#+  +:+       +#+        */
+/*   By: mdorr <mdorr@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/12 23:58:57 by rbroque           #+#    #+#             */
-/*   Updated: 2023/12/14 14:20:51 by rbroque          ###   ########.fr       */
+/*   Updated: 2023/12/14 17:31:02 by mdorr            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,10 @@
 // Char
 
 #define SETTER_CHAR ':'
+
+// Name
+
+#define BOT_NAME "marvin"
 
 // Server specs
 
@@ -106,16 +110,20 @@
 
 #define SEND_FAIL_ERROR "sending failed"
 
+class Bot;
+
 class Utils {
    public:
 	static void sendMessage(
 		const std::string &message, const Client *const client);
-	static void		   sendPrivateMessage(const std::string &message,
-			   const Client *const sender, const Client *const receiver);
-	static void		   sendFormattedMessage(const std::string &message,
-			   const Client *const client, std::string channelName = "");
+	static void sendPrivateMessage(const std::string &message,
+		const Client *const sender, const Client *const receiver);
+	static void sendPrivateMessage(const std::string &message, const Bot &bot,
+		const Client *const receiver);
+	static void sendFormattedMessage(const std::string &message,
+		const Client *const client, const std::string channelName = "");
 	static std::string getFormattedMessage(const std::string &message,
-		const Client *const client, std::string channelName = "");
+		const Client *const client, const std::string channelName = "");
 	static std::vector<std::string> splitString(
 		const std::string &listStr, const char delimiter);
 	static std::string getFullMessage(
@@ -127,6 +135,9 @@ class Utils {
 	static std::string removeSetterChar(const std::string &message);
 
    private:
+	static void sendPrivateMessage(const std::string &message,
+		const std::string &senderNick, const std::string &senderName,
+		const Client *const target);
 	class SendFailException : public std::exception {
 	   public:
 		virtual const char *what() const throw();

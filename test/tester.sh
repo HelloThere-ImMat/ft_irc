@@ -18,9 +18,9 @@ CACHE=${CACHE_FOLDER}/.cache
 ADDRESS=127.0.0.1
 PORT=6667
 PASSWORD=lol
-TIME=8
+TIME=9
 
-files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2" "mode3" "topic1" "topic2" "topic3" "kick" "quit" "invite" "nick")
+files=("successLog" "wrongPass" "noPass" "longNickname" "longUsername" "emptyPass" "wrongNick" "mode1" "mode2" "mode3" "topic1" "topic2" "topic3" "kick" "quit" "invite" "nick" "bot")
 
 #################
 ### FUNCTIONS ###

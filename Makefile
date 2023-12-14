@@ -40,6 +40,7 @@ SRCS += kick.cpp
 SRCS += quit.cpp
 SRCS += mode.cpp
 SRCS += topic.cpp
+SRCS += Bot.cpp
 SRCS += nick.cpp
 
 vpath %.cpp $(SRCS_PATH)
@@ -66,6 +67,7 @@ DEPS += irc.hpp
 DEPS += Channel.hpp
 DEPS += Utils.hpp
 DEPS += Mode.hpp
+DEPS += Bot.hpp
 
 vpath %.hpp $(DEPS_PATH)
 
